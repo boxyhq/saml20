@@ -40,7 +40,7 @@ jobs:
           sed "s/\(^[ ]*\"version\"\:[ ]*\".*\)\",/\1${versionSuffixTag}\",/" < package.json > package.json.new
           mv package.json.new package.json
         fi
-        npm publish --tag $publishTag
+        npm publish --tag $publishTag --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   
