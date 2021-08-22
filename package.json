@@ -33,7 +33,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "jshint": "2.12.0",
-    "mocha": "8.2.1"
+    "jshint": "2.13.1",
+    "mocha": "9.1.0"
   }
 }
