@@ -4,12 +4,12 @@ SAML 2.0 & 1.1 Assertion Parser & Validator
 
 =============
 
-saml20-maintained is a fork of a fork of saml20. It is the same library with updated versions of vulnerable dependencies, additonal fixes and support for more providers as needed.
+saml20-maintained is a fork of a fork of saml20. It is the same library with updated versions of vulnerable dependencies, additonal fixes and support for more providers as needed. The new package is published here - https://www.npmjs.com/package/@boxyhq/saml20
 
 ## Installation
 
 ```bash
-$ npm install saml20-maintained
+$ npm install @boxyhq/saml20
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ Parses the `rawAssertion` without validating signature, expiration and audience.
 
 ```javascript
 
-var saml = require('saml20-maintained');
+var saml = require('@boxyhq/saml20');
 
 saml.parse(rawAssertion, function(err, profile) {
 	// err
@@ -48,7 +48,7 @@ You can use either `thumbprint` or `publicKey` but you should use at least one.
 
 ```javascript
 
-var saml = require('saml20-maintained');
+var saml = require('@boxyhq/saml20');
 
 var options = {
 	thumbprint: '1aeabdfa4473ecc7efc5947b18436c575574baf8',
@@ -68,7 +68,7 @@ or using publicKey:
 
 ```javascript
 
-var saml = require('saml20-maintained');
+var saml = require('@boxyhq/saml20');
 
 var options = {
 	publicKey: 'MIICDzCCAXygAwIBAgIQVWXAvbbQyI5Bc...',
