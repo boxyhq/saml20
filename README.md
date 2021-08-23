@@ -1,6 +1,6 @@
 SAML 2.0 & 1.1 Assertion Parser & Validator [![Build Status](https://travis-ci.com/phylp/saml20-maintained.svg?branch=master)](https://travis-ci.com/phylp/saml20-maintained)
 =============
-saml20-maintained is a fork of saml20. It is the same library with updated versions of vulnerable dependencies. 
+saml20-maintained is a fork of a fork of saml20. It is the same library with updated versions of vulnerable dependencies, additonal fixes and support for more providers as needed.
 
 ## Installation
 
