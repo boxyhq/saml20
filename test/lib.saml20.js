@@ -74,7 +74,6 @@ describe('lib.saml20', function() {
 
 	it("Should fail with invalid assertion and possible assertion wrapping", function (done) {
 		saml.validate(invalidWrappedToken, { publicKey: certificate, bypassExpiration: true }, function(err, profile) {
-			console.log('profile', profile);
 			assert.ok(!profile);
 			assert.ok(err);
 			assert.strictEqual('Invalid assertion. Possible assertion wrapping.', err.message);
