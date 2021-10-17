@@ -38,6 +38,6 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "jshint": "2.13.1",
-    "mocha": "9.1.0"
+    "mocha": "9.1.3"
   }
 }
