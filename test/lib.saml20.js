@@ -5,6 +5,7 @@ var saml    = require("../lib/index.js");
 // Tests Configuration
 var validToken = fs.readFileSync('./test/assets/saml20.validToken.xml').toString();
 var invalidToken = fs.readFileSync('./test/assets/saml20.invalidToken.xml').toString();
+var invalidWrappedToken = fs.readFileSync('./test/assets/saml20.invalidWrappedToken.xml').toString();
 
 var issuerName = 'https://identity.kidozen.com/';
 var thumbprint = '1aeabdfa4473ecc7efc5947b19436c575574baf8';
@@ -17,7 +18,7 @@ describe('lib.saml20', function() {
 		saml.validate(validToken, {publicKey: certificate, thumbprint: thumbprint, bypassExpiration: true }, function(err, profile) {
 			assert.ifError(err);
 			assert.ok(profile.claims);
-			
+
 			assert.strictEqual(issuerName, profile.issuer);
 			assert.strictEqual('demo@kidozen.com',profile.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']);
 			done();
@@ -33,7 +34,7 @@ describe('lib.saml20', function() {
 
 			done();
 		})
-	});	
+	});
 
 	it("Should validate saml 2.0 token and check audience", function (done) {
 		saml.validate(validToken, { publicKey: certificate, audience: audience, bypassExpiration: true }, function(err, profile) {
@@ -42,7 +43,7 @@ describe('lib.saml20', function() {
 			assert.ok(profile.claims);
 			done();
 		})
-	});	
+	});
 
 	it("Should fail with invalid audience", function (done) {
 		saml.validate(validToken, { publicKey: certificate, audience: 'http://any-other-audience.com/', bypassExpiration: true }, function(err, profile) {
@@ -51,7 +52,7 @@ describe('lib.saml20', function() {
 			assert.strictEqual('Invalid audience.', err.message);
 			done();
 		})
-	});	
+	});
 
 	it("Should fail with invalid signature", function (done) {
 		saml.validate(invalidToken, { publicKey: certificate, bypassExpiration: true }, function(err, profile) {
@@ -60,7 +61,7 @@ describe('lib.saml20', function() {
 			assert.strictEqual('Invalid assertion signature.', err.message);
 			done();
 		})
-	});	
+	});
 
 	it("Should fail with invalid assertion", function (done) {
 		saml.validate('invalid-assertion', { publicKey: certificate, bypassExpiration: true }, function(err, profile) {
@@ -69,7 +70,16 @@ describe('lib.saml20', function() {
 			assert.strictEqual('Invalid assertion.', err.message);
 			done();
 		})
-	});	
+	});
+
+	it("Should fail with invalid assertion and possible assertion wrapping", function (done) {
+		saml.validate(invalidWrappedToken, { publicKey: certificate, bypassExpiration: true }, function(err, profile) {
+			assert.ok(!profile);
+			assert.ok(err);
+			assert.strictEqual('Invalid assertion. Possible assertion wrapping.', err.message);
+			done();
+		})
+	});
 
 	it("Should fail with expired assertion", function (done) {
 		saml.validate(validToken, { publicKey: certificate }, function(err, profile) {
@@ -78,7 +88,7 @@ describe('lib.saml20', function() {
 			assert.strictEqual('Assertion is expired.', err.message);
 			done();
 		})
-	});	
+	});
 
 	it("Should parse saml 2.0 without signature validation", function (done) {
 		saml.parse(invalidToken, function(err, profile) {
@@ -87,5 +97,5 @@ describe('lib.saml20', function() {
 			assert.ok(profile.claims);
 			done();
 		})
-	});	
+	});
 })
