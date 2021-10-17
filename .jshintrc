@@ -16,7 +16,7 @@
   "noarg" : true,
   "nonew" : true,
   "plusplus" : false,
-  "quotmark" : "single",
+  "quotmark" : "ignore",
   "strict" : true,
   "trailing" : true,
   "undef" : true,

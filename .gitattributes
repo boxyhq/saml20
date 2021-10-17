@@ -1,2 +1,2 @@
 # Declare files that will always have LF line endings on checkout.
-test/assets/*.xml text eol=lf
+test/assets/**.xml text eol=lf
