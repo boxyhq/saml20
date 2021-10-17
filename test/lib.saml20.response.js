@@ -6,15 +6,6 @@ var saml = require("../lib/index.js");
 var validResponse = fs
   .readFileSync('./test/assets/saml20.validResponse.xml')
   .toString();
-var attemptExtensionAssertionAttackResponse = fs
-  .readFileSync('./test/assets/saml20.attemptExtensionAttackResponse.xml')
-  .toString();
-var attemptExtensionAssertionAttackResponse2 = fs
-  .readFileSync('./test/assets/saml20.attemptExtensionAttackResponse2.xml')
-  .toString();
-var invalidWrappedResponse = fs
-  .readFileSync('./test/assets/saml20.invalidWrappedResponse.xml')
-  .toString();
 
 var issuerName = 'http://idp.example.com/metadata.php';
 var thumbprint = 'e606eced42fa3abd0c5693456384f5931b174707';
@@ -138,57 +129,6 @@ describe("lib.saml20.response", function () {
         assert.ok(!profile);
         assert.ok(err);
         assert.strictEqual('Invalid InResponseTo.', err.message);
-        done();
-      }
-    );
-  });
-
-  it("Should fail with invalid assertion", function (done) {
-    saml.validate(
-      attemptExtensionAssertionAttackResponse,
-      {
-        publicKey: certificate,
-        audience: audience,
-        bypassExpiration: true,
-      },
-      function (err, profile) {
-        assert.ok(!profile);
-        assert.ok(err);
-        assert.strictEqual('Invalid assertion.', err.message);
-        done();
-      }
-    );
-  });
-
-  it("Should fail with invalid assertion", function (done) {
-    saml.validate(
-      attemptExtensionAssertionAttackResponse2,
-      {
-        publicKey: certificate,
-        audience: audience,
-        bypassExpiration: true,
-      },
-      function (err, profile) {
-        assert.ok(!profile);
-        assert.ok(err);
-        assert.strictEqual('Invalid assertion.', err.message);
-        done();
-      }
-    );
-  });
-
-  it("Should fail with invalid assertion possible assertion wrapping", function (done) {
-    saml.validate(
-      invalidWrappedResponse,
-      {
-        publicKey: certificate,
-        audience: audience,
-        bypassExpiration: true,
-      },
-      function (err, profile) {
-        assert.ok(!profile);
-        assert.ok(err);
-        assert.strictEqual('Invalid assertion. Possible assertion wrapping.', err.message);
         done();
       }
     );
