@@ -30,7 +30,7 @@
         <saml:AttributeValue xsi:type="xs:string">test</saml:AttributeValue>
       </saml:Attribute>
       <saml:Attribute Name="mail" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
-        <saml:AttributeValue xsi:type="xs:string">test@example.com</saml:AttributeValue>
+        <saml:AttributeValue xsi:type="xs:string">te<!-- a comment? -->st@example.com</saml:AttributeValue>
       </saml:Attribute>
       <saml:Attribute Name="eduPersonAffiliation" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
         <saml:AttributeValue xsi:type="xs:string">users</saml:AttributeValue>
