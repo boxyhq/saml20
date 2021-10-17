@@ -40,7 +40,7 @@ describe("lib.saml20.response", function () {
         assert.strictEqual(
           '_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7',
           profile.claims[
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
           ]
         );
         done();
@@ -63,7 +63,7 @@ describe("lib.saml20.response", function () {
         assert.strictEqual(
           '_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7',
           profile.claims[
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
           ]
         );
 
