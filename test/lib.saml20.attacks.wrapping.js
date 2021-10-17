@@ -3,6 +3,16 @@ var fs = require("fs");
 var saml = require("../lib/index.js");
 
 // Tests Configuration
+// Evil response that wraps the valid response inside the Signature tag
+var wrappedInvalidResponse1 = fs
+  .readFileSync('./test/assets/attacks/wrapping/saml20.wrapped.invalidResponse1.xml')
+  .toString();
+
+// Evil response that wraps the valid response
+var wrappedInvalidResponse2 = fs
+  .readFileSync('./test/assets/attacks/wrapping/saml20.wrapped.invalidResponse2.xml')
+  .toString();
+
 // Evil assertion at the same level as the valid assertion
 var wrappedInvalidAssertion1 = fs
   .readFileSync('./test/assets/attacks/wrapping/saml20.wrapped.invalidAssertion1.xml')
@@ -32,6 +42,40 @@ var certificate = 'MIICajCCAdOgAwIBAgIBADANBgkqhkiG9w0BAQ0FADBSMQswCQYDVQQGEwJ1c
 var audience = 'http://sp.example.com/demo1/metadata.php';
 
 describe("lib.saml20.attacks.wrapping", function () {
+  it("wrappedInvalidResponse1: Should fail with invalid assertion possible assertion wrapping", function (done) {
+    saml.validate(
+      wrappedInvalidResponse1,
+      {
+        publicKey: certificate,
+        audience,
+        bypassExpiration: true,
+      },
+      function (err, profile) {
+        assert.ok(!profile);
+        assert.ok(err);
+        assert.strictEqual(err.message, 'Invalid assertion. Possible assertion wrapping.');
+        done();
+      }
+    );
+  });
+
+  it("wrappedInvalidResponse2: Should fail with invalid assertion possible assertion wrapping", function (done) {
+    saml.validate(
+      wrappedInvalidResponse2,
+      {
+        publicKey: certificate,
+        audience,
+        bypassExpiration: true,
+      },
+      function (err, profile) {
+        assert.ok(!profile);
+        assert.ok(err);
+        assert.strictEqual(err.message, 'Invalid assertion. Possible assertion wrapping.');
+        done();
+      }
+    );
+  });
+
   it("wrappedInvalidAssertion1: Should fail with invalid assertion possible assertion wrapping", function (done) {
     saml.validate(
       wrappedInvalidAssertion1,
