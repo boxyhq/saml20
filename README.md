@@ -113,6 +113,10 @@ To run the tests use:
 $ npm test
 ```
 
+## Reporting Security Issues
+
+[Responsible Disclosure](SECURITY.md)
+
 ## License
 
 MIT
