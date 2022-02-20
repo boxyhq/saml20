@@ -31,7 +31,9 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm test
-    - run: |
+    - name: Publish NPM
+      if: github.ref == 'refs/heads/release' || contains(github.ref, 'refs/tags/beta-v')
+      run: |
         publishTag="latest"
         if [[ "$GITHUB_REF" == *\/release ]]
         then
