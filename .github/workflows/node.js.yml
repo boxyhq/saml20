@@ -6,6 +6,8 @@ name: Node.js CI
 on:
   push:
     branches: [ main, release ]
+    tags:
+      - 'beta-v*'
   pull_request:
     branches: [ main ]
 
