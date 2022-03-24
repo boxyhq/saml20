@@ -1,7 +1,7 @@
 {
   "name": "@boxyhq/saml20",
-  "version": "0.2.1",
-  "description": "SAML 2.0 and 1.1 token parser for Node.js",
+  "version": "1.0.0",
+  "description": "SAML 2.0 token parser for Node.js",
   "main": "./lib/index.js",
   "dependencies": {
     "lodash": "4.17.21",
@@ -16,7 +16,6 @@
   },
   "keywords": [
     "SAML 2.0",
-    "SAML 1.1",
     "Token Parser"
   ],
   "scripts": {
