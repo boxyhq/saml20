@@ -6,6 +6,9 @@ var saml = require('../lib/index.js');
 var validResponse = fs
   .readFileSync('./test/assets/saml20.validResponse.xml')
   .toString();
+var errorResponse = fs
+  .readFileSync('./test/assets/saml20.errorResponse.xml')
+  .toString();
 
 var issuerName = 'http://idp.example.com/metadata.php';
 var thumbprint = 'e606eced42fa3abd0c5693456384f5931b174707';
@@ -130,6 +133,18 @@ describe('lib.saml20.response', function () {
         assert.ok(!profile);
         assert.ok(err);
         assert.strictEqual('Invalid InResponseTo.', err.message);
+        done();
+      }
+    );
+  });
+
+  it('Should not parse saml 2.0 token which has no assertion', function (done) {
+    saml.parse(
+      errorResponse,
+      function (err, profile) {
+        assert.ok(!profile);
+        assert.ok(err);
+        assert.strictEqual('Invalid assertion.', err.message);
         done();
       }
     );

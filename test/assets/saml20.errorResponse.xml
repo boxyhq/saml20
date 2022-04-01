@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://localhost:3000/sso/acs" ID="_fc480a2ce1ccfca5ea037230ac366c461648046513607" InResponseTo="_5da30a190be9073a53e6" IssueInstant="2022-03-23T14:41:53.607Z" Version="2.0">
+   <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">https://d6g000008kx1jeag-dev-ed.my.salesforce.com</saml:Issuer>
+   <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+      <ds:SignedInfo>
+         <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+         <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+         <ds:Reference URI="#_fc480a2ce1ccfca5ea037230ac366c461648046513607">
+            <ds:Transforms>
+               <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+               <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                  <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="ds saml samlp" />
+               </ds:Transform>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+            <ds:DigestValue>AUjbIyf7Q2ncY8dXZOHJiHziKB8=</ds:DigestValue>
+         </ds:Reference>
+      </ds:SignedInfo>
+      <ds:SignatureValue>ckmokmyowhi+q/hSwXFHIhcvP4OHdF4XLNOgZRUkijnu9Dnm+7bmUeWNMDC7QYxgKeCD/Bi4mYZunm/usvaZabs4ZHNhN1nRK/6OR7HJEBXq0E2dazT9JTaurSr2By77iO3jsaEbgk/4cXE1tU0eXgnypl9PhKIHuxkLdxpIE0rsyu1oER1I9ed78mPmydmnNRCgEeNyIw70cHhAJQp1TImu1bILvHfuC9Xh9lt/4wvh0YKyT4Hv3CDa7LZ4U9SpAxx3Lp0I8wc1dPmpVrT+Lck3oqOVL1vh855PGY/+dcHanudCbltA3+hK5J+MSj+LvE9KiLmL/0oDiAH8xt6iUw==</ds:SignatureValue>
+      <ds:KeyInfo>
+         <ds:X509Data>
+            <ds:X509Certificate>MIIErDCCA5SgAwIBAgIOAXwS/tj4AAAAACIiWw4wDQYJKoZIhvcNAQELBQAwgZAxKDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzIzU2VwMjAyMV8xNDExMDMxGDAWBgNVBAsMDzAwRDZnMDAwMDA4S1gxajEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0EwHhcNMjEwOTIzMTQxMTA0WhcNMjIwOTIzMTIwMDAwWjCBkDEoMCYGA1UEAwwfU2VsZlNpZ25lZENlcnRfMjNTZXAyMDIxXzE0MTEwMzEYMBYGA1UECwwPMDBENmcwMDAwMDhLWDFqMRcwFQYDVQQKDA5TYWxlc2ZvcmNlLmNvbTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzELMAkGA1UECAwCQ0ExDDAKBgNVBAYTA1VTQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAI0nTBaVpfpiwvOxSkev4Ya8Qx3E/oyFTfnIkgpM4whqIl8XiSTTHlLCBU5q/p9xvQb5f0JvMwF+1CR4N/QDXCLGSqQAv4gQ2rGNFh75AbquTRAq9OXPzT028js788smNwOUM2DHRjBRk1qrgF/34q03IomxDNEpYQhyZvz+l7eT7FJuRLspnjAB+9ir7V4OV1+TbHlwXT2kIHlOLxEm4ReXiNx6AadJ/dKGUKb41upWBUSoXLJQWp8gCBc9I861NkeZUp0/fIZFhSHT3oTjt9gnok+n4uEpJhDVClY9nAk0Ojhyto/spGT7ADvYFJYxgE+gcuGbKQelKaocz1y26EsCAwEAAaOCAQAwgf0wHQYDVR0OBBYEFGu2HBY9dd5f3vXxcPxtULNi6r2HMA8GA1UdEwEB/wQFMAMBAf8wgcoGA1UdIwSBwjCBv4AUa7YcFj113l/e9fFw/G1Qs2LqvYehgZakgZMwgZAxKDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzIzU2VwMjAyMV8xNDExMDMxGDAWBgNVBAsMDzAwRDZnMDAwMDA4S1gxajEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0GCDgF8Ev7Y+AAAAAAiIlsOMA0GCSqGSIb3DQEBCwUAA4IBAQAYHj5lRQhAlypIRvlg9Y7O3RiVrPNnDGY5XgQL1paHcjyhjwaAYg8koDoy4jbwCC1JjuJSKvJoGE2uP+rOqNNFjJURo5ztWWD0ZtPlHB0QbRrnPSpuc3eqb2hSY2bLFurPlNXFt/b4h0nzRi80wXqfUz+YBTxlmOJcTvYy0Pmfq1CwkXpQp1GZ2H1yUXRrAT2JDr7U1DxOm913J+oMoIxFCZFNuEXRvInLEemYH1/cqJfYBviG0EqU1M2eSFp/OZO3MskMztSecpSgFxbAmakWIb6bIXHl9id2w6ZZ0OpSLP8YkQcHYnUoeWp65envajsxhYH3c0BFSTtEcurOLVYS</ds:X509Certificate>
+         </ds:X509Data>
+      </ds:KeyInfo>
+   </ds:Signature>
+   <samlp:Status>
+      <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:AuthnFailed" />
+   </samlp:Status>
+</samlp:Response>
