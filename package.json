@@ -19,8 +19,7 @@
     "Token Parser"
   ],
   "scripts": {
-    "test": "npm run jshint && mocha -R spec test",
-    "jshint": "jshint lib"
+    "test": "mocha -R spec test"
   },
   "author": "Leandro Boffi (me@leandrob.com)",
   "contributors": [
@@ -36,7 +35,6 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "jshint": "2.13.4",
     "mocha": "9.2.2"
   }
 }
