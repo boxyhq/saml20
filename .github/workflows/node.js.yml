@@ -5,15 +5,14 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main, release ]
+    branches: [main, release]
     tags:
       - 'beta-v*'
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -22,32 +21,34 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        always-auth: true
-        node-version: ${{ matrix.node-version }}
-        registry-url: https://registry.npmjs.org
-        scope: '@boxyhq'
-        cache: 'npm'
-    - run: npm ci
-    - run: npm test
-    - name: Publish NPM
-      if: github.ref == 'refs/heads/release' || contains(github.ref, 'refs/tags/beta-v')
-      run: |
-        publishTag="latest"
-        if [[ "$GITHUB_REF" == *\/release ]]
-        then
-          echo "Release branch"
-        else
-          echo "Dev branch"
-          publishTag="beta"
-          versionSuffixTag="-beta.${GITHUB_RUN_NUMBER}"
-          sed "s/\(^[ ]*\"version\"\:[ ]*\".*\)\",/\1${versionSuffixTag}\",/" < package.json > package.json.new
-          mv package.json.new package.json
-        fi
-        npm publish --tag $publishTag --access public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-  
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          always-auth: true
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org
+          scope: '@boxyhq'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test
+      - name: Publish NPM
+        if: github.ref == 'refs/heads/release' || contains(github.ref, 'refs/tags/beta-v')
+        run: |
+          publishTag="latest"
+          if [[ "$GITHUB_REF" == *\/release ]]
+          then
+            echo "Release branch"
+          else
+            echo "Dev branch"
+            npm install -g json
+            publishTag="beta"
+            json -I -f package.json -e "this.main=\"dist/index.js\""
+            json -I -f package.json -e "this.types=\"dist/index.d.ts\""
+            versionSuffixTag="-beta.${GITHUB_RUN_NUMBER}"
+            sed "s/\(^[ ]*\"version\"\:[ ]*\".*\)\",/\1${versionSuffixTag}\",/" < package.json > package.json.new
+            mv package.json.new package.json
+          fi
+          npm publish --tag $publishTag --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
