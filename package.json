@@ -22,6 +22,7 @@
     "Token Parser"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "test": "mocha -R spec test"
   },
   "author": "Leandro Boffi (me@leandrob.com)",
