@@ -1,15 +1,19 @@
 'use strict';
 
-var xml2js = require('xml2js');
-var getVersion = require('./getVersion.js');
-var validateSignature = require('./validateSignature.js');
-var tokenHandlers = {
-  '2.0': require('./saml20.js'),
+import xml2js from 'xml2js';
+import getVersion from './getVersion';
+import validateSignature from './validateSignature';
+import saml20 from './saml20';
+
+const tokenHandlers = {
+  '2.0': saml20,
 };
 
-var saml = module.exports;
+class WrapError extends Error {
+  inner?: any;
+}
 
-saml.parse = function parse(rawAssertion, cb) {
+const parse = function parse(rawAssertion, cb) {
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
@@ -25,7 +29,7 @@ saml.parse = function parse(rawAssertion, cb) {
   });
 };
 
-saml.validate = function validate(rawAssertion, options, cb) {
+const validate = function validate(rawAssertion, options, cb) {
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
@@ -36,7 +40,7 @@ saml.validate = function validate(rawAssertion, options, cb) {
     return;
   }
 
-  var validId = null;
+  let validId = null;
 
   try {
     validId = validateSignature(
@@ -45,7 +49,7 @@ saml.validate = function validate(rawAssertion, options, cb) {
       options.thumbprint
     );
   } catch (e) {
-    var error = new Error('Invalid assertion.');
+    let error = new WrapError('Invalid assertion.');
     error.inner = e;
     cb(error);
     return;
@@ -64,7 +68,7 @@ saml.validate = function validate(rawAssertion, options, cb) {
         return;
       }
 
-      var tokenHandler = tokenHandlers[version];
+      const tokenHandler = tokenHandlers[version];
 
       if (
         !options.bypassExpiration &&
@@ -115,7 +119,7 @@ saml.validate = function validate(rawAssertion, options, cb) {
 };
 
 function parseXmlAndVersion(rawAssertion, cb) {
-  var parser = new xml2js.Parser({
+  const parser = new xml2js.Parser({
     attrkey: '@',
     charKey: '#',
     tagNameProcessors: [xml2js.processors.stripPrefix],
@@ -123,7 +127,9 @@ function parseXmlAndVersion(rawAssertion, cb) {
 
   parser.parseString(rawAssertion, function onParse(err, xml) {
     if (err) {
-      var error = new Error('An error occurred trying to parse XML assertion.');
+      let error = new WrapError(
+        'An error occurred trying to parse XML assertion.'
+      );
       error.inner = err;
       cb(error);
       return;
@@ -131,7 +137,7 @@ function parseXmlAndVersion(rawAssertion, cb) {
 
     xml = xmlBeautify(xml);
 
-    var assertion =
+    let assertion =
       xml.Assertion ||
       (xml.Response && xml.Response.Assertion) ||
       (xml.RequestSecurityTokenResponse &&
@@ -147,15 +153,15 @@ function parseXmlAndVersion(rawAssertion, cb) {
       return;
     }
 
-    var version = getVersion(assertion);
-    var response = xml.Response;
+    const version = getVersion(assertion);
+    const response = xml.Response;
 
     if (!version) {
       cb(new Error('SAML Assertion version not supported.'));
       return;
     }
 
-    var tokenHandler = tokenHandlers[version];
+    const tokenHandler = tokenHandlers[version];
     assertion.inResponseTo = tokenHandler.getInResponseTo(xml);
 
     cb(null, assertion, version, response);
@@ -177,12 +183,12 @@ function xmlBeautify(obj) {
 }
 
 function parseAttributes(assertion, tokenHandler, cb) {
-  var profile = null;
+  let profile = null;
 
   try {
     profile = tokenHandler.parse(assertion);
   } catch (e) {
-    var error = new Error('An error occurred trying to parse assertion.');
+    let error = new WrapError('An error occurred trying to parse assertion.');
     error.inner = e;
 
     cb(error);
@@ -191,3 +197,5 @@ function parseAttributes(assertion, tokenHandler, cb) {
 
   cb(null, profile);
 }
+
+export default { parse, validate };
