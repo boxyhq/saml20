@@ -1,6 +1,6 @@
 var assert = require('assert');
 var fs = require('fs');
-var saml = require('../lib/index.js');
+var saml = require('../dist/index.js');
 
 // Tests Configuration
 // Evil response that wraps the valid response inside the Signature tag

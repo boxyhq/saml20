@@ -198,4 +198,4 @@ function parseAttributes(assertion, tokenHandler, cb) {
   cb(null, profile);
 }
 
-export default { parse, validate };
+export { parse, validate };

@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "mocha -R spec test"
+    "test": "npm run build && mocha -R spec test"
   },
   "author": "Leandro Boffi (me@leandrob.com)",
   "contributors": [

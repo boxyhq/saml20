@@ -1,6 +1,6 @@
 var assert = require('assert');
 var fs = require('fs');
-var saml = require('../lib/index.js');
+var saml = require('../dist/index.js');
 
 // Tests Configuration
 var validResponse = fs
@@ -139,14 +139,11 @@ describe('lib.saml20.response', function () {
   });
 
   it('Should not parse saml 2.0 token which has no assertion', function (done) {
-    saml.parse(
-      errorResponse,
-      function (err, profile) {
-        assert.ok(!profile);
-        assert.ok(err);
-        assert.strictEqual('Invalid assertion.', err.message);
-        done();
-      }
-    );
+    saml.parse(errorResponse, function (err, profile) {
+      assert.ok(!profile);
+      assert.ok(err);
+      assert.strictEqual('Invalid assertion.', err.message);
+      done();
+    });
   });
 });
