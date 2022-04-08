@@ -42,6 +42,7 @@
     "xmlbuilder": "15.1.1"
   },
   "devDependencies": {
+    "@types/node": "17.0.23",
     "mocha": "9.2.2",
     "typescript": "4.6.3"
   },
