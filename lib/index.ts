@@ -7,7 +7,8 @@ import saml20 from './saml20';
 
 import { request } from './request';
 import { PubKeyInfo, certToPEM } from './cert';
-import { parseMetadataAsync, parseAsync, validateAsync } from './response';
+import { parseAsync, validateAsync } from './response';
+import { parseMetadataAsync } from './metadata';
 
 const tokenHandlers = {
   '2.0': saml20,
