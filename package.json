@@ -39,6 +39,13 @@
   ],
   "license": "MIT",
   "readmeFilename": "README.md",
+  "dependencies": {
+    "rambda": "7.0.3",
+    "thumbprint": "0.0.1",
+    "xml-crypto": "2.1.3",
+    "xml2js": "0.4.23",
+    "xmlbuilder": "15.1.1"
+  },
   "devDependencies": {
     "mocha": "9.2.2",
     "typescript": "4.6.3"

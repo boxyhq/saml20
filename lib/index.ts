@@ -5,6 +5,10 @@ import getVersion from './getVersion';
 import validateSignature from './validateSignature';
 import saml20 from './saml20';
 
+import { request } from './request';
+import { PubKeyInfo, certToPEM } from './cert';
+import { parseMetadataAsync, parseAsync, validateAsync } from './response';
+
 const tokenHandlers = {
   '2.0': saml20,
 };
@@ -198,4 +202,13 @@ function parseAttributes(assertion, tokenHandler, cb) {
   cb(null, profile);
 }
 
-export { parse, validate };
+export {
+  parse,
+  validate,
+  parseMetadataAsync,
+  request,
+  parseAsync,
+  validateAsync,
+  PubKeyInfo,
+  certToPEM,
+};
