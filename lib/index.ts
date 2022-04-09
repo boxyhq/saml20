@@ -203,7 +203,7 @@ function parseAttributes(assertion, tokenHandler, cb) {
   cb(null, profile);
 }
 
-export {
+export default {
   parse,
   validate,
   parseMetadataAsync,

@@ -1,4 +1,4 @@
-import * as saml from './index';
+import saml from './index';
 
 import { SAMLProfile } from './typings';
 
