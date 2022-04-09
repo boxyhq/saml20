@@ -15,21 +15,4 @@ function PubKeyInfo(this: any, pubKey: string) {
   };
 }
 
-const certToPEM = (cert: string) => {
-  if (
-    cert.indexOf('BEGIN CERTIFICATE') === -1 &&
-    cert.indexOf('END CERTIFICATE') === -1
-  ) {
-    const matches = cert.match(/.{1,64}/g);
-
-    if (matches) {
-      cert = matches.join('\n');
-      cert = '-----BEGIN CERTIFICATE-----\n' + cert;
-      cert = cert + '\n-----END CERTIFICATE-----\n';
-    }
-  }
-
-  return cert;
-};
-
-export { certToPEM, PubKeyInfo };
+export { PubKeyInfo };

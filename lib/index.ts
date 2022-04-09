@@ -2,11 +2,11 @@
 
 import xml2js from 'xml2js';
 import getVersion from './getVersion';
-import validateSignature from './validateSignature';
+import { validateSignature, certToPEM } from './validateSignature';
 import saml20 from './saml20';
 
 import { request } from './request';
-import { PubKeyInfo, certToPEM } from './cert';
+import { PubKeyInfo } from './cert';
 import { parseAsync, validateAsync } from './response';
 import { parseMetadataAsync } from './metadata';
 
