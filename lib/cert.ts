@@ -15,4 +15,4 @@ function PubKeyInfo(this: any, pubKey: string) {
   };
 }
 
-export { PubKeyInfo };
+export { stripCertHeaderAndFooter, PubKeyInfo };

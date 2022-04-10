@@ -6,7 +6,7 @@ import { validateSignature, certToPEM } from './validateSignature';
 import saml20 from './saml20';
 
 import { request } from './request';
-import { PubKeyInfo } from './cert';
+import { stripCertHeaderAndFooter, PubKeyInfo } from './cert';
 import { parseAsync, validateAsync } from './response';
 import { parseMetadataAsync } from './metadata';
 import { createPostForm } from './post';
@@ -213,5 +213,6 @@ export default {
   validateAsync,
   PubKeyInfo,
   certToPEM,
+  stripCertHeaderAndFooter,
   createPostForm,
 };
