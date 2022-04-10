@@ -10,6 +10,7 @@ import { stripCertHeaderAndFooter, PubKeyInfo } from './cert';
 import { parseAsync, validateAsync } from './response';
 import { parseMetadataAsync } from './metadata';
 import { createPostForm } from './post';
+import { sign } from './sign';
 
 const tokenHandlers = {
   '2.0': saml20,
@@ -215,4 +216,5 @@ export default {
   certToPEM,
   stripCertHeaderAndFooter,
   createPostForm,
+  sign,
 };
