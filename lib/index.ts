@@ -9,6 +9,7 @@ import { request } from './request';
 import { PubKeyInfo } from './cert';
 import { parseAsync, validateAsync } from './response';
 import { parseMetadataAsync } from './metadata';
+import { createPostForm } from './post';
 
 const tokenHandlers = {
   '2.0': saml20,
@@ -212,4 +213,5 @@ export default {
   validateAsync,
   PubKeyInfo,
   certToPEM,
+  createPostForm,
 };
