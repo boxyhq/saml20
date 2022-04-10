@@ -2,7 +2,11 @@
 
 import xml2js from 'xml2js';
 import getVersion from './getVersion';
-import { validateSignature, certToPEM } from './validateSignature';
+import {
+  hasValidSignature,
+  validateSignature,
+  certToPEM,
+} from './validateSignature';
 import saml20 from './saml20';
 
 import { request } from './request';
@@ -217,4 +221,5 @@ export default {
   stripCertHeaderAndFooter,
   createPostForm,
   sign,
+  hasValidSignature,
 };
