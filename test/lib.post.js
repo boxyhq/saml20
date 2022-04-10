@@ -23,9 +23,7 @@ describe('lib.post', function () {
     );
     assert.ok(
       form.includes(
-        `<input type="hidden" name="SAMLRequest" value="${encodeURI(
-          samlRequest
-        )}"/>`
+        `<input type="hidden" name="SAMLRequest" value="${samlRequest}"/>`
       )
     );
     assert.ok(form.includes(`<input type="submit" value="Continue" />`));

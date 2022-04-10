@@ -16,9 +16,7 @@ const createPostForm = (
     '</noscript>',
     `<form method="post" action="${encodeURI(postUrl)}">`,
     `<input type="hidden" name="RelayState" value="${relayState}"/>`,
-    `<input type="hidden" name="${param.name}" value="${encodeURI(
-      param.value
-    )}"/>`,
+    `<input type="hidden" name="${param.name}" value="${param.value}"/>`,
     '<input type="submit" value="Continue" />',
     '</form>',
     '<script>document.forms[0].style.display="none";</script>',
