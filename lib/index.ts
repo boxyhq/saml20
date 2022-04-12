@@ -222,4 +222,5 @@ export default {
   createPostForm,
   sign,
   hasValidSignature,
+  validateSignature,
 };
