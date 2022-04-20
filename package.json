@@ -30,7 +30,20 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "sort": "npx sort-package-json",
-    "test": "npm run build && mocha -R spec test"
+    "test": "npm run build && nyc mocha -R spec test",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix --ext .js,.jsx .",
+    "test-mocha": "nyc mocha --check-leaks  -r tsconfig-paths/register -r ts-node/register test/lib/**/*.spec.ts",
+    "prepare": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --cache --fix",
+    "*.{js,ts,css,md}": "prettier --write"
   },
   "dependencies": {
     "@xmldom/xmldom": "0.8.2",
@@ -43,8 +56,27 @@
     "xmlbuilder": "15.1.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.20.1",
+    "@types/chai": "4.3.0",
+    "@types/mocha": "9.1.0",
     "@types/node": "17.0.23",
+    "@types/supertest": "2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
+    "chai": "4.3.6",
+    "eslint": "8.11.0",
+    "eslint-config-next": "12.1.0",
+    "eslint-config-prettier": "8.5.0",
+    "husky": "7.0.4",
+    "lint-staged": "12.3.7",
     "mocha": "9.2.2",
+    "nodemon": "2.0.15",
+    "nyc": "15.1.0",
+    "prettier": "2.6.0",
+    "prettier-plugin-tailwindcss": "0.1.8",
+    "supertest": "6.2.2",
+    "ts-node": "10.7.0",
+    "tsconfig-paths": "3.14.1",
     "typescript": "4.6.3"
   },
   "readmeFilename": "README.md"
