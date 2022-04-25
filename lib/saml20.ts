@@ -1,15 +1,15 @@
-'use strict';
+import _ from 'lodash';
 
-var nameIdentifierClaimType =
-  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
-var _ = require('lodash');
-var saml20 = module.exports;
+const nameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
+// var _ = require('lodash');
+// const saml20 = module.exports;
 
+// export { saml20 };
 function getClaims(attributes) {
-  var claims = {};
+  const claims = {};
 
   attributes.forEach(function attributesForEach(attribute) {
-    var attributeName = attribute['@'].Name;
+    const attributeName = attribute['@'].Name;
 
     claims[attributeName] = getProp(attribute, 'AttributeValue');
   });
@@ -29,8 +29,8 @@ function trimWords(phrase) {
     .join(' ');
 }
 
-function getProp(obj, prop) {
-  var result = prop ? _.get(obj, prop) : obj;
+function getProp(obj, prop?: string) {
+  let result = prop ? _.get(obj, prop) : obj;
 
   if (result && result._) {
     result = result._;
@@ -51,16 +51,16 @@ function getProp(obj, prop) {
   }
 }
 
-saml20.parse = function parse(assertion) {
-  var claims = {};
-  var attributes = _.get(assertion, 'AttributeStatement.Attribute');
+const parse = function parse(assertion) {
+  let claims = {};
+  let attributes = _.get(assertion, 'AttributeStatement.Attribute');
 
   if (attributes) {
     attributes = attributes instanceof Array ? attributes : [attributes];
     claims = getClaims(attributes);
   }
 
-  var subjectName = getProp(assertion, 'Subject.NameID');
+  const subjectName = getProp(assertion, 'Subject.NameID');
 
   if (subjectName) {
     claims[nameIdentifierClaimType] = subjectName;
@@ -74,29 +74,31 @@ saml20.parse = function parse(assertion) {
   };
 };
 
-saml20.validateAudience = function validateAudience(assertion, realm) {
-  var audience = getProp(assertion, 'Conditions.AudienceRestriction.Audience');
-
+const validateAudience = function validateAudience(assertion, realm) {
+  const audience = getProp(assertion, 'Conditions.AudienceRestriction.Audience');
   if (Array.isArray(realm)) {
     return realm.indexOf(audience) !== -1;
   }
-
   return audience === realm;
 };
 
-saml20.validateExpiration = function validateExpiration(assertion) {
-  var dteNotBefore = getProp(assertion, 'Conditions.@.NotBefore');
-  var notBefore = new Date(dteNotBefore);
+const validateExpiration = function validateExpiration(assertion) {
+  const dteNotBefore = getProp(assertion, 'Conditions.@.NotBefore');
+  let notBefore: any = new Date(dteNotBefore);
   notBefore = notBefore.setMinutes(notBefore.getMinutes() - 10); // 10 minutes clock skew
 
-  var dteNotOnOrAfter = getProp(assertion, 'Conditions.@.NotOnOrAfter');
-  var notOnOrAfter = new Date(dteNotOnOrAfter);
+  const dteNotOnOrAfter = getProp(assertion, 'Conditions.@.NotOnOrAfter');
+  let notOnOrAfter: any = new Date(dteNotOnOrAfter);
   notOnOrAfter = notOnOrAfter.setMinutes(notOnOrAfter.getMinutes() + 10); // 10 minutes clock skew
 
-  var now = new Date();
+  const now = new Date();
   return !(now < notBefore || now > notOnOrAfter);
 };
 
-saml20.getInResponseTo = function validateAudience(xml) {
+const getInResponseTo = function validateAudience(xml) {
   return getProp(xml, 'Response.@.InResponseTo');
 };
+
+const saml20 = { getInResponseTo, validateExpiration, validateAudience, parse };
+
+export default saml20;

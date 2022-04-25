@@ -1,15 +1,13 @@
-'use strict';
+import xmlcrypto from 'xml-crypto';
+import thumbprint from 'thumbprint';
+import parser from '@xmldom/xmldom';
 
-var select = require('xml-crypto').xpath;
-var SignedXml = require('xml-crypto').SignedXml;
-var Dom = require('@xmldom/xmldom').DOMParser;
-var thumbprint = require('thumbprint');
+const select = xmlcrypto.xpath;
+const SignedXml = xmlcrypto.SignedXml;
+const Dom = parser.DOMParser;
 
 const certToPEM = (cert) => {
-  if (
-    cert.indexOf('BEGIN CERTIFICATE') === -1 &&
-    cert.indexOf('END CERTIFICATE') === -1
-  ) {
+  if (cert.indexOf('BEGIN CERTIFICATE') === -1 && cert.indexOf('END CERTIFICATE') === -1) {
     cert = cert.match(/.{1,64}/g).join('\n');
     cert = '-----BEGIN CERTIFICATE-----\n' + cert;
     cert = cert + '\n-----END CERTIFICATE-----\n';
@@ -38,7 +36,7 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
     idAttribute: 'AssertionID',
   });
 
-  var calculatedThumbprint;
+  let calculatedThumbprint;
 
   signed.keyInfoProvider = {
     getKey: function getKey(keyInfo) {
@@ -59,6 +57,9 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
 
       return certToPEM(cert);
     },
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     getKeyInfo: function getKeyInfo(key) {
       return '<X509Data></X509Data>';
     },
@@ -82,28 +83,17 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
 };
 
 const validateSignature = (xml, cert, certThumbprint) => {
-  const { valid, calculatedThumbprint, id } = hasValidSignature(
-    xml,
-    cert,
-    certThumbprint
-  );
+  const { valid, calculatedThumbprint, id } = hasValidSignature(xml, cert, certThumbprint);
 
   if (valid) {
     if (cert) {
       return id;
     }
 
-    if (
-      certThumbprint &&
-      calculatedThumbprint.toUpperCase() === certThumbprint.toUpperCase()
-    ) {
+    if (certThumbprint && calculatedThumbprint.toUpperCase() === certThumbprint.toUpperCase()) {
       return id;
     }
   }
 };
 
-module.exports = {
-  hasValidSignature,
-  validateSignature,
-  certToPEM,
-};
+export { hasValidSignature, validateSignature, certToPEM };

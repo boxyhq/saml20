@@ -1,12 +1,8 @@
 'use strict';
 
 import xml2js from 'xml2js';
-import getVersion from './getVersion';
-import {
-  hasValidSignature,
-  validateSignature,
-  certToPEM,
-} from './validateSignature';
+import { getVersion } from './getVersion';
+import { hasValidSignature, validateSignature, certToPEM } from './validateSignature';
 import saml20 from './saml20';
 
 import { request } from './request';
@@ -54,13 +50,9 @@ const validate = function validate(rawAssertion, options, cb) {
   let validId = null;
 
   try {
-    validId = validateSignature(
-      rawAssertion,
-      options.publicKey,
-      options.thumbprint
-    );
+    validId = validateSignature(rawAssertion, options.publicKey, options.thumbprint);
   } catch (e) {
-    let error = new WrapError('Invalid assertion.');
+    const error = new WrapError('Invalid assertion.');
     error.inner = e;
     cb(error);
     return;
@@ -71,62 +63,48 @@ const validate = function validate(rawAssertion, options, cb) {
     return;
   }
 
-  parseXmlAndVersion(
-    rawAssertion,
-    function onParse(err, assertion, version, response) {
-      if (err) {
-        cb(err);
-        return;
-      }
-
-      const tokenHandler = tokenHandlers[version];
-
-      if (
-        !options.bypassExpiration &&
-        !tokenHandler.validateExpiration(assertion)
-      ) {
-        cb(new Error('Assertion is expired.'));
-        return;
-      }
-
-      if (
-        options.audience &&
-        !tokenHandler.validateAudience(assertion, options.audience)
-      ) {
-        cb(new Error('Invalid audience.'));
-        return;
-      }
-
-      if (
-        options.inResponseTo &&
-        assertion.inResponseTo !== options.inResponseTo
-      ) {
-        cb(new Error('Invalid InResponseTo.'));
-        return;
-      }
-
-      if (
-        assertion['@'] &&
-        assertion['@'].ID !== validId &&
-        assertion['@'].Id !== validId &&
-        assertion['@'].id !== validId &&
-        assertion['@'].AssertionID !== validId
-      ) {
-        if (
-          !response ||
-          !response['@'] ||
-          (response['@'].ID !== validId &&
-            response['@'].Id !== validId &&
-            response['@'].id !== validId)
-        ) {
-          cb(new Error('Invalid assertion. Possible assertion wrapping.'));
-          return;
-        }
-      }
-
-      parseAttributes(assertion, tokenHandler, cb);
+  parseXmlAndVersion(rawAssertion, function onParse(err, assertion, version, response) {
+    if (err) {
+      cb(err);
+      return;
     }
-  );
+
+    const tokenHandler = tokenHandlers[version];
+
+    if (!options.bypassExpiration && !tokenHandler.validateExpiration(assertion)) {
+      cb(new Error('Assertion is expired.'));
+      return;
+    }
+
+    if (options.audience && !tokenHandler.validateAudience(assertion, options.audience)) {
+      cb(new Error('Invalid audience.'));
+      return;
+    }
+
+    if (options.inResponseTo && assertion.inResponseTo !== options.inResponseTo) {
+      cb(new Error('Invalid InResponseTo.'));
+      return;
+    }
+
+    if (
+      assertion['@'] &&
+      assertion['@'].ID !== validId &&
+      assertion['@'].Id !== validId &&
+      assertion['@'].id !== validId &&
+      assertion['@'].AssertionID !== validId
+    ) {
+      if (
+        !response ||
+        !response['@'] ||
+        (response['@'].ID !== validId && response['@'].Id !== validId && response['@'].id !== validId)
+      ) {
+        cb(new Error('Invalid assertion. Possible assertion wrapping.'));
+        return;
+      }
+    }
+
+    parseAttributes(assertion, tokenHandler, cb);
+  });
 };
 
 function parseXmlAndVersion(rawAssertion, cb) {
@@ -138,9 +116,7 @@ function parseXmlAndVersion(rawAssertion, cb) {
 
   parser.parseString(rawAssertion, function onParse(err, xml) {
     if (err) {
-      let error = new WrapError(
-        'An error occurred trying to parse XML assertion.'
-      );
+      const error = new WrapError('An error occurred trying to parse XML assertion.');
       error.inner = err;
       cb(error);
       return;
@@ -199,7 +175,7 @@ function parseAttributes(assertion, tokenHandler, cb) {
   try {
     profile = tokenHandler.parse(assertion);
   } catch (e) {
-    let error = new WrapError('An error occurred trying to parse assertion.');
+    const error = new WrapError('An error occurred trying to parse assertion.');
     error.inner = e;
 
     cb(error);

@@ -1,6 +1,4 @@
-'use strict';
-
-module.exports = function getVersion(assertion) {
+const getVersion = function getVersion(assertion) {
   if (!assertion) {
     return null;
   }
@@ -15,3 +13,5 @@ module.exports = function getVersion(assertion) {
 
   return null;
 };
+
+export { getVersion };

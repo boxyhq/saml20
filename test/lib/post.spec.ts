@@ -1,6 +1,3 @@
-// var assert = require('assert');
-// var saml = require('../dist/index.js').default;
-// import assert from 'assert';
 import * as saml from '../../lib/post';
 import { expect } from 'chai';
 describe('post.ts', function () {
