@@ -3,10 +3,6 @@ const getVersion = function getVersion(assertion) {
     return null;
   }
 
-  if (assertion['@'].MajorVersion === '1') {
-    return '1.1';
-  }
-
   if (assertion['@'].Version === '2.0') {
     return '2.0';
   }
