@@ -30,10 +30,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "sort": "npx sort-package-json",
-    "test": "nyc mocha -R spec test",
+    "test": "nyc mocha --check-leaks  -r tsconfig-paths/register -r ts-node/register test/lib/**/*.spec.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
-    "test-mocha": "nyc mocha --check-leaks  -r tsconfig-paths/register -r ts-node/register test/lib/**/*.spec.ts",
     "prepublishOnly": "npm run build",
     "prepare": "husky install"
   },
