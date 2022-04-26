@@ -21,16 +21,14 @@ $ npm install @boxyhq/saml20
 Parses the `rawAssertion` without validating signature, expiration and audience. It allows you to get information from the token like the Issuer name in order to obtain the right public key to validate the token in a multi-providers scenario.
 
 ```javascript
+var saml = require('@boxyhq/saml20').default;
 
-var saml = require('@boxyhq/saml20');
+saml.parse(rawAssertion, function (err, profile) {
+  // err
 
-saml.parse(rawAssertion, function(err, profile) {
-	// err
-
-	var claims = profile.claims; // Array of user attributes;
-	var issuer = profile.issuer; // String Issuer name.
+  var claims = profile.claims; // Array of user attributes;
+  var issuer = profile.issuer; // String Issuer name.
 });
-
 ```
 
 ### saml.validate(rawAssertion, options, cb)
@@ -39,49 +37,45 @@ saml.parse(rawAssertion, function(err, profile) {
 
 `options`:
 
-* `thumbprint` is the thumbprint of the trusted public key (uses the public key that comes in the assertion).
-* `publicKey` is the trusted public key.
-* `audience` (optional). If it is included audience validation will take place.
-* `bypassExpiration` (optional). This flag indicates expiration validation bypass (useful for testing, not recommended in production environments);
+- `thumbprint` is the thumbprint of the trusted public key (uses the public key that comes in the assertion).
+- `publicKey` is the trusted public key.
+- `audience` (optional). If it is included audience validation will take place.
+- `bypassExpiration` (optional). This flag indicates expiration validation bypass (useful for testing, not recommended in production environments);
 
 You can use either `thumbprint` or `publicKey` but you should use at least one.
 
 ```javascript
-
-var saml = require('@boxyhq/saml20');
+var saml = require('@boxyhq/saml20').default;
 
 var options = {
-	thumbprint: '1aeabdfa4473ecc7efc5947b18436c575574baf8',
-	audience: 'http://myservice.com/'
-}
+  thumbprint: '1aeabdfa4473ecc7efc5947b18436c575574baf8',
+  audience: 'http://myservice.com/',
+};
 
-saml.validate(rawAssertion, options, function(err, profile) {
-	// err
+saml.validate(rawAssertion, options, function (err, profile) {
+  // err
 
-	var claims = profile.claims; // Array of user attributes;
-	var issuer = profile.issuer; // String Issuer name.
+  var claims = profile.claims; // Array of user attributes;
+  var issuer = profile.issuer; // String Issuer name.
 });
-
 ```
 
 or using publicKey:
 
 ```javascript
-
-var saml = require('@boxyhq/saml20');
+var saml = require('@boxyhq/saml20').default;
 
 var options = {
-	publicKey: 'MIICDzCCAXygAwIBAgIQVWXAvbbQyI5Bc...',
-	audience: 'http://myservice.com/'
-}
+  publicKey: 'MIICDzCCAXygAwIBAgIQVWXAvbbQyI5Bc...',
+  audience: 'http://myservice.com/',
+};
 
-saml.validate(rawAssertion, options, function(err, profile) {
-	// err
+saml.validate(rawAssertion, options, function (err, profile) {
+  // err
 
-	var claims = profile.claims; // Array of user attributes;
-	var issuer = profile.issuer; // String Issuer name.
+  var claims = profile.claims; // Array of user attributes;
+  var issuer = profile.issuer; // String Issuer name.
 });
-
 ```
 
 ## Tests
@@ -91,12 +85,10 @@ saml.validate(rawAssertion, options, function(err, profile) {
 In order to run the tests you must configure `lib.index.js` with these variables:
 
 ```javascript
-
 var issuerName = 'https://your-issuer.com';
 var thumbprint = '1aeabdfa4473ecc7efc5947b19436c575574baf8';
 var certificate = 'MIICDzCCAXygAwIBAgIQVWXAvbbQyI5BcFe0ssmeKTAJBgU...';
 var audience = 'http://your-service.com/';
-
 ```
 
 You also need to include a valid and an invalid SAML 2.0 token on `test/assets/invalidToken.xml` and test/assets/validToken.xml`
