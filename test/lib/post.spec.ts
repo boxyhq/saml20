@@ -7,10 +7,14 @@ describe('post.ts', function () {
       'PHNhbWxwOkxvZ291dFJlc3BvbnNlIHhtbG5zOnNhbWxwPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6c';
     const postUrl = 'https://auth0.com/samlp';
 
-    const form = saml.createPostForm(postUrl, relayState, {
-      name: 'SAMLRequest',
-      value: samlRequest,
-    });
+    const form = saml.createPostForm(postUrl, [
+      { name: 'RelayState', value: relayState },
+      {
+        name: 'SAMLRequest',
+        value: samlRequest,
+      },
+    ]);
+
     expect(form.includes(`<form method="post" action="${encodeURI(postUrl)}">`)).to.be.ok;
     expect(form.includes(`<input type="hidden" name="RelayState" value="${relayState}"/>`)).to.be.ok;
     expect(form.includes(`<input type="hidden" name="SAMLRequest" value="${samlRequest}"/>`)).to.be.ok;

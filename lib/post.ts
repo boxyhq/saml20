@@ -1,8 +1,8 @@
-const createPostForm = (
-  postUrl: string,
-  relayState: string,
-  param: { name: string; value: string }
-) => {
+const createPostForm = (postUrl: string, params: { name: string; value: string }[]) => {
+  const parr = (params || []).map(({ name, value }) => {
+    return `<input type="hidden" name="${name}" value="${value}"/>`;
+  });
+
   const formElements = [
     '<!DOCTYPE html>',
     '<html>',
@@ -15,14 +15,17 @@ const createPostForm = (
     '<p>Note: Since your browser does not support JavaScript, you must press the Continue button once to proceed.</p>',
     '</noscript>',
     `<form method="post" action="${encodeURI(postUrl)}">`,
-    `<input type="hidden" name="RelayState" value="${relayState}"/>`,
-    `<input type="hidden" name="${param.name}" value="${param.value}"/>`,
-    '<input type="submit" value="Continue" />',
-    '</form>',
-    '<script>document.forms[0].style.display="none";</script>',
-    '</body>',
-    '</html>',
-  ];
+  ]
+    .concat(...parr)
+    .concat(
+      ...[
+        '<input type="submit" value="Continue" />',
+        '</form>',
+        '<script>document.forms[0].style.display="none";</script>',
+        '</body>',
+        '</html>',
+      ]
+    );
 
   return formElements.join('\r\n');
 };
