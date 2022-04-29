@@ -31,6 +31,7 @@ jobs:
           scope: '@boxyhq'
           cache: 'npm'
       - run: npm ci
+      - run: npm run build
       - run: npm run test
       - name: Publish NPM
         if: github.ref == 'refs/heads/release' || contains(github.ref, 'refs/tags/beta-v')
