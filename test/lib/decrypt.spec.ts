@@ -14,7 +14,7 @@ import fs from 'fs';
  */
 
 const samlResponseEncrypted = fs.readFileSync('./test/assets/certificates/oktaEncResponse.xml').toString();
-const privateKey = fs.readFileSync('./test/assets/certificates/oktaprivatekey.pem').toString();
+const privateKey = fs.readFileSync('./test/assets/certificates/oktaPrivateKey.pem').toString();
 
 const options = {
   encPrivateKey: privateKey,

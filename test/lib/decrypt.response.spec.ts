@@ -16,10 +16,10 @@ const issuerName = 'https://app.onelogin.com/saml/metadata/2f5926c1-a571-4702-9e
 const profileClaims = 'hojit22291@abincol.com';
 
 // const samlResponseEncrypted = fs.readFileSync('./test/assets/certificates/oktaEncResponse.xml').toString();
-// const privateKey = fs.readFileSync('./test/assets/certificates/oktaprivatekey.pem').toString();
+// const privateKey = fs.readFileSync('./test/assets/certificates/oktaPrivateKey.pem').toString();
 // const thumbprint = '008c1aa2ed3cdb5c064c99b3d1619346b619008a';
 // const inResponseTo = '_f81f46f19ccf489ab1a1';
-// const certificate = fs.readFileSync('./test/assets/certificates/oktapublickkey.crt').toString();
+// const certificate = fs.readFileSync('./test/assets/certificates/oktaPublicKey.crt').toString();
 // const issuerName = 'http://www.okta.com/exkymhf9ve6PI9KfY696';
 // const profileClaims = 'hojit22291@abincol.com';
 
