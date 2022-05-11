@@ -12,11 +12,7 @@ import fs from 'fs';
  *
  *
  */
-// const samlResponseEncrypted = fs.readFileSync('./test/assets/certs/vi1.xml').toString();
-// const privateKey = fs.readFileSync('./test/assets/certs/key1.pem').toString();
 
-// const samlResponseEncrypted = fs.readFileSync('./test/assets/certs/jacksonEncResponse.xml').toString();
-// const privateKey = fs.readFileSync('./test/assets/certs/privatekeyjackson.pem').toString();
 const samlResponseEncrypted = fs.readFileSync('./test/assets/certificates/oktaEncResponse.xml').toString();
 const privateKey = fs.readFileSync('./test/assets/certificates/oktaprivatekey.pem').toString();
 
