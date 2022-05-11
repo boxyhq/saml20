@@ -1,4 +1,4 @@
-import decryptSAML from '../../lib/decryptSAML';
+import decrypt from '../../lib/decrypt';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -19,14 +19,14 @@ const privateKey = fs.readFileSync('./test/assets/certificates/oktaprivatekey.pe
 const options = {
   encPrivateKey: privateKey,
 };
-describe('decryptSAML.ts', function () {
-  it('decryptSAML ok', function () {
+describe('decrypt.ts', function () {
+  it('decrypt ok', function () {
     try {
-      decryptSAML.decryptAssertion(options, samlResponseEncrypted);
+      decrypt.assertion(options, samlResponseEncrypted);
     } catch (error) {
       console.log(error);
     }
 
-    //   expect(decryptSAML(publicKey)).to.be.ok;
+    //   expect(decrypt(publicKey)).to.be.ok;
   });
 });

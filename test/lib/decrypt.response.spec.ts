@@ -1,5 +1,5 @@
 import * as index from '../../lib/index';
-import decryptSAML from '../../lib/decryptSAML';
+import decrypt from '../../lib/decrypt';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -28,7 +28,7 @@ const options = {
 };
 describe('decrypt.response.spec', function () {
   it('Should validate saml 2.0 token using thumbprint', function (done) {
-    validResponse = decryptSAML.decryptAssertion(options, samlResponseEncrypted);
+    validResponse = decrypt.assertion(options, samlResponseEncrypted);
     index.default.validate(
       validResponse.toString(),
       {
@@ -49,7 +49,7 @@ describe('decrypt.response.spec', function () {
     );
   });
   it('Should validate saml 2.0 token using thumbprint Only', function (done) {
-    validResponse = decryptSAML.decryptAssertion(options, samlResponseEncrypted);
+    validResponse = decrypt.assertion(options, samlResponseEncrypted);
     index.default.validate(
       validResponse.toString(),
       {

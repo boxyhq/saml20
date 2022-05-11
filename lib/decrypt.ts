@@ -12,7 +12,7 @@ const dom = DOMParser;
  * @param {string} entireXML         response in xml string format
  * @return {function} a promise to get back the entire xml with decrypted assertion
  */
-const decryptAssertion = function decryptAssertion(here, entireXML: string) {
+const assertion = function assertion(here, entireXML: string) {
   // Implement decryption first then check the signature
   if (!entireXML) {
     return new Error('Error Undefined Assertion.');
@@ -52,4 +52,4 @@ const decryptAssertion = function decryptAssertion(here, entireXML: string) {
   }
 };
 
-export default { decryptAssertion };
+export default { assertion };
