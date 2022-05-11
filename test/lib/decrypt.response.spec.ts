@@ -6,12 +6,12 @@ import fs from 'fs';
 let validResponse;
 
 const samlResponseEncrypted = fs
-  .readFileSync('./test/assets/certificates/publicEncRespoOneLogin.xml')
+  .readFileSync('./test/assets/certificates/oneloginEncResponse.xml')
   .toString();
-const privateKey = fs.readFileSync('./test/assets/certificates/privateKeyOneLogin.pem').toString();
+const privateKey = fs.readFileSync('./test/assets/certificates/oneloginPrivateKey.pem').toString();
 const thumbprint = '56d68c4616d0909ac25dade25c36a7bd792eaf62';
 const inResponseTo = '_25b63bdecac84d524aec';
-const certificate = fs.readFileSync('./test/assets/certificates/publicKeyOneLogin.crt').toString();
+const certificate = fs.readFileSync('./test/assets/certificates/oneloginPublicKey.crt').toString();
 const issuerName = 'https://app.onelogin.com/saml/metadata/2f5926c1-a571-4702-9ed5-12309c86f9c7';
 const profileClaims = 'hojit22291@abincol.com';
 
