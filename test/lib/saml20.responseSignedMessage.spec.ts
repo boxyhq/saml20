@@ -1,4 +1,4 @@
-import * as index from '../../lib/index';
+import saml from '../../lib/index';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -14,7 +14,7 @@ const inResponseTo = 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685';
 
 describe('saml20.responseSignedMessage', function () {
   it('Should validate saml 2.0 token using thumbprint', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: certificate,
@@ -37,7 +37,7 @@ describe('saml20.responseSignedMessage', function () {
   });
 
   it('Should validate saml 2.0 token using certificate', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: certificate,
@@ -59,7 +59,7 @@ describe('saml20.responseSignedMessage', function () {
   });
 
   it('Should validate saml 2.0 token and check audience', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: certificate,
@@ -78,7 +78,7 @@ describe('saml20.responseSignedMessage', function () {
   });
 
   it('Should fail with invalid audience', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: certificate,
@@ -102,7 +102,7 @@ describe('saml20.responseSignedMessage', function () {
   });
 
   it('Should fail with invalid assertion', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       'invalid-assertion',
       {
         publicKey: certificate,
@@ -125,7 +125,7 @@ describe('saml20.responseSignedMessage', function () {
   });
 
   it('Should fail with invalid inResponseTo', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: certificate,

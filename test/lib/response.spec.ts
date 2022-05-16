@@ -1,4 +1,4 @@
-import { parseAsync, validateAsync } from '../../lib/response';
+import { parse, validate } from '../../lib/response';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -11,31 +11,31 @@ const validateOpts = {
 
 describe('response.ts', function () {
   it('RAW response ok', function () {
-    expect(parseAsync(rawResponse)).to.be.ok;
+    expect(parse(rawResponse)).to.be.ok;
   });
 
   it('RAW response not ok', function () {
     try {
-      parseAsync('rawResponse');
+      parse('rawResponse');
     } catch (error) {
       console.log(error);
     }
   });
 
   it('ValidateAsync ok', function () {
-    expect(validateAsync(rawResponse, validateOpts)).to.be.ok;
+    expect(validate(rawResponse, validateOpts)).to.be.ok;
   });
 
   it('ValidateAsync RAW response not ok', function () {
     try {
-      validateAsync('rawResponse', validateOpts);
+      validate('rawResponse', validateOpts);
     } catch (error) {
       console.log(error);
     }
   });
   it('ValidateAsync validateOpts not ok', function () {
     try {
-      validateAsync(rawResponse, 'validateOpts');
+      validate(rawResponse, 'validateOpts');
     } catch (error) {
       console.log(error);
     }
@@ -43,7 +43,7 @@ describe('response.ts', function () {
 
   it('ValidateAsync not ok', function () {
     try {
-      validateAsync('rawResponse', 'validateOpts');
+      validate('rawResponse', 'validateOpts');
     } catch (error) {
       console.log(error);
     }

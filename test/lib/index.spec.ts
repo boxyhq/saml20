@@ -1,4 +1,4 @@
-import * as index from '../../lib/index';
+import saml from '../../lib/index';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -20,7 +20,7 @@ const invalidWrappedToken = fs.readFileSync('./test/assets/saml20.invalidWrapped
 
 describe('index.ts', function () {
   it('Should not parse saml 2.0 token which has no assertion', function (done) {
-    index.default.parse(errorResponse, function (err, profile) {
+    saml.parseInternal(errorResponse, function (err, profile) {
       expect(profile).to.not.be.ok;
       expect(err).to.be.ok;
       done();
@@ -29,7 +29,7 @@ describe('index.ts', function () {
   });
 
   it('Should not parse saml 2.0 token which has error rawAssertion is required', function (done) {
-    index.default.parse(undefined, function (err) {
+    saml.parseInternal(undefined, function (err) {
       try {
         if (err) {
           expect(err.message).to.equal('rawAssertion is required.');
@@ -41,7 +41,7 @@ describe('index.ts', function () {
     });
   });
   it('An error occurred trying to parse XML assertion.', function (done) {
-    index.default.parse('undefined', function (err) {
+    saml.parseInternal('undefined', function (err) {
       try {
         if (err) {
           expect(err.message).to.equal('An error occurred trying to parse XML assertion.');
@@ -53,7 +53,7 @@ describe('index.ts', function () {
     });
   });
   it('An error occurred trying to parse assertion', function (done) {
-    index.default.parse(validResponse, function (err) {
+    saml.parseInternal(validResponse, function (err) {
       try {
         if (err) {
           expect(err.message).to.equal('An error occurred trying to parse assertion.');
@@ -66,7 +66,7 @@ describe('index.ts', function () {
   });
 
   it('Invalid assertion', function (done) {
-    index.default.parse('undefined', function (err) {
+    saml.parseInternal('undefined', function (err) {
       try {
         if (err) {
           expect(err.message).to.equal('Invalid assertion.');
@@ -78,7 +78,7 @@ describe('index.ts', function () {
     });
   });
   it('SAML Assertion version not supported', function (done) {
-    index.default.parse(validResponse, function (err) {
+    saml.parseInternal(validResponse, function (err) {
       try {
         if (err) {
           expect(err.message).to.equal('SAML Assertion version not supported.');
@@ -91,7 +91,7 @@ describe('index.ts', function () {
   });
 
   it('Should fail which has no assertion', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       undefined,
       {
         publicKey: certificate,
@@ -112,7 +112,7 @@ describe('index.ts', function () {
   });
 
   it('Should fail which has no publicKey or thumbprint', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: undefined,
@@ -133,7 +133,7 @@ describe('index.ts', function () {
   });
 
   it('Validate An error occurred trying to parse assertion', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       errorResponse,
       {
         publicKey: certificate,
@@ -154,7 +154,7 @@ describe('index.ts', function () {
   });
 
   it('Assertion is expired.', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: certificate,
@@ -175,7 +175,7 @@ describe('index.ts', function () {
   });
 
   it('Should fail with invalid assertion', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       'invalid-assertion',
       {
         publicKey: certificate,
@@ -195,7 +195,7 @@ describe('index.ts', function () {
     );
   });
   it('Should fail with invalid audience', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: certificate,
@@ -217,7 +217,7 @@ describe('index.ts', function () {
     );
   });
   it('Should fail with invalid inResponseTo', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validResponse,
       {
         publicKey: certificate,
@@ -239,7 +239,7 @@ describe('index.ts', function () {
   });
 
   it('Should validate saml 2.0 token using thumbprint', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validToken,
       {
         publicKey: certificate,
@@ -260,7 +260,7 @@ describe('index.ts', function () {
   });
 
   it('Should validate saml 2.0 token using certificate', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validToken,
       { publicKey: certificate, bypassExpiration: true },
       function (err, profile) {
@@ -277,7 +277,7 @@ describe('index.ts', function () {
   });
 
   it('Should validate saml 2.0 token and check audience', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validToken,
       { publicKey: certificate, audience: audience, bypassExpiration: true },
       function (err, profile) {
@@ -290,7 +290,7 @@ describe('index.ts', function () {
   });
 
   it('Should fail with invalid audience', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       validToken,
       {
         publicKey: certificate,
@@ -312,7 +312,7 @@ describe('index.ts', function () {
     );
   });
   it('Should fail with invalid signature', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       invalidToken,
       { publicKey: certificate, bypassExpiration: true },
       function (err, profile) {
@@ -331,7 +331,7 @@ describe('index.ts', function () {
   });
 
   it('Should fail with invalid assertion', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       'invalid-assertion',
       { publicKey: certificate, bypassExpiration: true },
       function (err, profile) {
@@ -350,7 +350,7 @@ describe('index.ts', function () {
   });
 
   it('Should fail with invalid assertion and possible assertion wrapping', function (done) {
-    index.default.validate(
+    saml.validateInternal(
       invalidWrappedToken,
       { publicKey: certificate, bypassExpiration: true },
       function (err, profile) {
@@ -369,7 +369,7 @@ describe('index.ts', function () {
   });
 
   it('Should fail with expired assertion', function (done) {
-    index.default.validate(validToken, { publicKey: certificate }, function (err, profile) {
+    saml.validateInternal(validToken, { publicKey: certificate }, function (err, profile) {
       expect(profile).to.not.be.ok;
       expect(err).to.be.ok;
       try {
@@ -384,7 +384,7 @@ describe('index.ts', function () {
   });
 
   it('Should parse saml 2.0 without signature validation', function (done) {
-    index.default.parse(invalidToken, function (err, profile) {
+    saml.parseInternal(invalidToken, function (err, profile) {
       expect(profile.claims).to.be.ok;
       expect(err).to.not.be.ok;
       expect(issuerName).to.equal(profile.issuer);

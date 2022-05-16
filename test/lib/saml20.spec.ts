@@ -1,4 +1,4 @@
-import * as saml20 from '../../lib/saml20';
+import { default as saml20 } from '../../lib/saml20';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -18,24 +18,24 @@ const validateOptsArray = [
 
 describe('saml20.ts', function () {
   it('parse assertion ok', function () {
-    expect(saml20.default.parse(assertion)).to.be.ok;
+    expect(saml20.parse(assertion)).to.be.ok;
   });
 
   it('parse assertion not ok', function () {
     try {
-      saml20.default.parse('assertion');
+      saml20.parse('assertion');
     } catch (error) {
       console.log(error);
     }
   });
 
   it('ValidateAsync audience false', function () {
-    expect(saml20.default.validateAudience(assertion, validateOpts)).to.be.false;
+    expect(saml20.validateAudience(assertion, validateOpts)).to.be.false;
   });
 
   it('ValidateAsync assertion  not ok', function () {
     try {
-      saml20.default.validateAudience('assertion', validateOpts);
+      saml20.validateAudience('assertion', validateOpts);
     } catch (error) {
       console.log(error);
     }
@@ -43,7 +43,7 @@ describe('saml20.ts', function () {
 
   it('ValidateAsync empty Array not ok', function () {
     try {
-      saml20.default.validateAudience(assertion, []);
+      saml20.validateAudience(assertion, []);
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +51,7 @@ describe('saml20.ts', function () {
 
   it('ValidateAsync empty Array ok', function () {
     try {
-      saml20.default.validateAudience(assertion, validateOptsArray);
+      saml20.validateAudience(assertion, validateOptsArray);
     } catch (error) {
       console.log(error);
     }
@@ -59,19 +59,19 @@ describe('saml20.ts', function () {
 
   it('ValidateAsync not ok', function () {
     try {
-      saml20.default.validateAudience('assertion', 'validateOpts');
+      saml20.validateAudience('assertion', 'validateOpts');
     } catch (error) {
       console.log(error);
     }
   });
 
   it('validateExpiration ok', function () {
-    expect(saml20.default.validateExpiration(assertion)).to.be.ok;
+    expect(saml20.validateExpiration(assertion)).to.be.ok;
   });
 
   it('validateExpiration not ok', function () {
     try {
-      saml20.default.validateExpiration('assertion');
+      saml20.validateExpiration('assertion');
     } catch (error) {
       console.log(error);
     }

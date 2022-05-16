@@ -7,10 +7,11 @@ import saml20 from './saml20';
 
 import { request } from './request';
 import { stripCertHeaderAndFooter, PubKeyInfo } from './cert';
-import { parseAsync, validateAsync } from './response';
+import { parse, validate } from './response';
 import { parseMetadataAsync } from './metadata';
 import { createPostForm } from './post';
 import { sign } from './sign';
+import { decryptXml } from './decrypt';
 
 const tokenHandlers = {
   '2.0': saml20,
@@ -20,11 +21,13 @@ class WrapError extends Error {
   inner?: any;
 }
 
-const parse = function parse(rawAssertion, cb) {
+const parseInternal = function parse(rawAssertion, cb) {
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
   }
+
+  rawAssertion = decryptXml(rawAssertion);
 
   parseXmlAndVersion(rawAssertion, function onParse(err, assertion, version) {
     if (err) {
@@ -36,7 +39,7 @@ const parse = function parse(rawAssertion, cb) {
   });
 };
 
-const validate = function validate(rawAssertion, options, cb) {
+const validateInternal = function validate(rawAssertion, options, cb) {
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
@@ -46,6 +49,8 @@ const validate = function validate(rawAssertion, options, cb) {
     cb(new Error('publicKey or thumbprint are options required.'));
     return;
   }
+
+  rawAssertion = decryptXml(rawAssertion);
 
   let validId = null;
 
@@ -186,12 +191,12 @@ function parseAttributes(assertion, tokenHandler, cb) {
 }
 
 export default {
-  parse,
-  validate,
+  parseInternal,
+  validateInternal,
   parseMetadataAsync,
   request,
-  parseAsync,
-  validateAsync,
+  parse,
+  validate,
   PubKeyInfo,
   certToPEM,
   stripCertHeaderAndFooter,
@@ -199,4 +204,5 @@ export default {
   sign,
   hasValidSignature,
   validateSignature,
+  decryptXml,
 };

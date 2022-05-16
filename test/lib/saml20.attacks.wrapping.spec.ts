@@ -1,4 +1,4 @@
-import * as saml from '../../lib/index';
+import saml from '../../lib/index';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -44,7 +44,7 @@ const audience = 'http://sp.example.com/demo1/metadata.php';
 
 describe('saml20.attacks.wrapping', function () {
   it('wrappedInvalidResponse1: Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.default.validate(
+    saml.validateInternal(
       wrappedInvalidResponse1,
       {
         publicKey: certificate,
@@ -67,7 +67,7 @@ describe('saml20.attacks.wrapping', function () {
   });
 
   it('wrappedInvalidResponse2: Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.default.validate(
+    saml.validateInternal(
       wrappedInvalidResponse2,
       {
         publicKey: certificate,
@@ -90,7 +90,7 @@ describe('saml20.attacks.wrapping', function () {
   });
 
   it('wrappedInvalidAssertion1: Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.default.validate(
+    saml.validateInternal(
       wrappedInvalidAssertion1,
       {
         publicKey: certificate,
@@ -113,7 +113,7 @@ describe('saml20.attacks.wrapping', function () {
   });
 
   it('wrappedInvalidAssertion2:Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.default.validate(
+    saml.validateInternal(
       wrappedInvalidAssertion2,
       {
         publicKey: certificate,
@@ -136,7 +136,7 @@ describe('saml20.attacks.wrapping', function () {
   });
 
   it('wrappedInvalidAssertion3: Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.default.validate(
+    saml.validateInternal(
       wrappedInvalidAssertion3,
       {
         publicKey: certificate,
@@ -159,7 +159,7 @@ describe('saml20.attacks.wrapping', function () {
   });
 
   it('wrappedInvalidExtensions1: Should fail with invalid assertion', function (done) {
-    saml.default.validate(
+    saml.validateInternal(
       wrappedInvalidExtensions1,
       {
         publicKey: certificate,
@@ -182,7 +182,7 @@ describe('saml20.attacks.wrapping', function () {
   });
 
   it('wrappedInvalidExtensions2: Should fail with invalid assertion', function (done) {
-    saml.default.validate(
+    saml.validateInternal(
       wrappedInvalidExtensions2,
       {
         publicKey: certificate,
