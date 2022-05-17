@@ -3,7 +3,7 @@ import thumbprint from 'thumbprint';
 
 import xml2js from 'xml2js';
 
-const parseMetadataAsync = async (idpMeta: string): Promise<Record<string, any>> => {
+const parseMetadataAsync = async (idpMeta: string, validateOpts): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     xml2js.parseString(idpMeta, { tagNameProcessors: [xml2js.processors.stripPrefix] }, (err: Error, res) => {
       if (err) {
@@ -52,6 +52,23 @@ const parseMetadataAsync = async (idpMeta: string): Promise<Record<string, any>>
             sloRedirectUrl = rambda.path('$.Location', sloSvcRec);
           } else if (rambda.pathOr('', '$.Binding', sloSvcRec).endsWith('HTTP-POST')) {
             sloPostUrl = rambda.path('$.Location', sloSvcRec);
+          }
+        }
+
+        if (validateOpts?.validateNameIDFormat) {
+          let validNameIDFormat = false;
+          const nameIDFormats = ssoDesRec['NameIDFormat'] || [];
+          for (const nameIDFormat of nameIDFormats) {
+            if (validateOpts?.validateNameIDFormat === nameIDFormat) {
+              validNameIDFormat = true;
+            }
+          }
+
+          if (!validNameIDFormat) {
+            reject(
+              new Error(`Invalid nameIDFormat. Please set 'Name ID Format' to ${validateOpts?.nameIDFormat}`)
+            );
+            return;
           }
         }
       }
