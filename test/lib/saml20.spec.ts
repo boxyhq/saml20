@@ -2,18 +2,18 @@ import * as saml20 from '../../lib/saml20';
 import { expect } from 'chai';
 import fs from 'fs';
 
-const assertion = fs.readFileSync('./test/assets/saml20.rawResponse.xml').toString();
+const assertion = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage.xml').toString();
 
 const validateOpts = {
-  thumbprint: 'ecd00c7bafd40eed03e98646c9d5a802f39d4b07',
-  audience: 'https://saml.boxyhq.com',
-  inResponseTo: '_ec9ff74838da0a662a95',
+  thumbprint: 'e606eced42fa3abd0c5693456384f5931b174707',
+  audience: 'http://sp.example.com/demo1/metadata.php',
+  inResponseTo: 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685',
 };
 
 const validateOptsArray = [
-  'ecd00c7bafd40eed03e98646c9d5a802f39d4b07',
-  'https://saml.boxyhq.com',
-  '_ec9ff74838da0a662a95',
+  'e606eced42fa3abd0c5693456384f5931b174707',
+  'http://sp.example.com/demo1/metadata.php',
+  'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685',
 ];
 
 describe('saml20.ts', function () {

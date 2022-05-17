@@ -2,50 +2,50 @@ import { parseAsync, validateAsync } from '../../lib/response';
 import { expect } from 'chai';
 import fs from 'fs';
 
-const rawResponse = fs.readFileSync('./test/assets/saml20.rawResponse.xml').toString();
+const rawResponse = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage.xml').toString();
 const validateOpts = {
-  thumbprint: 'ecd00c7bafd40eed03e98646c9d5a802f39d4b07',
-  audience: 'https://saml.boxyhq.com',
-  inResponseTo: '_ec9ff74838da0a662a95',
+  thumbprint: 'e606eced42fa3abd0c5693456384f5931b174707',
+  audience: 'http://sp.example.com/demo1/metadata.php',
+  inResponseTo: 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685',
 };
 
 describe('response.ts', function () {
-  it('RAW response ok', function () {
-    expect(parseAsync(rawResponse)).to.be.ok;
+  it('RAW response ok', async function () {
+    expect(await parseAsync(rawResponse)).to.be.ok;
   });
 
-  it('RAW response not ok', function () {
+  it('RAW response not ok', async function () {
     try {
-      parseAsync('rawResponse');
+      await parseAsync('rawResponse');
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 
-  it('ValidateAsync ok', function () {
-    expect(validateAsync(rawResponse, validateOpts)).to.be.ok;
+  it('ValidateAsync ok', async function () {
+    expect(await validateAsync(rawResponse, validateOpts)).to.be.ok;
   });
 
-  it('ValidateAsync RAW response not ok', function () {
+  it('ValidateAsync RAW response not ok', async function () {
     try {
-      validateAsync('rawResponse', validateOpts);
+      await validateAsync('rawResponse', validateOpts);
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
-  it('ValidateAsync validateOpts not ok', function () {
+  it('ValidateAsync validateOpts not ok', async function () {
     try {
-      validateAsync(rawResponse, 'validateOpts');
+      await validateAsync(rawResponse, 'validateOpts');
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 
-  it('ValidateAsync not ok', function () {
+  it('ValidateAsync not ok', async function () {
     try {
-      validateAsync('rawResponse', 'validateOpts');
+      await validateAsync('rawResponse', 'validateOpts');
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 });

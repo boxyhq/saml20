@@ -5,15 +5,15 @@ import fs from 'fs';
 const samlMetadata = fs.readFileSync('./test/assets/mock-saml-metadata.xml').toString();
 
 describe('metadata.ts', function () {
-  it('saml MetaData ok', function () {
-    expect(parseMetadataAsync(samlMetadata)).to.be.ok;
+  it('saml Metadata ok', async function () {
+    expect(await parseMetadataAsync(samlMetadata)).to.be.ok;
   });
 
-  it('saml MetaData not ok', function () {
+  it('saml Metadata not ok', async function () {
     try {
-      parseMetadataAsync('samlMetadata');
+      await parseMetadataAsync('samlMetadata');
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 });
