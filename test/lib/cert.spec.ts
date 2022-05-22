@@ -12,6 +12,7 @@ describe('cert.ts', function () {
   });
 
   it('PubKeyInfo ok', function () {
-    expect(new PubKeyInfo(certificate)).to.be.ok;
+    const value = new PubKeyInfo(certificate);
+    expect(certificate).to.equal(value.pubKey);
   });
 });

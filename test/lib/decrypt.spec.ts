@@ -17,7 +17,7 @@ const samlResponseEncrypted = fs.readFileSync('./test/assets/certificates/oktaEn
 const privateKey = fs.readFileSync('./test/assets/certificates/oktaPrivateKey.pem').toString();
 
 const options = {
-  encPrivateKey: privateKey,
+  privateKey: privateKey,
 };
 describe('decrypt.ts', function () {
   it('valid xml', function () {

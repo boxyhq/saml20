@@ -13,6 +13,11 @@ import { createPostForm } from './post';
 import { sign } from './sign';
 import { decryptXml } from './decrypt';
 
+import { DOMParser } from '@xmldom/xmldom';
+import { select } from 'xpath';
+
+const dom = DOMParser;
+
 const tokenHandlers = {
   '2.0': saml20,
 };
@@ -27,8 +32,6 @@ const parseInternal = function parse(rawAssertion, cb) {
     return;
   }
 
-  rawAssertion = decryptXml(rawAssertion);
-
   parseXmlAndVersion(rawAssertion, function onParse(err, assertion, version) {
     if (err) {
       cb(err);
@@ -37,6 +40,20 @@ const parseInternal = function parse(rawAssertion, cb) {
 
     parseAttributes(assertion, tokenHandlers[version], cb);
   });
+};
+
+const parseIssuer = function parseIssuer(rawAssertion) {
+  if (!rawAssertion) {
+    throw new Error('rawAssertion is required.');
+  }
+  const xml = new dom().parseFromString(rawAssertion);
+  const issuerValue = select(
+    "/*[contains(local-name(), 'Response')]/*[local-name(.)='Issuer']",
+    xml
+  ) as Node[];
+  if (issuerValue && issuerValue.length > 0) {
+    return issuerValue[0].textContent?.toString();
+  }
 };
 
 const validateInternal = function validate(rawAssertion, options, cb) {
@@ -49,9 +66,7 @@ const validateInternal = function validate(rawAssertion, options, cb) {
     cb(new Error('publicKey or thumbprint are options required.'));
     return;
   }
-
-  rawAssertion = decryptXml(rawAssertion);
-
+  rawAssertion = decryptXml(rawAssertion, options);
   let validId = null;
 
   try {
@@ -205,4 +220,5 @@ export default {
   hasValidSignature,
   validateSignature,
   decryptXml,
+  parseIssuer,
 };

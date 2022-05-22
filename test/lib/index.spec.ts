@@ -97,6 +97,7 @@ describe('index.ts', function () {
         publicKey: certificate,
         bypassExpiration: true,
         inResponseTo: inResponseTo,
+        privateKey: '',
       },
       function (err) {
         try {
@@ -391,5 +392,19 @@ describe('index.ts', function () {
 
       done();
     });
+  });
+
+  it('parseIssuer response ok', function () {
+    const value = saml.parseIssuer(validResponse);
+    expect(value).to.be.ok;
+    expect(value).to.equal('http://idp.example.com/metadata.php');
+  });
+
+  it('parseIssuer not ok', function () {
+    try {
+      saml.parseIssuer('rawResponse');
+    } catch (error) {
+      expect(error).to.be.ok;
+    }
   });
 });

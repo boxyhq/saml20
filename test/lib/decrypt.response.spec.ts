@@ -26,10 +26,10 @@ const oktaIssuerName = 'http://www.okta.com/exkymhf9ve6PI9KfY696';
 const oktaProfileClaims = 'hojit22291@abincol.com';
 
 const oneLoginOptions = {
-  encPrivateKey: oneLoginPrivateKey,
+  privateKey: oneLoginPrivateKey,
 };
 const oktaOptions = {
-  encPrivateKey: oktaPrivateKey,
+  privateKey: oktaPrivateKey,
 };
 describe('decrypt.response.spec', function () {
   it('One Login Should validate saml 2.0 token using thumbprint', function (done) {
@@ -98,7 +98,7 @@ describe('decrypt.response.spec', function () {
       }
     );
   });
-  it('Okta Should validate saml 2.0 token using thumbprint Only', function (done) {
+  it('Okta Should validate saml 2.0 token using thumbprint Only', async function (done) {
     validResponse = assertion(oktaOptions, oktaSamlResponseEncrypted);
     saml.validateInternal(
       validResponse.toString(),
