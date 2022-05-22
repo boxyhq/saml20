@@ -17,11 +17,13 @@ describe('response.ts', function () {
       value.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
     expect(value.issuer).to.equal('http://idp.example.com/metadata.php');
+
   });
 
   it('RAW response not ok', async function () {
     try {
       await parse('rawResponse');
+
     } catch (error) {
       expect(error).to.be.ok;
     }
@@ -35,11 +37,13 @@ describe('response.ts', function () {
       value.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
     expect(value.issuer).to.equal('http://idp.example.com/metadata.php');
+
   });
 
   it('ValidateAsync RAW response not ok', async function () {
     try {
       await validate('rawResponse', validateOpts);
+
     } catch (error) {
       expect(error).to.be.ok;
     }
@@ -47,6 +51,7 @@ describe('response.ts', function () {
   it('ValidateAsync validateOpts not ok', async function () {
     try {
       await validate(rawResponse, 'validateOpts');
+
     } catch (error) {
       expect(error).to.be.ok;
     }
@@ -55,6 +60,7 @@ describe('response.ts', function () {
   it('ValidateAsync not ok', async function () {
     try {
       await validate('rawResponse', 'validateOpts');
+
     } catch (error) {
       expect(error).to.be.ok;
     }
