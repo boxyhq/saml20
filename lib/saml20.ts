@@ -1,10 +1,7 @@
 import _ from 'lodash';
 
 const nameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
-// var _ = require('lodash');
-// const saml20 = module.exports;
 
-// export { saml20 };
 function getClaims(attributes) {
   const claims = {};
 

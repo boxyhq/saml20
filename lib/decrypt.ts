@@ -4,20 +4,10 @@ import * as xmlenc from '@authenio/xml-encryption';
 
 const dom = DOMParser;
 
-/**
- * @desc Decrypt the assertion section in Response
- * @param  {string} type             only accept SAMLResponse to proceed decryption
- * @param  {Entity} here             this entity
- * @param  {Entity} from             from the entity where the message is sent
- * @param {string} entireXML         response in xml string format
- * @return {function} a promise to get back the entire xml with decrypted assertion
- */
 const assertion = (here, entireXML: string) => {
-  // Implement decryption first then check the signature
   if (!entireXML) {
     return new Error('Error Undefined Assertion.');
   }
-  // Perform encryption depends on the setting of where the message is sent, default is false
 
   const xml = new dom().parseFromString(entireXML);
   const encryptedAssertions = select(
@@ -59,7 +49,6 @@ const decryptXml = (entireXML: string, options) => {
     rawAssertionNew = assertion(options, entireXML);
     return rawAssertionNew;
   }
-
   return rawAssertionNew;
 };
 
