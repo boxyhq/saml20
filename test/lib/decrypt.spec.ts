@@ -45,7 +45,6 @@ describe('decrypt.ts', function () {
         samlResponseEncrypted
       );
     } catch (error) {
-      // console.log(error);
       expect(error).to.equal('Error Exception of Assertion Decryption.');
     }
   });

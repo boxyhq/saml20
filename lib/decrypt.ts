@@ -12,7 +12,7 @@ const dom = DOMParser;
  * @param {string} entireXML         response in xml string format
  * @return {function} a promise to get back the entire xml with decrypted assertion
  */
-const assertion = function assertion(here, entireXML: string) {
+const assertion = (here, entireXML: string) => {
   // Implement decryption first then check the signature
   if (!entireXML) {
     return new Error('Error Undefined Assertion.');
@@ -32,43 +32,34 @@ const assertion = function assertion(here, entireXML: string) {
     throw new Error('Error Multiple Assertion.');
   }
 
-  try {
-    return xmlenc.decrypt(encryptedAssertions[0].toString(), { key: here.privateKey }, (err, res) => {
-      if (err) {
-        // console.error(err);
-        return new Error('Error Exception of Assertion Decryption.');
-      }
-      if (!res) {
-        return new Error('Error Undefined Encryption Assertion.');
-      }
-
-      const assertionNode = new dom().parseFromString(res);
-      xml.replaceChild(assertionNode, encryptedAssertions[0]);
-
-      return xml.toString();
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-const decryptXml = function decryptXml(entireXML: string, options) {
-  let rawAssertionNew = entireXML;
-  try {
-    const xml = new dom().parseFromString(entireXML);
-    const encryptedAssertions = select(
-      "/*[contains(local-name(), 'Response')]/*[local-name(.)='EncryptedAssertion']",
-      xml
-    ) as Node[];
-
-    if (encryptedAssertions.length >= 1) {
-      rawAssertionNew = assertion(options, entireXML);
-      return rawAssertionNew;
+  return xmlenc.decrypt(encryptedAssertions[0].toString(), { key: here.privateKey }, (err, res) => {
+    if (err) {
+      return new Error('Error Exception of Assertion Decryption.');
     }
-  } catch (error) {
-    console.log('error inside encryption ');
-    console.log(error);
-    throw new Error('Decryption Error.');
+    if (!res) {
+      return new Error('Error Undefined Encryption Assertion.');
+    }
+
+    const assertionNode = new dom().parseFromString(res);
+    xml.replaceChild(assertionNode, encryptedAssertions[0]);
+
+    return xml.toString();
+  });
+};
+const decryptXml = (entireXML: string, options) => {
+  let rawAssertionNew = entireXML;
+
+  const xml = new dom().parseFromString(entireXML);
+  const encryptedAssertions = select(
+    "/*[contains(local-name(), 'Response')]/*[local-name(.)='EncryptedAssertion']",
+    xml
+  ) as Node[];
+
+  if (encryptedAssertions.length >= 1) {
+    rawAssertionNew = assertion(options, entireXML);
+    return rawAssertionNew;
   }
+
   return rawAssertionNew;
 };
 

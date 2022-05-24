@@ -26,7 +26,7 @@ class WrapError extends Error {
   inner?: any;
 }
 
-const parseInternal = function parse(rawAssertion, cb) {
+const parseInternal = (rawAssertion, cb) => {
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
@@ -42,7 +42,7 @@ const parseInternal = function parse(rawAssertion, cb) {
   });
 };
 
-const parseIssuer = function parseIssuer(rawAssertion) {
+const parseIssuer = (rawAssertion) => {
   if (!rawAssertion) {
     throw new Error('rawAssertion is required.');
   }
@@ -56,7 +56,7 @@ const parseIssuer = function parseIssuer(rawAssertion) {
   }
 };
 
-const validateInternal = function validate(rawAssertion, options, cb) {
+const validateInternal = (rawAssertion, options, cb) => {
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
