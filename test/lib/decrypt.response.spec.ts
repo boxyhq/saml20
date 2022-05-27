@@ -1,5 +1,5 @@
 import saml from '../../lib/index';
-import { assertion } from '../../lib/decrypt';
+import { decryptXml } from '../../lib/decrypt';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -33,7 +33,7 @@ const oktaOptions = {
 };
 describe('decrypt.response.spec', function () {
   it('One Login Should validate saml 2.0 token using thumbprint', function (done) {
-    validResponse = assertion(oneLoginOptions, oneLoginSamlResponseEncrypted);
+    validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
     saml.validateInternal(
       validResponse.toString(),
       {
@@ -54,7 +54,7 @@ describe('decrypt.response.spec', function () {
     );
   });
   it('One Login Should validate saml 2.0 token using thumbprint Only', function (done) {
-    validResponse = assertion(oneLoginOptions, oneLoginSamlResponseEncrypted);
+    validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
     saml.validateInternal(
       validResponse.toString(),
       {
@@ -78,7 +78,7 @@ describe('decrypt.response.spec', function () {
   });
 
   it('Okta Should validate saml 2.0 token using thumbprint', function (done) {
-    validResponse = assertion(oktaOptions, oktaSamlResponseEncrypted);
+    validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
     saml.validateInternal(
       validResponse.toString(),
       {
@@ -99,7 +99,7 @@ describe('decrypt.response.spec', function () {
     );
   });
   it('Okta Should validate saml 2.0 token using thumbprint Only', async function (done) {
-    validResponse = assertion(oktaOptions, oktaSamlResponseEncrypted);
+    validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
     saml.validateInternal(
       validResponse.toString(),
       {

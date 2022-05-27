@@ -4,17 +4,7 @@ import * as xmlenc from '@authenio/xml-encryption';
 
 const dom = DOMParser;
 
-const assertion = (here, entireXML: string) => {
-  if (!entireXML) {
-    return new Error('Error Undefined Assertion.');
-  }
-
-  const xml = new dom().parseFromString(entireXML);
-  const encryptedAssertions = select(
-    "/*[contains(local-name(), 'Response')]/*[local-name(.)='EncryptedAssertion']",
-    xml
-  ) as Node[];
-
+const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
   if (!Array.isArray(encryptedAssertions)) {
     throw new Error('Error Undefined Encrypted Assertion.');
   }
@@ -22,7 +12,7 @@ const assertion = (here, entireXML: string) => {
     throw new Error('Error Multiple Assertion.');
   }
 
-  return xmlenc.decrypt(encryptedAssertions[0].toString(), { key: here.privateKey }, (err, res) => {
+  return xmlenc.decrypt(encryptedAssertions[0].toString(), { key: options.privateKey }, (err, res) => {
     if (err) {
       return new Error('Error Exception of Assertion Decryption.');
     }
@@ -37,7 +27,9 @@ const assertion = (here, entireXML: string) => {
   });
 };
 const decryptXml = (entireXML: string, options) => {
-  let rawAssertionNew = entireXML;
+  if (!entireXML) {
+    return new Error('Error Undefined Assertion.');
+  }
 
   const xml = new dom().parseFromString(entireXML);
   const encryptedAssertions = select(
@@ -46,10 +38,10 @@ const decryptXml = (entireXML: string, options) => {
   ) as Node[];
 
   if (encryptedAssertions.length >= 1) {
-    rawAssertionNew = assertion(options, entireXML);
-    return rawAssertionNew;
+    return assertion(xml, encryptedAssertions, options);
   }
-  return rawAssertionNew;
+
+  return entireXML;
 };
 
-export { assertion, decryptXml };
+export { decryptXml };

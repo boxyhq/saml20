@@ -1,4 +1,4 @@
-import { assertion } from '../../lib/decrypt';
+import { decryptXml } from '../../lib/decrypt';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -22,7 +22,7 @@ const options = {
 describe('decrypt.ts', function () {
   it('valid xml', function () {
     try {
-      const value = assertion(options, samlResponseEncrypted);
+      const value = decryptXml(samlResponseEncrypted, options);
       expect(value).to.be.ok;
     } catch (error) {
       console.log(error);
@@ -31,19 +31,16 @@ describe('decrypt.ts', function () {
 
   it('empty xml ', function () {
     try {
-      const _value = assertion(options, '');
+      decryptXml('', options);
     } catch (error) {
       expect(error).to.equal('Error Undefined Assertion.');
     }
   });
   it('empty privateKey ', function () {
     try {
-      const _value = assertion(
-        {
-          encPrivateKey: '',
-        },
-        samlResponseEncrypted
-      );
+      decryptXml(samlResponseEncrypted, {
+        encPrivateKey: '',
+      });
     } catch (error) {
       expect(error).to.equal('Error Exception of Assertion Decryption.');
     }
