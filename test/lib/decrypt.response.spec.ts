@@ -1,4 +1,4 @@
-import saml from '../../lib/index';
+import { validate } from '../../lib/response';
 import { decryptXml } from '../../lib/decrypt';
 import { expect } from 'chai';
 import fs from 'fs';
@@ -32,93 +32,58 @@ const oktaOptions = {
   privateKey: oktaPrivateKey,
 };
 describe('decrypt.response.spec', function () {
-  it('One Login Should validate saml 2.0 token using thumbprint', function (done) {
+  it('One Login Should validate saml 2.0 token using thumbprint', async function () {
     validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
-    saml.validateInternal(
-      validResponse.toString(),
-      {
-        publicKey: oneLoginCertificate,
-        thumbprint: oneLoginThumbprint,
-        bypassExpiration: true,
-        inResponseTo: oneLoginInResponseTo,
-      },
-      function (err, profile) {
-        expect(profile.claims).to.be.ok;
-        expect(err).to.not.be.ok;
-        expect(oneLoginIssuerName).to.equal(profile.issuer);
-        expect(oneLoginProfileClaims).to.equal(
-          profile.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
-        );
-        done();
-      }
+    const response = await validate(validResponse.toString(), {
+      publicKey: oneLoginCertificate,
+      thumbprint: oneLoginThumbprint,
+      bypassExpiration: true,
+      inResponseTo: oneLoginInResponseTo,
+    });
+
+    expect(oneLoginIssuerName).to.equal(response.issuer);
+    expect(oneLoginProfileClaims).to.equal(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
   });
-  it('One Login Should validate saml 2.0 token using thumbprint Only', function (done) {
+
+  it('One Login Should validate saml 2.0 token using thumbprint Only', async function () {
     validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
-    saml.validateInternal(
-      validResponse.toString(),
-      {
-        // publicKey: certificate,
-        thumbprint: oneLoginThumbprint,
-        bypassExpiration: true,
-        inResponseTo: oneLoginInResponseTo,
-      },
-      function (err, profile) {
-        expect(profile.claims).to.be.ok;
-
-        expect(err).to.not.be.ok;
-
-        expect(oneLoginIssuerName).to.equal(profile.issuer);
-        expect(oneLoginProfileClaims).to.equal(
-          profile.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
-        );
-        done();
-      }
+    const response = await validate(validResponse.toString(), {
+      thumbprint: oneLoginThumbprint,
+      bypassExpiration: true,
+      inResponseTo: oneLoginInResponseTo,
+    });
+    expect(oneLoginIssuerName).to.equal(response.issuer);
+    expect(oneLoginProfileClaims).to.equal(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
   });
 
-  it('Okta Should validate saml 2.0 token using thumbprint', function (done) {
+  it('Okta Should validate saml 2.0 token using thumbprint', async function () {
     validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
-    saml.validateInternal(
-      validResponse.toString(),
-      {
-        publicKey: oktaCertificate,
-        thumbprint: oktaThumbprint,
-        bypassExpiration: true,
-        inResponseTo: oktaInResponseTo,
-      },
-      function (err, profile) {
-        expect(profile.claims).to.be.ok;
-        expect(err).to.not.be.ok;
-        expect(oktaIssuerName).to.equal(profile.issuer);
-        expect(oktaProfileClaims).to.equal(
-          profile.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
-        );
-        done();
-      }
+    const response = await validate(validResponse.toString(), {
+      publicKey: oktaCertificate,
+      thumbprint: oktaThumbprint,
+      bypassExpiration: true,
+      inResponseTo: oktaInResponseTo,
+    });
+    expect(oktaIssuerName).to.equal(response.issuer);
+    expect(oktaProfileClaims).to.equal(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
   });
-  it('Okta Should validate saml 2.0 token using thumbprint Only', async function (done) {
+
+  it('Okta Should validate saml 2.0 token using thumbprint Only', async function () {
     validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
-    saml.validateInternal(
-      validResponse.toString(),
-      {
-        // publicKey: certificate,
-        thumbprint: oktaThumbprint,
-        bypassExpiration: true,
-        inResponseTo: oktaInResponseTo,
-      },
-      function (err, profile) {
-        expect(profile.claims).to.be.ok;
-
-        expect(err).to.not.be.ok;
-
-        expect(oktaIssuerName).to.equal(profile.issuer);
-        expect(oktaProfileClaims).to.equal(
-          profile.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
-        );
-        done();
-      }
+    const response = await validate(validResponse.toString(), {
+      thumbprint: oktaThumbprint,
+      bypassExpiration: true,
+      inResponseTo: oktaInResponseTo,
+    });
+    expect(oktaIssuerName).to.equal(response.issuer);
+    expect(oktaProfileClaims).to.equal(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
   });
 });

@@ -1,4 +1,4 @@
-import saml from '../../lib/index';
+import { validate } from '../../lib/response';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -43,164 +43,94 @@ const certificate =
 const audience = 'http://sp.example.com/demo1/metadata.php';
 
 describe('saml20.attacks.wrapping', function () {
-  it('wrappedInvalidResponse1: Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.validateInternal(
-      wrappedInvalidResponse1,
-      {
+  it('wrappedInvalidResponse1: Should fail with invalid assertion possible assertion wrapping', async function () {
+    try {
+      await validate(wrappedInvalidResponse1, {
         publicKey: certificate,
         audience,
         bypassExpiration: true,
-      },
-      function (err, profile) {
-        expect(profile).to.not.be.ok;
-        expect(err).to.be.ok;
-        try {
-          if (err) {
-            expect(err.message).to.equal('Invalid assertion. Possible assertion wrapping.');
-          }
-          done();
-        } catch (error) {
-          done();
-        }
-      }
-    );
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+    }
   });
 
-  it('wrappedInvalidResponse2: Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.validateInternal(
-      wrappedInvalidResponse2,
-      {
+  it('wrappedInvalidResponse2: Should fail with invalid assertion possible assertion wrapping', async function () {
+    try {
+      await validate(wrappedInvalidResponse2, {
         publicKey: certificate,
         audience,
         bypassExpiration: true,
-      },
-      function (err, profile) {
-        expect(profile).to.not.be.ok;
-        expect(err).to.be.ok;
-        try {
-          if (err) {
-            expect(err.message).to.equal('Invalid assertion. Possible assertion wrapping.');
-          }
-          done();
-        } catch (error) {
-          done();
-        }
-      }
-    );
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+    }
   });
 
-  it('wrappedInvalidAssertion1: Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.validateInternal(
-      wrappedInvalidAssertion1,
-      {
+  it('wrappedInvalidAssertion1: Should fail with invalid assertion possible assertion wrapping', async function () {
+    try {
+      await validate(wrappedInvalidAssertion1, {
         publicKey: certificate,
         audience,
         bypassExpiration: true,
-      },
-      function (err, profile) {
-        expect(profile).to.not.be.ok;
-        expect(err).to.be.ok;
-        try {
-          if (err) {
-            expect(err.message).to.equal('Invalid assertion. Possible assertion wrapping.');
-          }
-          done();
-        } catch (error) {
-          done();
-        }
-      }
-    );
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+    }
   });
 
-  it('wrappedInvalidAssertion2:Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.validateInternal(
-      wrappedInvalidAssertion2,
-      {
+  it('wrappedInvalidAssertion2:Should fail with invalid assertion possible assertion wrapping', async function () {
+    try {
+      await validate(wrappedInvalidAssertion2, {
         publicKey: certificate,
         audience,
         bypassExpiration: true,
-      },
-      function (err, profile) {
-        expect(profile).to.not.be.ok;
-        expect(err).to.be.ok;
-        try {
-          if (err) {
-            expect(err.message).to.equal('Invalid assertion. Possible assertion wrapping.');
-          }
-          done();
-        } catch (error) {
-          done();
-        }
-      }
-    );
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+    }
   });
 
-  it('wrappedInvalidAssertion3: Should fail with invalid assertion possible assertion wrapping', function (done) {
-    saml.validateInternal(
-      wrappedInvalidAssertion3,
-      {
+  it('wrappedInvalidAssertion3: Should fail with invalid assertion possible assertion wrapping', async function () {
+    try {
+      await validate(wrappedInvalidAssertion3, {
         publicKey: certificate,
         audience: audience,
         bypassExpiration: true,
-      },
-      function (err, profile) {
-        expect(profile).to.not.be.ok;
-        expect(err).to.be.ok;
-        try {
-          if (err) {
-            expect('Invalid assertion. Possible assertion wrapping.').to.equal(err.message);
-          }
-          done();
-        } catch (error) {
-          done();
-        }
-      }
-    );
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+    }
   });
 
-  it('wrappedInvalidExtensions1: Should fail with invalid assertion', function (done) {
-    saml.validateInternal(
-      wrappedInvalidExtensions1,
-      {
+  it('wrappedInvalidExtensions1: Should fail with invalid assertion', async function () {
+    try {
+      await validate(wrappedInvalidExtensions1, {
         publicKey: certificate,
         audience: audience,
         bypassExpiration: true,
-      },
-      function (err, profile) {
-        expect(profile).to.not.be.ok;
-        expect(err).to.be.ok;
-        try {
-          if (err) {
-            expect('Invalid assertion.').to.equal(err.message);
-          }
-          done();
-        } catch (error) {
-          done();
-        }
-      }
-    );
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid assertion.');
+    }
   });
 
-  it('wrappedInvalidExtensions2: Should fail with invalid assertion', function (done) {
-    saml.validateInternal(
-      wrappedInvalidExtensions2,
-      {
+  it('wrappedInvalidExtensions2: Should fail with invalid assertion', async function () {
+    try {
+      await validate(wrappedInvalidExtensions2, {
         publicKey: certificate,
         audience: audience,
         bypassExpiration: true,
-      },
-      function (err, profile) {
-        expect(profile).to.not.be.ok;
-        expect(err).to.be.ok;
-        try {
-          if (err) {
-            expect('Invalid assertion.').to.equal(err.message);
-          }
-          done();
-        } catch (error) {
-          done();
-        }
-      }
-    );
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid assertion.');
+    }
   });
 });
