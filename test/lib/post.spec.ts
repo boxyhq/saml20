@@ -1,5 +1,6 @@
 import * as saml from '../../lib/post';
 import { expect } from 'chai';
+
 describe('post.ts', function () {
   it('Should validate creation of post form', function (done) {
     const relayState = 'boxyhq_jackson_17b723c56a2fdc4e94f5e5fa792f89e3';
