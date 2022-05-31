@@ -1,4 +1,4 @@
-import * as saml20 from '../../lib/saml20';
+import { default as saml20 } from '../../lib/saml20';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -18,62 +18,80 @@ const validateOptsArray = [
 
 describe('saml20.ts', function () {
   it('parse assertion ok', function () {
-    expect(saml20.default.parse(assertion)).to.be.ok;
+    const value = saml20.parse(assertion);
+    expect(value.audience).to.equal(undefined);
+    expect(value.claims).to.empty;
+    expect(value.issuer).to.equal(undefined);
+    expect(value.sessionIndex).to.equal(undefined);
+    expect(saml20.parse(assertion)).to.be.ok;
   });
 
   it('parse assertion not ok', function () {
     try {
-      saml20.default.parse('assertion');
+      const value = saml20.parse('assertion');
+      expect(value.audience).to.equal(undefined);
+      expect(value.claims).to.empty;
+      expect(value.issuer).to.equal(undefined);
+      expect(value.sessionIndex).to.equal(undefined);
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 
   it('ValidateAsync audience false', function () {
-    expect(saml20.default.validateAudience(assertion, validateOpts)).to.be.false;
+    const value = saml20.validateAudience(assertion, validateOpts);
+    expect(value).to.equal(false);
+    expect(saml20.validateAudience(assertion, validateOpts)).to.be.false;
   });
 
   it('ValidateAsync assertion  not ok', function () {
     try {
-      saml20.default.validateAudience('assertion', validateOpts);
+      const value = saml20.validateAudience('assertion', validateOpts);
+      expect(value).to.equal(false);
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 
   it('ValidateAsync empty Array not ok', function () {
     try {
-      saml20.default.validateAudience(assertion, []);
+      const value = saml20.validateAudience(assertion, []);
+      expect(value).to.equal(false);
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 
   it('ValidateAsync empty Array ok', function () {
     try {
-      saml20.default.validateAudience(assertion, validateOptsArray);
+      const value = saml20.validateAudience(assertion, validateOptsArray);
+      expect(value).to.equal(false);
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 
   it('ValidateAsync not ok', function () {
     try {
-      saml20.default.validateAudience('assertion', 'validateOpts');
+      const value = saml20.validateAudience('assertion', 'validateOpts');
+      expect(value).to.equal(false);
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 
   it('validateExpiration ok', function () {
-    expect(saml20.default.validateExpiration(assertion)).to.be.ok;
+    const value = saml20.validateExpiration(assertion);
+    expect(value).to.equal(true);
+    expect(saml20.validateExpiration(assertion)).to.be.ok;
   });
 
   it('validateExpiration not ok', function () {
     try {
-      saml20.default.validateExpiration('assertion');
+      const value = saml20.validateExpiration('assertion');
+      expect(value).to.equal(true);
     } catch (error) {
-      console.log(error);
+      expect(error).to.be.ok;
     }
   });
 });

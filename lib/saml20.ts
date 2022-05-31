@@ -1,10 +1,7 @@
 import _ from 'lodash';
 
 const nameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
-// var _ = require('lodash');
-// const saml20 = module.exports;
 
-// export { saml20 };
 function getClaims(attributes) {
   const claims = {};
 
@@ -51,7 +48,7 @@ function getProp(obj, prop?: string) {
   }
 }
 
-const parse = function parse(assertion) {
+const parse = (assertion) => {
   let claims = {};
   let attributes = _.get(assertion, 'AttributeStatement.Attribute');
 
@@ -74,7 +71,7 @@ const parse = function parse(assertion) {
   };
 };
 
-const validateAudience = function validateAudience(assertion, realm) {
+const validateAudience = (assertion, realm) => {
   const audience = getProp(assertion, 'Conditions.AudienceRestriction.Audience');
   if (Array.isArray(realm)) {
     return realm.indexOf(audience) !== -1;
@@ -82,7 +79,7 @@ const validateAudience = function validateAudience(assertion, realm) {
   return audience === realm;
 };
 
-const validateExpiration = function validateExpiration(assertion) {
+const validateExpiration = (assertion) => {
   const dteNotBefore = getProp(assertion, 'Conditions.@.NotBefore');
   let notBefore: any = new Date(dteNotBefore);
   notBefore = notBefore.setMinutes(notBefore.getMinutes() - 10); // 10 minutes clock skew
@@ -95,7 +92,7 @@ const validateExpiration = function validateExpiration(assertion) {
   return !(now < notBefore || now > notOnOrAfter);
 };
 
-const getInResponseTo = function validateAudience(xml) {
+const getInResponseTo = (xml) => {
   return getProp(xml, 'Response.@.InResponseTo');
 };
 

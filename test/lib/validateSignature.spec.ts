@@ -67,11 +67,14 @@ function generateXML() {
 
 describe('validateSignature.ts', function () {
   it('certToPEM ok', function () {
-    expect(certToPEM(publicKey)).to.be.ok;
+    const value = certToPEM(publicKey);
+    expect(publicKey).to.eqls(value);
   });
 
   it('hasValidSignature ok ', function () {
-    expect(hasValidSignature(generateXML(), publicKey, 'null')).to.be.ok;
+    const value = hasValidSignature(generateXML(), publicKey, 'null');
+    expect(value.valid).to.be.equal(true);
+    expect(value.calculatedThumbprint).to.be.equal('d730fc9342107b05032393d21cd5ef550150e06b');
   });
 
   it('validateSignature ok ', function () {
@@ -79,6 +82,11 @@ describe('validateSignature.ts', function () {
   });
 
   it('validateSignature public key not ok ', function () {
-    expect(validateSignature(generateXML(), undefined, 'null')).to.be.not.ok;
+    try {
+      const value = validateSignature(generateXML(), undefined, 'null');
+      expect(value).to.be.equal(undefined);
+    } catch (error) {
+      expect(error).to.be.ok;
+    }
   });
 });

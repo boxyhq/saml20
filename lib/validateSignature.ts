@@ -19,7 +19,7 @@ const certToPEM = (cert) => {
 
 const hasValidSignature = (xml, cert, certThumbprint) => {
   const doc = new Dom().parseFromString(xml);
-  const signature =
+  let signature =
     select(
       doc,
       "/*/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']"
@@ -32,6 +32,11 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
       doc,
       "/*/*/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']"
     )[0];
+
+  if (!signature) {
+    signature = select(doc, "//*[local-name(.)='Signature']", [0]);
+  }
+
   const signed = new SignedXml(null, {
     idAttribute: 'AssertionID',
   });
