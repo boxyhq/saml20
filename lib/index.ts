@@ -5,13 +5,13 @@ import { hasValidSignature, validateSignature, certToPEM } from './validateSigna
 import { request } from './request';
 import { stripCertHeaderAndFooter, PubKeyInfo } from './cert';
 import { parse, validate, parseIssuer } from './response';
-import { parseMetadataAsync } from './metadata';
+import { parseMetadata } from './metadata';
 import { createPostForm } from './post';
 import { sign } from './sign';
 import { decryptXml } from './decrypt';
 
 export default {
-  parseMetadataAsync,
+  parseMetadata,
   request,
   parse,
   validate,

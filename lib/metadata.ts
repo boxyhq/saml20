@@ -3,7 +3,7 @@ import thumbprint from 'thumbprint';
 
 import xml2js from 'xml2js';
 
-const parseMetadataAsync = async (idpMeta: string, validateOpts): Promise<Record<string, any>> => {
+const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     xml2js.parseString(idpMeta, { tagNameProcessors: [xml2js.processors.stripPrefix] }, (err: Error, res) => {
       if (err) {
@@ -109,4 +109,4 @@ const parseMetadataAsync = async (idpMeta: string, validateOpts): Promise<Record
   });
 };
 
-export { parseMetadataAsync };
+export { parseMetadata };

@@ -17,7 +17,7 @@ class WrapError extends Error {
 
 const parse = async (rawAssertion: string): Promise<SAMLProfile> => {
   return new Promise((resolve, reject) => {
-    parseInternal(rawAssertion, function onParseAsync(err: Error, profile: SAMLProfile) {
+    parseInternal(rawAssertion, function onParse(err: Error, profile: SAMLProfile) {
       if (err) {
         reject(err);
         return;
@@ -30,7 +30,7 @@ const parse = async (rawAssertion: string): Promise<SAMLProfile> => {
 
 const validate = async (rawAssertion: string, options): Promise<SAMLProfile> => {
   return new Promise((resolve, reject) => {
-    validateInternal(rawAssertion, options, function onValidateAsync(err, profile: SAMLProfile) {
+    validateInternal(rawAssertion, options, function onValidate(err, profile: SAMLProfile) {
       if (err) {
         reject(err);
         return;

@@ -70,7 +70,7 @@ describe('response.ts', function () {
     }
   });
 
-  it('ValidateAsync ok', async function () {
+  it('validate ok', async function () {
     const response = await validate(rawResponse, validateOpts);
     expect(response.audience).to.equal('http://sp.example.com/demo1/metadata.php');
     expect('_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7').to.equal(
@@ -79,7 +79,7 @@ describe('response.ts', function () {
     expect(response.issuer).to.equal('http://idp.example.com/metadata.php');
   });
 
-  it('ValidateAsync RAW response not ok', async function () {
+  it('validate raw response not ok', async function () {
     try {
       await validate('rawResponse', validateOpts);
     } catch (error) {
