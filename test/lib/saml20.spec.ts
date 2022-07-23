@@ -38,13 +38,13 @@ describe('saml20.ts', function () {
     }
   });
 
-  it('ValidateAsync audience false', function () {
+  it('validateAudience false', function () {
     const value = saml20.validateAudience(assertion, validateOpts);
     expect(value).to.equal(false);
     expect(saml20.validateAudience(assertion, validateOpts)).to.be.false;
   });
 
-  it('ValidateAsync assertion  not ok', function () {
+  it('validateAudience assertion  not ok', function () {
     try {
       const value = saml20.validateAudience('assertion', validateOpts);
       expect(value).to.equal(false);
@@ -53,7 +53,7 @@ describe('saml20.ts', function () {
     }
   });
 
-  it('ValidateAsync empty Array not ok', function () {
+  it('validateAudience empty Array not ok', function () {
     try {
       const value = saml20.validateAudience(assertion, []);
       expect(value).to.equal(false);
@@ -62,7 +62,7 @@ describe('saml20.ts', function () {
     }
   });
 
-  it('ValidateAsync empty Array ok', function () {
+  it('validateAudience empty Array ok', function () {
     try {
       const value = saml20.validateAudience(assertion, validateOptsArray);
       expect(value).to.equal(false);
@@ -71,7 +71,7 @@ describe('saml20.ts', function () {
     }
   });
 
-  it('ValidateAsync not ok', function () {
+  it('validateAudience not ok', function () {
     try {
       const value = saml20.validateAudience('assertion', 'validateOpts');
       expect(value).to.equal(false);
