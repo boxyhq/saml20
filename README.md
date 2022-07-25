@@ -4,7 +4,7 @@ SAML 2.0 & 1.1 Assertion Parser & Validator
 
 =============
 
-saml20-maintained is a fork of a fork of saml20. It is the same library with updated versions of vulnerable dependencies, additonal fixes and support for more providers as needed. The new package is published here - https://www.npmjs.com/package/@boxyhq/saml20
+boxyhq/saml20 is a fork of a fork of [saml20](https://github.com/leandrob/saml20). It now has extended functionality and diverges from the oriignal unmaintained library. The new package is published here - https://www.npmjs.com/package/@boxyhq/saml20
 
 ## Installation
 
