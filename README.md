@@ -1,10 +1,10 @@
 SAML 2.0 & 1.1 Assertion Parser & Validator
 
-![Build Status](https://github.com/boxyhq/saml20-maintained/actions/workflows/node.js.yml/badge.svg)
+![Build Status](https://github.com/boxyhq/saml20/actions/workflows/node.js.yml/badge.svg)
 
 =============
 
-boxyhq/saml20 is a fork of a fork of [saml20](https://github.com/leandrob/saml20). It now has extended functionality and diverges from the oriignal unmaintained library. The new package is published here - https://www.npmjs.com/package/@boxyhq/saml20
+boxyhq/saml20 is a fork of a fork of [saml20](https://github.com/leandrob/saml20). It now has extended functionality and diverges from the original unmaintained library. The new package is published here - https://www.npmjs.com/package/@boxyhq/saml20
 
 ## Installation
 
