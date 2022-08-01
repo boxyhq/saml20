@@ -49,7 +49,7 @@
     "@xmldom/xmldom": "0.8.2",
     "@authenio/xml-encryption": "git@github.com:boxyhq/node-xml-encryption.git#70b915d7dd107f8191a8e671e9b1e59aed0258f4",
     "lodash": "4.17.21",
-    "rambda": "7.1.4",
+    "rambda": "7.2.0",
     "thumbprint": "0.0.1",
     "xml-crypto": "2.1.4",
     "xml2js": "0.4.23",
