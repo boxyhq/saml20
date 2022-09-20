@@ -4,6 +4,9 @@ import crypto from 'crypto';
 
 import xml2js from 'xml2js';
 
+const BEGIN = '-----BEGIN CERTIFICATE-----';
+const END = '-----END CERTIFICATE-----';
+
 const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     // Some Providers do not escape the & character in the metadata, for now these have been encountered in errorURL
@@ -21,7 +24,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         }
 
         const entityID = rambda.path('EntityDescriptor.$.entityID', res);
-        let X509Certificate = null;
+        let X509Certificate: null | string = null;
         let ssoPostUrl: null | undefined = null;
         let ssoRedirectUrl: null | undefined = null;
         let loginType = 'idp';
@@ -95,8 +98,22 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
 
         if (X509Certificate) {
           ret.thumbprint = thumbprint.calculate(X509Certificate);
-          const { validTo } = new crypto.X509Certificate(X509Certificate);
-          ret.validTo = validTo;
+          /**
+           * new crypto.X509Certificate fails with the X509Certificate cert without
+           * -----BEGIN CERTIFICATE-----
+           * and
+           * -----END CERTIFICATE-----
+           */
+          if (X509Certificate.indexOf(BEGIN) != -1 && X509Certificate.indexOf(END) != -1) {
+            const { validTo } = new crypto.X509Certificate(X509Certificate);
+            ret.validTo = validTo;
+          } else {
+            /**
+             * Prefixing -----BEGIN CERTIFICATE----- and suffixing -----END CERTIFICATE-----
+             */
+            const { validTo } = new crypto.X509Certificate(`${BEGIN}\n${X509Certificate}${END}`);
+            ret.validTo = validTo;
+          }
         }
 
         if (ssoPostUrl) {
