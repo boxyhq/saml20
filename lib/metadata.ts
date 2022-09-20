@@ -1,5 +1,6 @@
 import * as rambda from 'rambda';
 import thumbprint from 'thumbprint';
+import crypto from 'crypto';
 
 import xml2js from 'xml2js';
 
@@ -94,6 +95,8 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
 
         if (X509Certificate) {
           ret.thumbprint = thumbprint.calculate(X509Certificate);
+          const { validTo } = new crypto.X509Certificate(X509Certificate);
+          ret.validTo = validTo;
         }
 
         if (ssoPostUrl) {
