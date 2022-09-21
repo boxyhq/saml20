@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://saml.example.com/entityid" validUntil="2026-06-22T18:39:53.000Z">
+  <IDPSSODescriptor WantAuthnRequestsSigned="false" errorURL="https://login.openathens.net/auth-error?error=ERRORURL_CODE&ts=ERRORURL_TS&context=ERRORURL_CTX&transaction=ERRORURL_TID&sp=ERRORURL_RP" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor use="signing">
+      <KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <X509Data>
+          <X509Certificate>MIICmDCCAYACCQC6LM978TM/gjANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJJ
+bjAgFw0yMjA0MTExMDI3MjBaGA8zMDIxMDgxMjEwMjcyMFowDTELMAkGA1UEBhMC
+SW4wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgPMN71V4y5VzLw6Ev
+aQA+oMLzmIpoV/p4Y3AM00FUYbVhVtngvRPCmsKOvIxkTM9kZ6VjVfPmzQet+dDS
++rOmJDH5Y+42du6dJnA0SM/wNWL7nAqfWN6e7q7/Jxa/dYMOhkgV6/7+0jBxHGnn
+x/2CEVeDF5+nPsdDh2HlPy0MCXLjXGvRpHB/IHQsUHJFKuOQzTiz1OMQHLnV+FQX
+T2kDsGmbM/wZo6xGeH5qcRqZJGgLvtLj8XNe6yVmb1naog7Fr7gjThMichkNDVg2
+0/lkxYqIL8zgS2NYXwQ6UOKplUv189kHSbXgQCco0h1oNR2LRTaHoYsRnzLMH2Pv
+jVoTAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAMXKnzYEyLFwePXXWE76lq5S+2O2
+JIMtygzB3YxOJwvIFWmwDPxqpr4aOpw6T2pQLa3rM1YjW2roNw7B3HHXWoc9F4Av
+GAe8T1u0Cu+Tyo8ZFf9VrPg5kZ7x2G+nojFfs8zeuEKdNrUZz4bkgkC7sTWHFsOA
+oZjUqLyT2tfLnXfYGiXd0qGg9X1bs1x+anAhViltjZ97Eeq8wPtRqhm1hiQyawKT
+5qs4oKw0AaKsW4pBQux4h+ZmfvqD+1chBd5Ve/bq9FsEnWNkGyawzmsMSTB9UwDA
++bqiHmfaTXWlQnualNaY3g5v7EDVB4COz6rXXQY/y5Y90BFoho5MqIjGW0I=
+-----END CERTIFICATE-----</X509Certificate>
+        </X509Data>
+      </KeyInfo>
+    </KeyDescriptor>
+    <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
+    <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://localhost:4000/api/saml/sso"/>
+    <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://localhost:4000/api/saml/sso"/>
+  </IDPSSODescriptor>
+</EntityDescriptor>

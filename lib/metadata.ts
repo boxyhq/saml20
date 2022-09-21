@@ -105,13 +105,25 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
            * -----END CERTIFICATE-----
            */
           if (X509Certificate.indexOf(BEGIN) != -1 && X509Certificate.indexOf(END) != -1) {
-            const { validTo } = new crypto.X509Certificate(X509Certificate);
+            const { validTo } = new crypto.X509Certificate(X509Certificate.trim());
+            ret.validTo = validTo;
+          } else if (X509Certificate.indexOf(BEGIN) == -1 && X509Certificate.indexOf(END) != -1) {
+            /**
+             * Prefixing -----BEGIN CERTIFICATE-----
+             */
+            const { validTo } = new crypto.X509Certificate(`${BEGIN}\n${X509Certificate.trim()}`);
+            ret.validTo = validTo;
+          } else if (X509Certificate.indexOf(BEGIN) != -1 && X509Certificate.indexOf(END) == -1) {
+            /**
+             * Suffixing -----END CERTIFICATE-----
+             */
+            const { validTo } = new crypto.X509Certificate(`${X509Certificate.trim()}\n${END}`);
             ret.validTo = validTo;
           } else {
             /**
              * Prefixing -----BEGIN CERTIFICATE----- and suffixing -----END CERTIFICATE-----
              */
-            const { validTo } = new crypto.X509Certificate(`${BEGIN}\n${X509Certificate}${END}`);
+            const { validTo } = new crypto.X509Certificate(`${BEGIN}\n${X509Certificate.trim()}\n${END}`);
             ret.validTo = validTo;
           }
         }
