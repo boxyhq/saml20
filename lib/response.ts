@@ -159,6 +159,19 @@ function parseXmlAndVersion(rawAssertion, cb) {
 
     xml = xmlBeautify(xml);
 
+    const statusValue =
+      xml.Response &&
+      xml.Response.Status &&
+      xml.Response.Status.StatusCode &&
+      xml.Response.Status.StatusCode['@'] &&
+      xml.Response.Status.StatusCode['@'].Value;
+    const statusParts = statusValue ? statusValue.split(':') : statusValue;
+    const status = statusParts
+      ? statusParts.length > 0
+        ? statusParts[statusParts.length - 1]
+        : undefined
+      : undefined;
+
     let assertion =
       xml.Assertion ||
       (xml.Response && xml.Response.Assertion) ||
@@ -170,7 +183,7 @@ function parseXmlAndVersion(rawAssertion, cb) {
       assertion = assertion[0];
     }
 
-    if (!assertion) {
+    if (!assertion && status !== 'Success') {
       cb(new Error('Invalid assertion.'));
       return;
     }
@@ -186,7 +199,7 @@ function parseXmlAndVersion(rawAssertion, cb) {
     const tokenHandler = tokenHandlers[version];
     assertion.inResponseTo = tokenHandler.getInResponseTo(xml);
 
-    cb(null, assertion, version, response);
+    cb(null, assertion, version, response, status);
   });
 }
 
