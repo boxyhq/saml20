@@ -183,8 +183,13 @@ function parseXmlAndVersion(rawAssertion, cb) {
       assertion = assertion[0];
     }
 
-    if (!assertion && status !== 'Success') {
+    if (!assertion) {
       cb(new Error('Invalid assertion.'));
+      return;
+    }
+
+    if (status && status !== 'Success') {
+      cb(new Error(`Invalid Status Code (${status}).`));
       return;
     }
 
