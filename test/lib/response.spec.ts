@@ -3,6 +3,9 @@ import { expect } from 'chai';
 import fs from 'fs';
 
 const rawResponse = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage.xml').toString();
+const rawResponseAuthnFailed = fs
+  .readFileSync('./test/assets/saml20.validResponseSignedMessageInvalidStatusCode.xml')
+  .toString();
 const validateOpts = {
   thumbprint: 'e606eced42fa3abd0c5693456384f5931b174707',
   audience: 'http://sp.example.com/demo1/metadata.php',
@@ -27,6 +30,15 @@ describe('response.ts', function () {
       response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
     expect(response.issuer).to.equal('http://idp.example.com/metadata.php');
+  });
+
+  it('RAW response with invalid StatusCode', async function () {
+    try {
+      await parse(rawResponseAuthnFailed);
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid Status Code (AuthnFailed).');
+    }
   });
 
   it('RAW response not ok', async function () {

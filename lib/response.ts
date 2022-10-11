@@ -183,13 +183,15 @@ function parseXmlAndVersion(rawAssertion, cb) {
       assertion = assertion[0];
     }
 
-    if (!assertion) {
-      cb(new Error('Invalid assertion.'));
-      return;
+    if (status) {
+      if (status !== 'Success') {
+        cb(new Error(`Invalid Status Code (${status}).`));
+        return;
+      }
     }
 
-    if (status && status !== 'Success') {
-      cb(new Error(`Invalid Status Code (${status}).`));
+    if (!assertion) {
+      cb(new Error('Invalid assertion.'));
       return;
     }
 
@@ -204,7 +206,7 @@ function parseXmlAndVersion(rawAssertion, cb) {
     const tokenHandler = tokenHandlers[version];
     assertion.inResponseTo = tokenHandler.getInResponseTo(xml);
 
-    cb(null, assertion, version, response, status);
+    cb(null, assertion, version, response);
   });
 }
 
