@@ -55,7 +55,7 @@ describe('response.ts', function () {
       await parse(errorResponse);
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion.');
+      expect(result).to.be.equal('Invalid Status Code (AuthnFailed).');
     }
   });
 
