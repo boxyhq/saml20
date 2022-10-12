@@ -159,6 +159,19 @@ function parseXmlAndVersion(rawAssertion, cb) {
 
     xml = xmlBeautify(xml);
 
+    const statusValue =
+      xml.Response &&
+      xml.Response.Status &&
+      xml.Response.Status.StatusCode &&
+      xml.Response.Status.StatusCode['@'] &&
+      xml.Response.Status.StatusCode['@'].Value;
+    const statusParts = statusValue ? statusValue.split(':') : statusValue;
+    const status = statusParts
+      ? statusParts.length > 0
+        ? statusParts[statusParts.length - 1]
+        : undefined
+      : undefined;
+
     let assertion =
       xml.Assertion ||
       (xml.Response && xml.Response.Assertion) ||
@@ -168,6 +181,13 @@ function parseXmlAndVersion(rawAssertion, cb) {
     // if we have an array of assertions then pick first element
     if (assertion && assertion[0]) {
       assertion = assertion[0];
+    }
+
+    if (status) {
+      if (status !== 'Success') {
+        cb(new Error(`Invalid Status Code (${status}).`));
+        return;
+      }
     }
 
     if (!assertion) {

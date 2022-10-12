@@ -3,6 +3,9 @@ import { expect } from 'chai';
 import fs from 'fs';
 
 const rawResponse = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage.xml').toString();
+const rawResponseAuthnFailed = fs
+  .readFileSync('./test/assets/saml20.validResponseSignedMessageInvalidStatusCode.xml')
+  .toString();
 const validateOpts = {
   thumbprint: 'e606eced42fa3abd0c5693456384f5931b174707',
   audience: 'http://sp.example.com/demo1/metadata.php',
@@ -29,6 +32,15 @@ describe('response.ts', function () {
     expect(response.issuer).to.equal('http://idp.example.com/metadata.php');
   });
 
+  it('RAW response with invalid StatusCode', async function () {
+    try {
+      await parse(rawResponseAuthnFailed);
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid Status Code (AuthnFailed).');
+    }
+  });
+
   it('RAW response not ok', async function () {
     try {
       await parse('rawResponse');
@@ -43,7 +55,7 @@ describe('response.ts', function () {
       await parse(errorResponse);
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion.');
+      expect(result).to.be.equal('Invalid Status Code (AuthnFailed).');
     }
   });
 
