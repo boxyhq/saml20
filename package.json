@@ -46,7 +46,7 @@
     "*.{js,ts,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@xmldom/xmldom": "0.8.2",
+    "@xmldom/xmldom": "0.8.3",
     "@authenio/xml-encryption": "https://github.com/boxyhq/node-xml-encryption#70b915d7dd107f8191a8e671e9b1e59aed0258f4",
     "lodash": "4.17.21",
     "rambda": "7.3.0",
