@@ -1,6 +1,6 @@
 {
   "name": "@boxyhq/saml20",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "SAML 2.0 token parser for Node.js",
   "keywords": [
     "SAML 2.0",
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@xmldom/xmldom": "0.8.3",
-    "@authenio/xml-encryption": "https://github.com/boxyhq/node-xml-encryption#70b915d7dd107f8191a8e671e9b1e59aed0258f4",
+    "@authenio/xml-encryption": "https://github.com/boxyhq/node-xml-encryption#57c697695c43399cc39f68bf5d8097b83f2e94af",
     "lodash": "4.17.21",
     "rambda": "7.3.0",
     "thumbprint": "0.0.1",
