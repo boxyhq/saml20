@@ -1,7 +1,7 @@
 import { DOMParser } from '@xmldom/xmldom';
 import { select } from 'xpath';
 import * as xmlenc from '@authenio/xml-encryption';
-import { isSingleRootedXML } from './utils';
+import { countRootNodes } from './utils';
 
 const dom = DOMParser;
 
@@ -34,8 +34,12 @@ const decryptXml = (entireXML: string, options) => {
 
   const xml = new dom().parseFromString(entireXML);
 
-  if (!isSingleRootedXML(xml)) {
+  if (countRootNodes(xml) > 1) {
     throw new Error('multirooted xml not allowed.');
+  }
+
+  if (countRootNodes(xml) === 0) {
+    throw new Error('Invalid assertion.');
   }
 
   const encryptedAssertions = select(

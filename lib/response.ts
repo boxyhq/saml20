@@ -6,7 +6,7 @@ import { decryptXml } from './decrypt';
 import { DOMParser } from '@xmldom/xmldom';
 import { select } from 'xpath';
 import saml20 from './saml20';
-import { isSingleRootedXML } from './utils';
+import { countRootNodes } from './utils';
 
 const tokenHandlers = {
   '2.0': saml20,
@@ -64,8 +64,12 @@ const parseIssuer = (rawAssertion) => {
   }
   const xml = new DOMParser().parseFromString(rawAssertion);
 
-  if (!isSingleRootedXML(xml)) {
+  if (countRootNodes(xml) > 1) {
     throw new Error('multirooted xml not allowed.');
+  }
+
+  if (countRootNodes(xml) === 0) {
+    throw new Error('Invalid assertion.');
   }
 
   const issuerValue = select(

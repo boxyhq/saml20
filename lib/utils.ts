@@ -1,6 +1,8 @@
-const isSingleRootedXML = (xmlDoc: Document) =>
-  Array.from(xmlDoc.childNodes as NodeListOf<Element>).filter(
+const countRootNodes = (xmlDoc: Document) => {
+  const rootNodes = Array.from(xmlDoc.childNodes as NodeListOf<Element>).filter(
     (n) => n.tagName != null && n.childNodes != null
-  ).length === 1;
+  );
+  return rootNodes.length;
+};
 
-export { isSingleRootedXML };
+export { countRootNodes };
