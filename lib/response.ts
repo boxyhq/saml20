@@ -16,6 +16,7 @@ class WrapError extends Error {
   inner?: any;
 }
 
+/**@deprecated Use parseIssuer instead */
 const parse = async (rawAssertion: string): Promise<SAMLProfile> => {
   return new Promise((resolve, reject) => {
     parseInternal(rawAssertion, function onParse(err: Error, profile: SAMLProfile) {
