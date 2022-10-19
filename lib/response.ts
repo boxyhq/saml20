@@ -6,6 +6,7 @@ import { decryptXml } from './decrypt';
 import { DOMParser } from '@xmldom/xmldom';
 import { select } from 'xpath';
 import saml20 from './saml20';
+import { isSingleRootedXML } from './utils';
 
 const tokenHandlers = {
   '2.0': saml20,
@@ -62,6 +63,11 @@ const parseIssuer = (rawAssertion) => {
     throw new Error('rawAssertion is required.');
   }
   const xml = new DOMParser().parseFromString(rawAssertion);
+
+  if (!isSingleRootedXML(xml)) {
+    throw new Error('multirooted xml not allowed.');
+  }
+
   const issuerValue = select(
     "/*[contains(local-name(), 'Response')]/*[local-name(.)='Issuer']",
     xml

@@ -1,6 +1,7 @@
 import { DOMParser } from '@xmldom/xmldom';
 import { select } from 'xpath';
 import * as xmlenc from '@authenio/xml-encryption';
+import { isSingleRootedXML } from './utils';
 
 const dom = DOMParser;
 
@@ -32,6 +33,11 @@ const decryptXml = (entireXML: string, options) => {
   }
 
   const xml = new dom().parseFromString(entireXML);
+
+  if (!isSingleRootedXML(xml)) {
+    throw new Error('multirooted xml not allowed.');
+  }
+
   const encryptedAssertions = select(
     "/*[contains(local-name(), 'Response')]/*[local-name(.)='EncryptedAssertion']",
     xml
