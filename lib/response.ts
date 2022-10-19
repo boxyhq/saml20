@@ -6,6 +6,7 @@ import { decryptXml } from './decrypt';
 import { DOMParser } from '@xmldom/xmldom';
 import { select } from 'xpath';
 import saml20 from './saml20';
+import { countRootNodes } from './utils';
 
 const tokenHandlers = {
   '2.0': saml20,
@@ -15,6 +16,7 @@ class WrapError extends Error {
   inner?: any;
 }
 
+/**@deprecated Use parseIssuer instead */
 const parse = async (rawAssertion: string): Promise<SAMLProfile> => {
   return new Promise((resolve, reject) => {
     parseInternal(rawAssertion, function onParse(err: Error, profile: SAMLProfile) {
@@ -62,6 +64,15 @@ const parseIssuer = (rawAssertion) => {
     throw new Error('rawAssertion is required.');
   }
   const xml = new DOMParser().parseFromString(rawAssertion);
+
+  if (countRootNodes(xml) > 1) {
+    throw new Error('multirooted xml not allowed.');
+  }
+
+  if (countRootNodes(xml) === 0) {
+    throw new Error('Invalid assertion.');
+  }
+
   const issuerValue = select(
     "/*[contains(local-name(), 'Response')]/*[local-name(.)='Issuer']",
     xml
