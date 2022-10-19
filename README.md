@@ -14,7 +14,7 @@ $ npm install @boxyhq/saml20
 
 ## Usage
 
-### saml.parse(rawAssertion, cb)
+### [DEPRECATED] saml.parse(rawAssertion, cb)
 
 `rawAssertion` is the SAML Assertion in string format.
 
@@ -29,6 +29,16 @@ saml.parse(rawAssertion, function (err, profile) {
   var claims = profile.claims; // Array of user attributes;
   var issuer = profile.issuer; // String Issuer name.
 });
+```
+
+### saml.parseIssuer(rawAssertion)
+
+`rawAssertion` is the SAML Assertion in string format.
+
+Parses the `rawAssertion` without validating signature, expiration and audience. It allows you to get information from the token like the Issuer name.
+
+```javascript
+const issuer = saml.parseIssuer(rawResponse);
 ```
 
 ### saml.validate(rawAssertion, options, cb)
