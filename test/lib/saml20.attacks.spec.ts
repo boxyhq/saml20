@@ -1,4 +1,4 @@
-import { validate } from '../../lib/response';
+import { parseIssuer, validate } from '../../lib/response';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -13,16 +13,27 @@ const multipleRootElements = fs
   .toString();
 
 describe('saml20.attacks', () => {
-  it('multiple roots => invalid', async () => {
-    try {
-      await validate(multipleRootElements, {
-        publicKey: certificate,
-        audience,
-        bypassExpiration: true,
-      });
-    } catch (error) {
-      const result = (error as Error).message;
-      expect(result).to.be.equal('multirooted xml not allowed.');
-    }
+  describe('multiple roots => invalid', () => {
+    it('validate', async () => {
+      try {
+        await validate(multipleRootElements, {
+          publicKey: certificate,
+          audience,
+          bypassExpiration: true,
+        });
+      } catch (error) {
+        const result = (error as Error).message;
+        expect(result).to.be.equal('multirooted xml not allowed.');
+      }
+    });
+
+    it('parseIssuer', () => {
+      try {
+        parseIssuer(multipleRootElements);
+      } catch (error) {
+        const result = (error as Error).message;
+        expect(result).to.be.equal('multirooted xml not allowed.');
+      }
+    });
   });
 });
