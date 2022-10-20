@@ -34,11 +34,13 @@ const decryptXml = (entireXML: string, options) => {
 
   const xml = new dom().parseFromString(entireXML);
 
-  if (countRootNodes(xml) > 1) {
+  const rootNodeCount = countRootNodes(xml);
+
+  if (rootNodeCount > 1) {
     throw new Error('multirooted xml not allowed.');
   }
 
-  if (countRootNodes(xml) === 0) {
+  if (rootNodeCount === 0) {
     throw new Error('Invalid assertion.');
   }
 
