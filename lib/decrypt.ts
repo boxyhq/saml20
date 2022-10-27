@@ -1,6 +1,6 @@
 import { DOMParser } from '@xmldom/xmldom';
 import { select } from 'xpath';
-import * as xmlenc from '@authenio/xml-encryption';
+import * as xmlenc from 'xml-encryption';
 import { countRootNodes } from './utils';
 
 const dom = DOMParser;
