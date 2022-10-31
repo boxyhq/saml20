@@ -46,7 +46,7 @@
     "*.{js,ts,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@xmldom/xmldom": "0.8.3",
+    "@xmldom/xmldom": "0.8.4",
     "lodash": "4.17.21",
     "rambda": "7.3.0",
     "thumbprint": "0.0.1",
