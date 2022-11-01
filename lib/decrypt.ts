@@ -3,8 +3,6 @@ import { select } from 'xpath';
 import * as xmlenc from 'xml-encryption';
 import { countRootNodes } from './utils';
 
-const dom = DOMParser;
-
 const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
   if (!Array.isArray(encryptedAssertions)) {
     throw new Error('Error Undefined Encrypted Assertion.');
@@ -21,7 +19,7 @@ const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
       return new Error('Error Undefined Encryption Assertion.');
     }
 
-    const assertionNode = new dom().parseFromString(res);
+    const assertionNode = new DOMParser().parseFromString(res);
     xml.replaceChild(assertionNode, encryptedAssertions[0]);
 
     return xml.toString();
@@ -32,7 +30,7 @@ const decryptXml = (entireXML: string, options) => {
     return new Error('Error Undefined Assertion.');
   }
 
-  const xml = new dom().parseFromString(entireXML);
+  const xml = new DOMParser().parseFromString(entireXML);
 
   const rootNodeCount = countRootNodes(xml);
 
