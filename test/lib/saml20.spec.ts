@@ -16,6 +16,14 @@ const validateOptsArray = [
   'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685',
 ];
 
+const assertion1 = {
+  Conditions: {
+    AudienceRestriction: {
+      Audience: 'https://saml.boxyhq.com/f46e93394c5a51d36715d95d910872ac7372d4d9',
+    },
+  },
+};
+
 describe('saml20.ts', function () {
   it('parse assertion ok', function () {
     const value = saml20.parse(assertion);
@@ -66,6 +74,33 @@ describe('saml20.ts', function () {
     try {
       const value = saml20.validateAudience(assertion, validateOptsArray);
       expect(value).to.equal(false);
+    } catch (error) {
+      expect(error).to.be.ok;
+    }
+  });
+
+  it('validateAudience with Suffix ok', async function () {
+    try {
+      const value = saml20.validateAudience(assertion1, 'https://saml.boxyhq.com');
+      expect(value).to.equal(true);
+    } catch (error) {
+      expect(error).to.be.ok;
+    }
+  });
+
+  it('validateAudience with Suffix Array not ok', async function () {
+    try {
+      const value = saml20.validateAudience(assertion1, [...validateOptsArray, 'https://saml.boxyhq.com']);
+      expect(value).to.equal(true);
+    } catch (error) {
+      expect(error).to.be.ok;
+    }
+  });
+
+  it('validateAudience with Suffix Array ok', async function () {
+    try {
+      const value = saml20.validateAudience(assertion1, validateOptsArray);
+      expect(value).to.equal(true);
     } catch (error) {
       expect(error).to.be.ok;
     }
