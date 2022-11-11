@@ -88,7 +88,7 @@ describe('saml20.ts', function () {
     }
   });
 
-  it('validateAudience with Suffix Array not ok', async function () {
+  it('validateAudience with Suffix Array ok', async function () {
     try {
       const value = saml20.validateAudience(assertion1, [...validateOptsArray, 'https://saml.boxyhq.com']);
       expect(value).to.equal(true);
@@ -97,10 +97,10 @@ describe('saml20.ts', function () {
     }
   });
 
-  it('validateAudience with Suffix Array ok', async function () {
+  it('validateAudience with Suffix Array not ok', async function () {
     try {
       const value = saml20.validateAudience(assertion1, validateOptsArray);
-      expect(value).to.equal(true);
+      expect(value).to.equal(false);
     } catch (error) {
       expect(error).to.be.ok;
     }
