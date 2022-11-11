@@ -73,10 +73,19 @@ const parse = (assertion) => {
 
 const validateAudience = (assertion, realm) => {
   const audience = getProp(assertion, 'Conditions.AudienceRestriction.Audience');
-  if (Array.isArray(realm)) {
-    return realm.indexOf(audience) !== -1;
+  if (audience) {
+    if (Array.isArray(realm)) {
+      for (let i = 0; i < realm.length; i++) {
+        if (audience.startsWith(realm[i])) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return audience.startsWith(realm);
+  } else {
+    return false;
   }
-  return audience === realm;
 };
 
 const validateExpiration = (assertion) => {
