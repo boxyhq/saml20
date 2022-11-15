@@ -51,27 +51,27 @@
     "rambda": "7.3.0",
     "thumbprint": "0.0.1",
     "xml-crypto": "3.0.1",
-    "xml-encryption": "3.0.1",
+    "xml-encryption": "3.0.2",
     "xml2js": "0.4.23",
     "xmlbuilder": "15.1.1"
   },
   "devDependencies": {
-    "@types/chai": "4.3.3",
+    "@types/chai": "4.3.4",
     "@types/mocha": "10.0.0",
     "@types/node": "18.11.9",
-    "@typescript-eslint/eslint-plugin": "5.41.0",
-    "@typescript-eslint/parser": "5.42.0",
-    "chai": "4.3.6",
+    "@typescript-eslint/eslint-plugin": "5.43.0",
+    "@typescript-eslint/parser": "5.43.0",
+    "chai": "4.3.7",
     "eslint": "8.27.0",
     "eslint-config-prettier": "8.5.0",
-    "husky": "8.0.1",
+    "husky": "8.0.2",
     "lint-staged": "13.0.3",
     "mocha": "10.1.0",
     "nyc": "15.1.0",
     "prettier": "2.7.1",
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.1.0",
-    "typescript": "4.8.4"
+    "typescript": "4.9.3"
   },
   "readmeFilename": "README.md"
 }
