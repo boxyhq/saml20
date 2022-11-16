@@ -23,7 +23,7 @@ describe('decrypt.ts', function () {
   it('valid xml', function () {
     try {
       const value = decryptXml(samlResponseEncrypted, options);
-      expect(value).to.be.ok;
+      expect(value).to.be.not.null;
     } catch (error) {
       console.log(error);
     }
