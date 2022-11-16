@@ -3,8 +3,6 @@ import { decryptXml } from '../../lib/decrypt';
 import { expect } from 'chai';
 import fs from 'fs';
 
-let validResponse;
-
 const oneLoginSamlResponseEncrypted = fs
   .readFileSync('./test/assets/certificates/oneloginEncResponse.xml')
   .toString();
@@ -33,7 +31,8 @@ const oktaOptions = {
 };
 describe('decrypt.response.spec', function () {
   it('One Login Should validate saml 2.0 token using thumbprint', async function () {
-    validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
+    const validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
+
     const response = await validate(validResponse.toString(), {
       publicKey: oneLoginCertificate,
       thumbprint: oneLoginThumbprint,
@@ -48,7 +47,7 @@ describe('decrypt.response.spec', function () {
   });
 
   it('One Login Should validate saml 2.0 token using thumbprint Only', async function () {
-    validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
+    const validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
     const response = await validate(validResponse.toString(), {
       thumbprint: oneLoginThumbprint,
       bypassExpiration: true,
@@ -61,7 +60,7 @@ describe('decrypt.response.spec', function () {
   });
 
   it('Okta Should validate saml 2.0 token using thumbprint', async function () {
-    validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
+    const validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
     const response = await validate(validResponse.toString(), {
       publicKey: oktaCertificate,
       thumbprint: oktaThumbprint,
@@ -75,7 +74,7 @@ describe('decrypt.response.spec', function () {
   });
 
   it('Okta Should validate saml 2.0 token using thumbprint Only', async function () {
-    validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
+    const validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
     const response = await validate(validResponse.toString(), {
       thumbprint: oktaThumbprint,
       bypassExpiration: true,

@@ -11,7 +11,7 @@ const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
     throw new Error('Error Multiple Assertion.');
   }
 
-  return xmlenc.decrypt(encryptedAssertions[0].toString(), { key: options.privateKey }, (err, res) => {
+  return xmlenc.decrypt(encryptedAssertions[0], { key: options.privateKey }, (err, res) => {
     if (err) {
       return new Error('Error Exception of Assertion Decryption.');
     }
@@ -20,7 +20,8 @@ const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
     }
 
     const assertionNode = new DOMParser().parseFromString(res);
-    xml.replaceChild(assertionNode, encryptedAssertions[0]);
+    xml.documentElement.removeChild(encryptedAssertions[0]);
+    xml.documentElement.appendChild(assertionNode);
 
     return xml.toString();
   });
@@ -30,7 +31,27 @@ const decryptXml = (entireXML: string, options) => {
     return new Error('Error Undefined Assertion.');
   }
 
-  const xml = new DOMParser().parseFromString(entireXML);
+  const errors = {};
+  let multiRootErrFound = false;
+  const errorHandler = (key, msg) => {
+    if (!errors[key]) errors[key] = [];
+    if (msg.indexOf('Only one element can be added and only after doctype')) {
+      if (!multiRootErrFound) {
+        multiRootErrFound = true;
+        errors[key].push(msg);
+      }
+    } else {
+      errors[key].push(msg);
+    }
+  };
+
+  const xml = new DOMParser({ errorHandler }).parseFromString(entireXML);
+
+  Object.keys(errors).forEach((key) => {
+    if (errors[key].indexOf('Only one element can be added and only after doctype')) {
+      throw new Error('multirooted xml not allowed.');
+    }
+  });
 
   const rootNodeCount = countRootNodes(xml);
 
