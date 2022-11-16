@@ -3,10 +3,9 @@ import xml2js from 'xml2js';
 import { getVersion } from './getVersion';
 import { validateSignature } from './validateSignature';
 import { decryptXml } from './decrypt';
-import { DOMParser } from '@xmldom/xmldom';
 import { select } from 'xpath';
 import saml20 from './saml20';
-import { countRootNodes } from './utils';
+import { parseFromString } from './utils';
 
 const tokenHandlers = {
   '2.0': saml20,
@@ -63,17 +62,8 @@ const parseIssuer = (rawAssertion) => {
   if (!rawAssertion) {
     throw new Error('rawAssertion is required.');
   }
-  const xml = new DOMParser().parseFromString(rawAssertion);
 
-  const rootNodeCount = countRootNodes(xml);
-
-  if (rootNodeCount > 1) {
-    throw new Error('multirooted xml not allowed.');
-  }
-
-  if (rootNodeCount === 0) {
-    throw new Error('Invalid assertion.');
-  }
+  const xml = parseFromString(rawAssertion);
 
   const issuerValue = select(
     "/*[contains(local-name(), 'Response')]/*[local-name(.)='Issuer']",

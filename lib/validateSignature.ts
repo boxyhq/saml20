@@ -1,6 +1,6 @@
 import xmlcrypto from 'xml-crypto';
 import thumbprint from 'thumbprint';
-import { DOMParser } from '@xmldom/xmldom';
+import { parseFromString } from './utils';
 
 const select = xmlcrypto.xpath;
 const SignedXml = xmlcrypto.SignedXml;
@@ -17,7 +17,7 @@ const certToPEM = (cert) => {
 };
 
 const hasValidSignature = (xml, cert, certThumbprint) => {
-  const doc = new DOMParser().parseFromString(xml);
+  const doc = parseFromString(xml);
   let signature =
     select(
       doc,
