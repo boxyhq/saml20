@@ -47,11 +47,11 @@ const decryptXml = (entireXML: string, options) => {
 
   const xml = new DOMParser({ errorHandler }).parseFromString(entireXML);
 
-  Object.keys(errors).forEach((key) => {
-    if (errors[key].indexOf('Only one element can be added and only after doctype')) {
-      throw new Error('multirooted xml not allowed.');
-    }
-  });
+  if (multiRootErrFound) {
+    throw new Error('multirooted xml not allowed.');
+  } else if (Object.keys(errors).length > 0) {
+    throw new Error('Invalid XML.');
+  }
 
   const rootNodeCount = countRootNodes(xml);
 
