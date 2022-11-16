@@ -1,7 +1,6 @@
-import { DOMParser } from '@xmldom/xmldom';
 import { select } from 'xpath';
 import * as xmlenc from 'xml-encryption';
-import { countRootNodes } from './utils';
+import { parseFromString } from './utils';
 
 const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
   if (!Array.isArray(encryptedAssertions)) {
@@ -19,7 +18,7 @@ const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
       return new Error('Error Undefined Encryption Assertion.');
     }
 
-    const assertionNode = new DOMParser().parseFromString(res);
+    const assertionNode = parseFromString(res);
     xml.documentElement.removeChild(encryptedAssertions[0]);
     xml.documentElement.appendChild(assertionNode);
 
@@ -31,37 +30,7 @@ const decryptXml = (entireXML: string, options) => {
     return new Error('Error Undefined Assertion.');
   }
 
-  const errors = {};
-  let multiRootErrFound = false;
-  const errorHandler = (key, msg) => {
-    if (!errors[key]) errors[key] = [];
-    if (msg.indexOf('Only one element can be added and only after doctype')) {
-      if (!multiRootErrFound) {
-        multiRootErrFound = true;
-        errors[key].push(msg);
-      }
-    } else {
-      errors[key].push(msg);
-    }
-  };
-
-  const xml = new DOMParser({ errorHandler }).parseFromString(entireXML);
-
-  if (multiRootErrFound) {
-    throw new Error('multirooted xml not allowed.');
-  } else if (Object.keys(errors).length > 0) {
-    throw new Error('Invalid XML.');
-  }
-
-  const rootNodeCount = countRootNodes(xml);
-
-  if (rootNodeCount > 1) {
-    throw new Error('multirooted xml not allowed.');
-  }
-
-  if (rootNodeCount === 0) {
-    throw new Error('Invalid assertion.');
-  }
+  const xml = parseFromString(entireXML);
 
   const encryptedAssertions = select(
     "/*[contains(local-name(), 'Response')]/*[local-name(.)='EncryptedAssertion']",
