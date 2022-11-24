@@ -1,5 +1,5 @@
 import * as rambda from 'rambda';
-import thumbprint from 'thumbprint';
+import { thumbprint } from './utils';
 import crypto from 'crypto';
 
 import xml2js from 'xml2js';
@@ -97,7 +97,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         }
 
         if (X509Certificate) {
-          ret.thumbprint = thumbprint.calculate(X509Certificate);
+          ret.thumbprint = thumbprint(X509Certificate);
           /**
            * new crypto.X509Certificate fails with the X509Certificate cert without
            * -----BEGIN CERTIFICATE-----

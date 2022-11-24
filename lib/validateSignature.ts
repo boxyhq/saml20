@@ -1,5 +1,5 @@
 import xmlcrypto from 'xml-crypto';
-import thumbprint from 'thumbprint';
+import { thumbprint } from './utils';
 import { parseFromString } from './utils';
 
 const select = xmlcrypto.xpath;
@@ -53,7 +53,7 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
         if (embeddedSignature.length > 0) {
           const base64cer = embeddedSignature[0].firstChild.toString();
 
-          calculatedThumbprint = thumbprint.calculate(base64cer);
+          calculatedThumbprint = thumbprint(base64cer);
 
           return certToPEM(base64cer);
         }

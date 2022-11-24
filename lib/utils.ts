@@ -1,4 +1,5 @@
 import { DOMParser } from '@xmldom/xmldom';
+import crypto from 'crypto';
 
 const countRootNodes = (xmlDoc: Document) => {
   const rootNodes = Array.from(xmlDoc.childNodes as NodeListOf<Element>).filter(
@@ -43,4 +44,11 @@ const parseFromString = (xmlString: string) => {
   return xml;
 };
 
-export { parseFromString };
+const thumbprint = (cert: string) => {
+  const shasum = crypto.createHash('sha1');
+  const bin = Buffer.from(cert, 'base64').toString('binary');
+  shasum.update(bin);
+  return shasum.digest('hex');
+};
+
+export { parseFromString, thumbprint };
