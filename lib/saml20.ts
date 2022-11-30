@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+const permanentNameIdentifier = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent';
 const nameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
 
 function getClaims(attributes) {
@@ -8,7 +9,13 @@ function getClaims(attributes) {
   attributes.forEach(function attributesForEach(attribute) {
     const attributeName = attribute['@'].Name;
 
-    claims[attributeName] = getProp(attribute, 'AttributeValue');
+    const extProp = getExtendedProp(attribute, 'AttributeValue', 'NameID');
+
+    claims[attributeName] = extProp.result;
+
+    if (extProp.format === permanentNameIdentifier) {
+      claims[nameIdentifierClaimType] = extProp.result;
+    }
   });
 
   return claims;
@@ -26,26 +33,34 @@ function trimWords(phrase) {
     .join(' ');
 }
 
-function getProp(obj, prop?: string) {
+function getExtendedProp(obj, prop?: string, extraProp?: string) {
   let result = prop ? _.get(obj, prop) : obj;
+  const format = result && result['@'] && result['@'].Format ? result['@'].Format : null;
 
   if (result && result._) {
     result = result._;
   }
 
   if (typeof result === 'string') {
-    result = trimWords(result);
-
-    return result;
+    return {
+      result: trimWords(result),
+      format,
+    };
   } else if (result instanceof Array) {
     result.forEach(function parseArrayItem(i, ix) {
       result[ix] = getProp(i);
     });
 
-    return result;
-  } else {
-    return;
+    return { result, format };
+  } else if (extraProp && result && result[extraProp!]) {
+    return getExtendedProp(result[extraProp!]);
   }
+
+  return {};
+}
+
+function getProp(obj, prop?: string, extraProp?: string) {
+  return getExtendedProp(obj, prop, extraProp).result;
 }
 
 const parse = (assertion) => {
@@ -59,7 +74,7 @@ const parse = (assertion) => {
 
   const subjectName = getProp(assertion, 'Subject.NameID');
 
-  if (subjectName) {
+  if (subjectName && !claims[nameIdentifierClaimType]) {
     claims[nameIdentifierClaimType] = subjectName;
   }
 

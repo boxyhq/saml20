@@ -1,4 +1,4 @@
-import { parse, validate } from '../../lib/response';
+import { parse, parseIssuer, validate } from '../../lib/response';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -21,6 +21,7 @@ const audience = 'http://demoscope.com';
 const validToken = fs.readFileSync('./test/assets/saml20.validToken.xml').toString();
 const invalidToken = fs.readFileSync('./test/assets/saml20.invalidToken.xml').toString();
 const invalidWrappedToken = fs.readFileSync('./test/assets/saml20.invalidWrappedToken.xml').toString();
+const validAssertion = fs.readFileSync('./test/assets/saml20.validAssertion.xml').toString();
 
 describe('response.ts', function () {
   it('RAW response ok', async function () {
@@ -209,16 +210,22 @@ describe('response.ts', function () {
   });
 
   it('parseIssuer response ok', async function () {
-    const response = await parse(validResponse);
-    expect(response.issuer).to.equal('http://idp.example.com/metadata.php');
+    const issuer = await parseIssuer(validResponse);
+    expect(issuer).to.equal('http://idp.example.com/metadata.php');
   });
 
   it('parseIssuer not ok', async function () {
     try {
-      await parse('rawResponse');
+      await parseIssuer('rawResponse');
     } catch (error) {
-      const result = (error as Error).message;
-      expect(result).to.be.equal('An error occurred trying to parse XML assertion.');
+      expect((error as Error).message).to.be.equal('Invalid assertion.');
     }
+  });
+
+  it('Should parse saml 2.0 assertion and check nameidentifier picks up nameid-permanent', async function () {
+    const response = await parse(validAssertion);
+    expect('permanent-id').to.equal(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+    );
   });
 });
