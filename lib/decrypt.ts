@@ -4,18 +4,18 @@ import { parseFromString } from './utils';
 
 const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
   if (!Array.isArray(encryptedAssertions)) {
-    throw new Error('Error Undefined Encrypted Assertion.');
+    throw new Error('Undefined Encrypted Assertion.');
   }
   if (encryptedAssertions.length !== 1) {
-    throw new Error('Error Multiple Assertion.');
+    throw new Error('Multiple Assertion.');
   }
 
   return xmlenc.decrypt(encryptedAssertions[0], { key: options.privateKey }, (err, res) => {
     if (err) {
-      return new Error('Error Exception of Assertion Decryption.');
+      throw new Error('Exception of Assertion Decryption.');
     }
     if (!res) {
-      return new Error('Error Undefined Encryption Assertion.');
+      throw new Error('Undefined Encryption Assertion.');
     }
 
     const assertionNode = parseFromString(res);
@@ -27,7 +27,7 @@ const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
 };
 const decryptXml = (entireXML: string, options) => {
   if (!entireXML) {
-    return new Error('Error Undefined Assertion.');
+    throw new Error('Undefined Assertion.');
   }
 
   const xml = parseFromString(entireXML);

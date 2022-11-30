@@ -20,12 +20,13 @@ const options = {
   privateKey: privateKey,
 };
 describe('decrypt.ts', function () {
-  it('valid xml', function () {
+  it('valid xml', function (done) {
     try {
       const value = decryptXml(samlResponseEncrypted, options);
       expect(value).to.be.not.null;
+      done();
     } catch (error) {
-      console.log(error);
+      done(error);
     }
   });
 
@@ -33,7 +34,7 @@ describe('decrypt.ts', function () {
     try {
       decryptXml('', options);
     } catch (error) {
-      expect(error).to.equal('Error Undefined Assertion.');
+      expect((error as Error).message).to.equal('Undefined Assertion.');
     }
   });
   it('empty privateKey ', function () {
@@ -42,7 +43,7 @@ describe('decrypt.ts', function () {
         encPrivateKey: '',
       });
     } catch (error) {
-      expect(error).to.equal('Error Exception of Assertion Decryption.');
+      expect((error as Error).message).to.equal('Exception of Assertion Decryption.');
     }
   });
 });
