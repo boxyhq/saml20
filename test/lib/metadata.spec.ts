@@ -6,6 +6,7 @@ const samlMetadata = fs.readFileSync('./test/assets/mock-saml-metadata.xml').toS
 const samlMetadata1 = fs.readFileSync('./test/assets/mock-saml-metadata1.xml').toString();
 const samlMetadata2 = fs.readFileSync('./test/assets/mock-saml-metadata2.xml').toString();
 const samlMetadata3 = fs.readFileSync('./test/assets/mock-saml-metadata3.xml').toString();
+const samlMetadata4 = fs.readFileSync('./test/assets/mock-saml-metadata4.xml').toString();
 
 describe('metadata.ts', function () {
   it('saml MetaData ok without BEGIN & END notations', async function () {
@@ -46,6 +47,18 @@ describe('metadata.ts', function () {
     expect(value.sso.postUrl).to.equal('http://localhost:4000/api/saml/sso');
     expect(value.sso.redirectUrl).to.equal('http://localhost:4000/api/saml/sso');
     expect(value.validTo).to.equal('Aug 12 10:27:20 3021 GMT');
+  });
+
+  it.only('saml MetaData ok with multiple signing certs', async function () {
+    const value = await parseMetadata(samlMetadata4, {});
+    expect(value.entityID).to.equal('https://saml.example.com/entityid');
+    expect(value.thumbprint).to.equal(
+      '8996bcc1afff3ff8e41f8025ff034b516050a434,f9e424fe5fb3422db37859fe29b7f92f11af60a7'
+    );
+    expect(value.loginType).to.equal('idp');
+    expect(value.sso.postUrl).to.equal('http://localhost:4000/api/saml/sso');
+    expect(value.sso.redirectUrl).to.equal('http://localhost:4000/api/saml/sso');
+    expect(value.validTo).to.equal('Aug 12 10:27:20 3021 GMT,Aug 12 10:27:20 3021 GMT');
   });
 
   it('saml Metadata validateNameIDFormat ok', async function () {
