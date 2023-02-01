@@ -24,7 +24,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         }
 
         const entityID = rambda.path('EntityDescriptor.$.entityID', res);
-        let X509Certificate: null | string = null;
+        const X509Certificates: string[] = [];
         let ssoPostUrl: null | undefined = null;
         let ssoRedirectUrl: null | undefined = null;
         let loginType = 'idp';
@@ -45,7 +45,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
             if (keyDesRec['$'] && keyDesRec['$'].use === 'signing') {
               const ki = keyDesRec['KeyInfo'][0];
               const cd = ki['X509Data'][0];
-              X509Certificate = cd['X509Certificate'][0];
+              X509Certificates.push(cd['X509Certificate'][0]);
             }
           }
 
@@ -96,36 +96,48 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
           ret.entityID = entityID;
         }
 
-        if (X509Certificate) {
-          ret.thumbprint = thumbprint(X509Certificate);
+        const tPrints: string[] = [];
+        const validTos: string[] = [];
+        for (const X509Certificate of X509Certificates) {
+          tPrints.push(thumbprint(X509Certificate));
           /**
            * new crypto.X509Certificate fails with the X509Certificate cert without
            * -----BEGIN CERTIFICATE-----
            * and
            * -----END CERTIFICATE-----
            */
+          let vt = '';
           if (X509Certificate.indexOf(BEGIN) != -1 && X509Certificate.indexOf(END) != -1) {
             const { validTo } = new crypto.X509Certificate(X509Certificate.trim());
-            ret.validTo = validTo;
+            vt = validTo;
           } else if (X509Certificate.indexOf(BEGIN) == -1 && X509Certificate.indexOf(END) != -1) {
             /**
              * Prefixing -----BEGIN CERTIFICATE-----
              */
             const { validTo } = new crypto.X509Certificate(`${BEGIN}\n${X509Certificate.trim()}`);
-            ret.validTo = validTo;
+            vt = validTo;
           } else if (X509Certificate.indexOf(BEGIN) != -1 && X509Certificate.indexOf(END) == -1) {
             /**
              * Suffixing -----END CERTIFICATE-----
              */
             const { validTo } = new crypto.X509Certificate(`${X509Certificate.trim()}\n${END}`);
-            ret.validTo = validTo;
+            vt = validTo;
           } else {
             /**
              * Prefixing -----BEGIN CERTIFICATE----- and suffixing -----END CERTIFICATE-----
              */
             const { validTo } = new crypto.X509Certificate(`${BEGIN}\n${X509Certificate.trim()}\n${END}`);
-            ret.validTo = validTo;
+            vt = validTo;
           }
+
+          validTos.push(vt);
+        }
+
+        if (tPrints.length > 0) {
+          ret.thumbprint = tPrints.join(',');
+        }
+        if (validTos.length > 0) {
+          ret.validTo = validTos.join(',');
         }
 
         if (ssoPostUrl) {
