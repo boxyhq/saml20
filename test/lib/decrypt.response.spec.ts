@@ -73,10 +73,10 @@ describe('decrypt.response.spec', function () {
     );
   });
 
-  it('Okta Should validate saml 2.0 token using thumbprint Only', async function () {
+  it('Okta Should validate saml 2.0 token using thumbprint Only. Also test multiple thumprint validation.', async function () {
     const validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
     const response = await validate(validResponse.toString(), {
-      thumbprint: oktaThumbprint,
+      thumbprint: `${oktaThumbprint},somedummythumbprint`,
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
     });

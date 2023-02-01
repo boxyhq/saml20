@@ -94,8 +94,12 @@ const validateSignature = (xml, cert, certThumbprint) => {
       return id;
     }
 
-    if (certThumbprint && calculatedThumbprint.toUpperCase() === certThumbprint.toUpperCase()) {
-      return id;
+    if (certThumbprint) {
+      const thumbprints = certThumbprint.split(',');
+
+      if (thumbprints.includes(calculatedThumbprint)) {
+        return id;
+      }
     }
   }
 };
