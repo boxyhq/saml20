@@ -49,7 +49,7 @@ describe('metadata.ts', function () {
     expect(value.validTo).to.equal('Aug 12 10:27:20 3021 GMT');
   });
 
-  it.only('saml MetaData ok with multiple signing certs', async function () {
+  it('saml MetaData ok with multiple signing certs', async function () {
     const value = await parseMetadata(samlMetadata4, {});
     expect(value.entityID).to.equal('https://saml.example.com/entityid');
     expect(value.thumbprint).to.equal(
