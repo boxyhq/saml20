@@ -92,6 +92,15 @@ describe('response.ts', function () {
     expect(response.issuer).to.equal('http://idp.example.com/metadata.php');
   });
 
+  it('validate raw response with invalid StatusCode', async function () {
+    try {
+      await validate(rawResponseAuthnFailed, validateOpts);
+    } catch (error) {
+      const result = (error as Error).message;
+      expect(result).to.be.equal('Invalid Status Code (AuthnFailed).');
+    }
+  });
+
   it('validate raw response not ok', async function () {
     try {
       await validate('rawResponse', validateOpts);
