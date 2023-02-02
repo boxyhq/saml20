@@ -4,8 +4,8 @@ export interface SAMLReq {
   callbackUrl: string;
   isPassive?: boolean;
   forceAuthn?: boolean;
-  identifierFormat?: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress';
-  providerName?: 'BoxyHQ';
+  identifierFormat?: string;
+  providerName?: string;
   signingKey: string;
   publicKey: string;
 }
