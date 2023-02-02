@@ -15,6 +15,12 @@ class WrapError extends Error {
   inner?: any;
 }
 
+const parser = new xml2js.Parser({
+  attrkey: '@',
+  charkey: '_',
+  tagNameProcessors: [xml2js.processors.stripPrefix],
+});
+
 /**@deprecated Use parseIssuer instead */
 const parse = async (rawAssertion: string): Promise<SAMLProfile> => {
   return new Promise((resolve, reject) => {
@@ -145,72 +151,65 @@ const validateInternal = (rawAssertion, options, cb) => {
   });
 };
 
-function parseXmlAndVersion(rawAssertion, cb) {
-  const parser = new xml2js.Parser({
-    attrkey: '@',
-    charKey: '#',
-    tagNameProcessors: [xml2js.processors.stripPrefix],
-  });
+const xmlToJs = async (rawAssertion, cb) => {
+  try {
+    const jsObj = await parser.parseStringPromise(rawAssertion);
+    return xmlBeautify(jsObj);
+  } catch (err) {
+    const error = new WrapError('An error occurred trying to parse XML assertion.');
+    error.inner = err;
+    cb(error);
+  }
+};
 
-  parser.parseString(rawAssertion, function onParse(err, xml) {
-    if (err) {
-      const error = new WrapError('An error occurred trying to parse XML assertion.');
-      error.inner = err;
-      cb(error);
-      return;
-    }
+const checkStatusCode = (assertionObj, cb) => {
+  const statusValue =
+    assertionObj.Response &&
+    assertionObj.Response.Status &&
+    assertionObj.Response.Status.StatusCode &&
+    assertionObj.Response.Status.StatusCode['@'] &&
+    assertionObj.Response.Status.StatusCode['@'].Value;
+  const statusParts = statusValue ? statusValue.split(':') : statusValue;
+  const status = statusParts
+    ? statusParts.length > 0
+      ? statusParts[statusParts.length - 1]
+      : undefined
+    : undefined;
 
-    xml = xmlBeautify(xml);
+  if (status && status !== 'Success') {
+    cb(new Error(`Invalid Status Code (${status}).`));
+  }
+};
 
-    const statusValue =
-      xml.Response &&
-      xml.Response.Status &&
-      xml.Response.Status.StatusCode &&
-      xml.Response.Status.StatusCode['@'] &&
-      xml.Response.Status.StatusCode['@'].Value;
-    const statusParts = statusValue ? statusValue.split(':') : statusValue;
-    const status = statusParts
-      ? statusParts.length > 0
-        ? statusParts[statusParts.length - 1]
-        : undefined
-      : undefined;
+function parseResponseAndVersion(assertionObj, cb) {
+  let assertion =
+    assertionObj.Assertion ||
+    (assertionObj.Response && assertionObj.Response.Assertion) ||
+    (assertionObj.RequestSecurityTokenResponse &&
+      assertionObj.RequestSecurityTokenResponse.RequestedSecurityToken &&
+      assertionObj.RequestSecurityTokenResponse.RequestedSecurityToken.Assertion);
+  // if we have an array of assertions then pick first element
+  if (assertion && assertion[0]) {
+    assertion = assertion[0];
+  }
 
-    let assertion =
-      xml.Assertion ||
-      (xml.Response && xml.Response.Assertion) ||
-      (xml.RequestSecurityTokenResponse &&
-        xml.RequestSecurityTokenResponse.RequestedSecurityToken &&
-        xml.RequestSecurityTokenResponse.RequestedSecurityToken.Assertion);
-    // if we have an array of assertions then pick first element
-    if (assertion && assertion[0]) {
-      assertion = assertion[0];
-    }
+  if (!assertion) {
+    cb(new Error('Invalid assertion.'));
+    return;
+  }
 
-    if (status) {
-      if (status !== 'Success') {
-        cb(new Error(`Invalid Status Code (${status}).`));
-        return;
-      }
-    }
+  const version = getVersion(assertion);
+  const response = assertionObj.Response;
 
-    if (!assertion) {
-      cb(new Error('Invalid assertion.'));
-      return;
-    }
+  if (!version) {
+    cb(new Error('SAML Assertion version not supported.'));
+    return;
+  }
 
-    const version = getVersion(assertion);
-    const response = xml.Response;
+  const tokenHandler = tokenHandlers[version];
+  assertion.inResponseTo = tokenHandler.getInResponseTo(assertionObj);
 
-    if (!version) {
-      cb(new Error('SAML Assertion version not supported.'));
-      return;
-    }
-
-    const tokenHandler = tokenHandlers[version];
-    assertion.inResponseTo = tokenHandler.getInResponseTo(xml);
-
-    cb(null, assertion, version, response);
-  });
+  cb(null, assertion, version, response);
 }
 
 function xmlBeautify(obj) {
