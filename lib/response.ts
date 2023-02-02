@@ -167,7 +167,7 @@ const validateInternal = async (rawAssertion, options, cb) => {
 const xmlToJs = async (rawAssertion, cb) => {
   try {
     const jsObj = await parser.parseStringPromise(rawAssertion);
-    return xmlBeautify(jsObj);
+    return flattenObject(jsObj);
   } catch (err) {
     const error = new WrapError('An error occurred trying to parse XML assertion.');
     error.inner = err;
@@ -225,14 +225,14 @@ function parseResponseAndVersion(assertionObj, cb) {
   cb(null, assertion, version, response);
 }
 
-function xmlBeautify(obj) {
+function flattenObject(obj) {
   Object.keys(obj).forEach(function objectForEach(key) {
     if (obj[key] && obj[key][0] && obj[key].length === 1) {
       obj[key] = obj[key][0];
     }
 
     if (typeof obj[key] === 'object') {
-      return xmlBeautify(obj[key]);
+      return flattenObject(obj[key]);
     }
   });
 
