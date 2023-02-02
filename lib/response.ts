@@ -29,7 +29,6 @@ const parse = async (rawAssertion: string): Promise<SAMLProfile> => {
         reject(err);
         return;
       }
-
       resolve(profile);
     });
   });
@@ -42,19 +41,22 @@ const validate = async (rawAssertion: string, options): Promise<SAMLProfile> => 
         reject(err);
         return;
       }
-
       resolve(profile);
     });
   });
 };
 
-const parseInternal = (rawAssertion, cb) => {
+const parseInternal = async (rawAssertion, cb) => {
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
   }
+  // Save the js object derived from xml and check status code
+  const assertionObj = await xmlToJs(rawAssertion, cb);
 
-  parseXmlAndVersion(rawAssertion, function onParse(err, assertion, version) {
+  checkStatusCode(assertionObj, cb);
+
+  parseResponseAndVersion(assertionObj, function onParse(err, assertion, version) {
     if (err) {
       cb(err);
       return;
@@ -80,7 +82,7 @@ const parseIssuer = (rawAssertion) => {
   }
 };
 
-const validateInternal = (rawAssertion, options, cb) => {
+const validateInternal = async (rawAssertion, options, cb) => {
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
@@ -90,7 +92,18 @@ const validateInternal = (rawAssertion, options, cb) => {
     cb(new Error('publicKey or thumbprint are options required.'));
     return;
   }
-  rawAssertion = decryptXml(rawAssertion, options);
+  try {
+    rawAssertion = decryptXml(rawAssertion, options);
+  } catch (err) {
+    cb(err);
+    return;
+  }
+
+  // Save the js object derived from xml and check status code
+  const assertionObj = await xmlToJs(rawAssertion, cb);
+
+  checkStatusCode(assertionObj, cb);
+
   let validId = null;
 
   try {
@@ -107,7 +120,7 @@ const validateInternal = (rawAssertion, options, cb) => {
     return;
   }
 
-  parseXmlAndVersion(rawAssertion, function onParse(err, assertion, version, response) {
+  parseResponseAndVersion(assertionObj, function onParse(err, assertion, version, response) {
     if (err) {
       cb(err);
       return;
