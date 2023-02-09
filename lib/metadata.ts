@@ -17,7 +17,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         tagNameProcessors: [xml2js.processors.stripPrefix],
         strict: true,
       },
-      (err: Error, res) => {
+      (err, res) => {
         if (err) {
           reject(err);
           return;
