@@ -138,7 +138,7 @@ const validateInternal = async (rawAssertion, options, cb) => {
       return;
     }
 
-    if (options.inResponseTo && assertion.inResponseTo !== options.inResponseTo) {
+    if (options.inResponseTo && assertion.inResponseTo && assertion.inResponseTo !== options.inResponseTo) {
       cb(new Error('Invalid InResponseTo.'));
       return;
     }

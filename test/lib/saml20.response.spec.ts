@@ -4,7 +4,7 @@ import fs from 'fs';
 
 // Tests Configuration
 const validResponse = fs.readFileSync('./test/assets/saml20.validResponse.xml').toString();
-const errorResponse = fs.readFileSync('./test/assets/saml20.errorResponse.xml').toString();
+const validResponseNoIRT = fs.readFileSync('./test/assets/saml20.validResponse-noirt.xml').toString();
 
 const issuerName = 'http://idp.example.com/metadata.php';
 const thumbprint = 'e606eced42fa3abd0c5693456384f5931b174707';
@@ -41,6 +41,16 @@ describe('lib.saml20.response', function () {
 
   it('Should validate saml 2.0 token and check audience', async function () {
     const response = await validate(validResponse, {
+      publicKey: certificate,
+      audience: audience,
+      bypassExpiration: true,
+      inResponseTo: inResponseTo,
+    });
+    expect(issuerName).to.equal(response.issuer);
+  });
+
+  it('Should validate saml 2.0 token skipping InResponseTo validation', async function () {
+    const response = await validate(validResponseNoIRT, {
       publicKey: certificate,
       audience: audience,
       bypassExpiration: true,

@@ -82,7 +82,7 @@ describe('saml20.attacks.wrapping', function () {
     }
   });
 
-  it('wrappedInvalidAssertion2:Should fail with invalid assertion possible assertion wrapping', async function () {
+  it('wrappedInvalidAssertion2: Should fail with invalid assertion possible assertion wrapping', async function () {
     try {
       await validate(wrappedInvalidAssertion2, {
         publicKey: certificate,
