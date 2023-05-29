@@ -41,7 +41,7 @@
     "rambda": "7.5.0",
     "xml-crypto": "3.0.1",
     "xml-encryption": "3.0.2",
-    "xml2js": "0.5.0",
+    "xml2js": "0.6.0",
     "xmlbuilder": "15.1.1"
   },
   "devDependencies": {
