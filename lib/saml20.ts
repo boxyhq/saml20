@@ -19,11 +19,9 @@ function getClaims(attributes) {
 
     if (friendlyName === 'email') {
       claims[emailAddressClaimType] = extProp.result;
-    }
-    if (friendlyName === 'givenName') {
+    } else if (friendlyName === 'givenName') {
       claims[givenNameClaimType] = extProp.result;
-    }
-    if (friendlyName === 'sn') {
+    } else if (friendlyName === 'sn') {
       claims[surnameClaimType] = extProp.result;
     }
 
