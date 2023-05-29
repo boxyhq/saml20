@@ -2,7 +2,9 @@ import _ from 'lodash';
 
 const permanentNameIdentifier = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent';
 const nameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
-const emailIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress';
+const emailAddressClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress';
+const givenNameClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname';
+const surnameClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname';
 
 function getClaims(attributes) {
   const claims = {};
@@ -16,7 +18,13 @@ function getClaims(attributes) {
     claims[attributeName] = extProp.result;
 
     if (friendlyName === 'email') {
-      claims[emailIdentifierClaimType] = extProp.result;
+      claims[emailAddressClaimType] = extProp.result;
+    }
+    if (friendlyName === 'givenName') {
+      claims[givenNameClaimType] = extProp.result;
+    }
+    if (friendlyName === 'sn') {
+      claims[surnameClaimType] = extProp.result;
     }
 
     if (extProp.format === permanentNameIdentifier) {
