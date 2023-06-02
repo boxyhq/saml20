@@ -5,6 +5,7 @@ const nameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/
 const emailAddressClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress';
 const givenNameClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname';
 const surnameClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname';
+const nameidFormatEmailAddress = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress';
 
 function getClaims(attributes) {
   const claims = {};
@@ -84,10 +85,15 @@ const parse = (assertion) => {
     claims = getClaims(attributes);
   }
 
-  const subjectName = getProp(assertion, 'Subject.NameID');
+  const subjectNameObj = getExtendedProp(assertion, 'Subject.NameID');
+  const subjectName = subjectNameObj.result;
 
   if (subjectName && !claims[nameIdentifierClaimType]) {
     claims[nameIdentifierClaimType] = subjectName;
+  }
+
+  if (subjectName && subjectNameObj.format === nameidFormatEmailAddress && !claims[emailAddressClaimType]) {
+    claims[emailAddressClaimType] = subjectName;
   }
 
   return {
