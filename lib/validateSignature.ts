@@ -64,7 +64,7 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    getKeyInfo: function getKeyInfo(key) {
+    getKeyInfo: function getKeyInfo() {
       return '<X509Data></X509Data>';
     },
   };
