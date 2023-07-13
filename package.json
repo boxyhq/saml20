@@ -36,7 +36,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@xmldom/xmldom": "0.8.8",
+    "@xmldom/xmldom": "0.8.9",
     "lodash": "4.17.21",
     "rambda": "8.1.0",
     "xml-crypto": "3.1.0",
