@@ -33,7 +33,8 @@
     "test": "nyc mocha --check-leaks  -r tsconfig-paths/register -r ts-node/register test/lib/**/*.spec.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "release": "git checkout release && git merge origin/main && release-it"
   },
   "dependencies": {
     "@xmldom/xmldom": "0.8.9",
