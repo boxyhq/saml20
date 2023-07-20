@@ -37,7 +37,7 @@
     "release": "git checkout release && git merge origin/main && release-it"
   },
   "dependencies": {
-    "@xmldom/xmldom": "0.8.9",
+    "@xmldom/xmldom": "0.8.10",
     "lodash": "4.17.21",
     "rambda": "8.2.0",
     "xml-crypto": "3.2.0",
