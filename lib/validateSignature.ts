@@ -65,6 +65,7 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
 
   let id;
   if (valid) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const uri = signed.references[0].uri;
     id = uri![0] === '#' ? uri!.substring(1) : uri;
