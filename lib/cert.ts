@@ -5,13 +5,13 @@ const stripCertHeaderAndFooter = (cert: string): string => {
   return cert;
 };
 
-function PubKeyInfo(this: any, pubKey: string) {
-  this.pubKey = stripCertHeaderAndFooter(pubKey);
+function PubKeyInfo(pubKey: string) {
+  const pubKeyTrimmed = stripCertHeaderAndFooter(pubKey);
 
-  this.getKeyInfo = function (_key, prefix) {
+  return function ({ prefix }) {
     prefix = prefix || '';
     prefix = prefix ? prefix + ':' : prefix;
-    return `<${prefix}X509Data><${prefix}X509Certificate>${this.pubKey}</${prefix}X509Certificate</${prefix}X509Data>`;
+    return `<${prefix}X509Data><${prefix}X509Certificate>${pubKeyTrimmed}</${prefix}X509Certificate</${prefix}X509Data>`;
   };
 }
 

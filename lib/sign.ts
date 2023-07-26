@@ -1,4 +1,4 @@
-import xmlcrypto from 'xml-crypto';
+import { SignedXml } from 'xml-crypto';
 import { PubKeyInfo } from './cert';
 
 const issuerXPath = '/*[local-name(.)="Issuer" and namespace-uri(.)="urn:oasis:names:tc:SAML:2.0:assertion"]';
@@ -11,15 +11,18 @@ const sign = (xml: string, signingKey: string, publicKey: string, xPath: string)
     throw new Error('Please specify signingKey');
   }
 
-  const sig = new xmlcrypto.SignedXml();
+  const sig = new SignedXml();
   sig.signatureAlgorithm = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256';
-  sig.keyInfoProvider = new PubKeyInfo(publicKey);
-  sig.signingKey = signingKey;
-  sig.addReference(
-    xPath,
-    ['http://www.w3.org/2000/09/xmldsig#enveloped-signature', 'http://www.w3.org/2001/10/xml-exc-c14n#'],
-    'http://www.w3.org/2001/04/xmlenc#sha256'
-  );
+  sig.getKeyInfoContent = PubKeyInfo(publicKey);
+  sig.privateKey = signingKey;
+  sig.addReference({
+    xpath: xPath,
+    transforms: [
+      'http://www.w3.org/2000/09/xmldsig#enveloped-signature',
+      'http://www.w3.org/2001/10/xml-exc-c14n#',
+    ],
+    digestAlgorithm: 'http://www.w3.org/2001/04/xmlenc#sha256',
+  });
   sig.computeSignature(xml, {
     location: { reference: xPath + issuerXPath, action: 'after' },
   });

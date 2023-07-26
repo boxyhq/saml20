@@ -13,7 +13,9 @@ describe('cert.ts', function () {
   });
 
   it('PubKeyInfo ok', function () {
-    const value = new PubKeyInfo(certificate);
-    expect(certificate).to.equal(value.pubKey);
+    let value = PubKeyInfo(certificate)({ prefix: '' });
+    value = value.replace('<X509Data><X509Certificate>', '');
+    value = value.replace('</X509Certificate</X509Data>', '');
+    expect(certificate).to.equal(value);
   });
 });
