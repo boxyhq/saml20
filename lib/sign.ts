@@ -11,10 +11,11 @@ const sign = (xml: string, signingKey: string, publicKey: string, xPath: string)
     throw new Error('Please specify signingKey');
   }
 
-  const sig = new SignedXml();
-  sig.signatureAlgorithm = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256';
-  sig.getKeyInfoContent = PubKeyInfo(publicKey);
-  sig.privateKey = signingKey;
+  const sig = new SignedXml({
+    privateKey: signingKey,
+    signatureAlgorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+    getKeyInfoContent: PubKeyInfo(publicKey),
+  });
   sig.addReference({
     xpath: xPath,
     transforms: [
