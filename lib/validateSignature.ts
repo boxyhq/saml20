@@ -20,18 +20,18 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
     select(
       "/*/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']",
       doc
-    )[0] ||
+    )?.[0] ||
     select(
       "/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']",
       doc
-    )[0] ||
+    )?.[0] ||
     select(
       "/*/*/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']",
       doc
-    )[0];
+    )?.[0];
 
   if (!signature) {
-    signature = select("//*[local-name(.)='Signature']", doc)[0];
+    signature = select("//*[local-name(.)='Signature']", doc)?.[0];
   }
 
   const signed = new SignedXml({
