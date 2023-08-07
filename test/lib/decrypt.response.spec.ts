@@ -22,12 +22,6 @@ const oktaCertificate = fs.readFileSync('./test/assets/certificates/oktaPublicKe
 const oktaIssuerName = 'http://www.okta.com/exkymhf9ve6PI9KfY696';
 const oktaProfileClaims = 'hojit22291@abincol.com';
 
-const oneLoginOptions = {
-  privateKey: oneLoginPrivateKey,
-};
-const oktaOptions = {
-  privateKey: oktaPrivateKey,
-};
 describe('decrypt.response.spec', function () {
   it('One Login Should validate saml 2.0 token using thumbprint', async function () {
     const response = await validate(oneLoginSamlResponseEncrypted, {
