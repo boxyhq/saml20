@@ -1,5 +1,4 @@
 import { validate } from '../../lib/response';
-import { decryptXml } from '../../lib/decrypt';
 import { expect } from 'chai';
 import fs from 'fs';
 
@@ -31,9 +30,8 @@ const oktaOptions = {
 };
 describe('decrypt.response.spec', function () {
   it('One Login Should validate saml 2.0 token using thumbprint', async function () {
-    const validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
-
-    const response = await validate(validResponse.toString(), {
+    const response = await validate(oneLoginSamlResponseEncrypted, {
+      privateKey: oneLoginPrivateKey,
       publicKey: oneLoginCertificate,
       thumbprint: oneLoginThumbprint,
       bypassExpiration: true,
@@ -47,8 +45,8 @@ describe('decrypt.response.spec', function () {
   });
 
   it('One Login Should validate saml 2.0 token using thumbprint Only', async function () {
-    const validResponse = decryptXml(oneLoginSamlResponseEncrypted, oneLoginOptions);
-    const response = await validate(validResponse.toString(), {
+    const response = await validate(oneLoginSamlResponseEncrypted, {
+      privateKey: oneLoginPrivateKey,
       thumbprint: oneLoginThumbprint,
       bypassExpiration: true,
       inResponseTo: oneLoginInResponseTo,
@@ -60,8 +58,8 @@ describe('decrypt.response.spec', function () {
   });
 
   it('Okta Should validate saml 2.0 token using thumbprint', async function () {
-    const validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
-    const response = await validate(validResponse.toString(), {
+    const response = await validate(oktaSamlResponseEncrypted, {
+      privateKey: oktaPrivateKey,
       publicKey: oktaCertificate,
       thumbprint: oktaThumbprint,
       bypassExpiration: true,
@@ -74,8 +72,8 @@ describe('decrypt.response.spec', function () {
   });
 
   it('Okta Should validate saml 2.0 token using thumbprint Only. Also test multiple thumprint validation.', async function () {
-    const validResponse = decryptXml(oktaSamlResponseEncrypted, oktaOptions);
-    const response = await validate(validResponse.toString(), {
+    const response = await validate(oktaSamlResponseEncrypted, {
+      privateKey: oktaPrivateKey,
       thumbprint: `${oktaThumbprint},somedummythumbprint`,
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
