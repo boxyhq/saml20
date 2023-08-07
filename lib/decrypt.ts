@@ -22,7 +22,7 @@ const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
     xml.documentElement.removeChild(encryptedAssertions[0]);
     xml.documentElement.appendChild(assertionNode);
 
-    return xml.toString();
+    return { assertion: xml.toString(), decrypted: true };
   });
 };
 const decryptXml = (entireXML: string, options) => {
@@ -41,7 +41,7 @@ const decryptXml = (entireXML: string, options) => {
     return assertion(xml, encryptedAssertions, options);
   }
 
-  return entireXML;
+  return { assertion: entireXML, decrypted: false };
 };
 
 export { decryptXml };

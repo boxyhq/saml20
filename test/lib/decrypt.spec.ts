@@ -22,8 +22,8 @@ const options = {
 describe('decrypt.ts', function () {
   it('valid xml', function (done) {
     try {
-      const value = decryptXml(samlResponseEncrypted, options);
-      expect(value).to.be.not.null;
+      const { assertion } = decryptXml(samlResponseEncrypted, options);
+      expect(assertion).to.be.not.null;
       done();
     } catch (error) {
       done(error);

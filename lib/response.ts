@@ -83,6 +83,7 @@ const parseIssuer = (rawAssertion) => {
 };
 
 const validateInternal = async (rawAssertion, options, cb) => {
+  const originalAssertion = rawAssertion;
   if (!rawAssertion) {
     cb(new Error('rawAssertion is required.'));
     return;
@@ -92,8 +93,11 @@ const validateInternal = async (rawAssertion, options, cb) => {
     cb(new Error('publicKey or thumbprint are options required.'));
     return;
   }
+  let decAssertion = false;
   try {
-    rawAssertion = decryptXml(rawAssertion, options);
+    const { assertion, decrypted } = decryptXml(rawAssertion, options);
+    rawAssertion = assertion;
+    decAssertion = decrypted;
   } catch (err) {
     cb(err);
     return;
@@ -113,6 +117,17 @@ const validateInternal = async (rawAssertion, options, cb) => {
     error.inner = e;
     cb(error);
     return;
+  }
+
+  if (decAssertion && !validId) {
+    // try the fallback verification where signature has been generated on the encrypted SAML by some IdPs (like OpenAthens)
+    try {
+      validId = validateSignature(originalAssertion, options.publicKey, options.thumbprint);
+    } catch (e) {
+      const error = new WrapError('Invalid assertion.');
+      error.inner = e;
+      cb(error);
+    }
   }
 
   if (!validId) {
