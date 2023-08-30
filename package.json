@@ -57,7 +57,7 @@
     "eslint-config-prettier": "9.0.0",
     "mocha": "10.2.0",
     "nyc": "15.1.0",
-    "prettier": "3.0.2",
+    "prettier": "3.0.3",
     "release-it": "16.1.5",
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.2.0",
