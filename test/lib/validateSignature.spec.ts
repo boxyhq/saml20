@@ -72,19 +72,96 @@ describe('validateSignature.ts', function () {
   });
 
   it('hasValidSignature ok ', function () {
-    const value = hasValidSignature(generateXML(), publicKey, 'null');
+    const value = hasValidSignature(generateXML(), publicKey, null);
     expect(value.valid).to.be.equal(true);
-    expect(value.calculatedThumbprint).to.be.equal('d730fc9342107b05032393d21cd5ef550150e06b');
   });
 
   it('validateSignature ok ', function () {
-    expect(validateSignature(generateXML(), publicKey, 'null')).to.be.ok;
+    expect(validateSignature(generateXML(), publicKey, null)).to.be.ok;
   });
 
   it('validateSignature public key not ok ', function () {
     try {
       const value = validateSignature(generateXML(), undefined, 'null');
       expect(value).to.be.equal(undefined);
+    } catch (error) {
+      expect(error).to.be.ok;
+    }
+  });
+
+  it('must not validateSignature ok if cert and thumbprints provided and if key info has unknown cert', function () {
+    const SAML_RESPONSE_WITH_UNKOWN_CERT_AT_KEY_INFO = `
+<?xml version="1.0"?>
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="_1" Version="2.0" IssueInstant="1900-01-01T01:01:00Z" Destination="https://acs-endpoint" InResponseTo="in_response_to">
+    <saml:Issuer>issuer</saml:Issuer>
+    <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <SignedInfo>
+            <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+            <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+            <Reference URI="#_1">
+                <Transforms>
+                    <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                    <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                </Transforms>
+                <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                <DigestValue>5pCdjXFqMlPhoJATgpr2JIOrgxozccaZ0Zadp+nTwNU=</DigestValue>
+            </Reference>
+        </SignedInfo>
+        <SignatureValue>AitFP4fhZVPMeJhnpCGLUiURGfBPiCVGPBT8G0UFRsBJ92nuqZIVvYeKqp8K2jsM
+EaSKMhVGEHw31emtYnpfupRrJLEyhGgowJTNxjxDKHp8Q7coVdfM+zXAwiLtUlsg
+X/bcWnef6z80FNy7cB0T7/S4CN/YQfDq6WFPePyx8q8=</SignatureValue>
+        <KeyInfo>
+            <X509Data>
+                <X509Certificate>MIIBxDCCAW6gAwIBAgIQxUSXFzWJYYtOZnmmuOMKkjANBgkqhkiG9w0BAQQFADAW
+MRQwEgYDVQQDEwtSb290IEFnZW5jeTAeFw0wMzA3MDgxODQ3NTlaFw0zOTEyMzEy
+MzU5NTlaMB8xHTAbBgNVBAMTFFdTRTJRdWlja1N0YXJ0Q2xpZW50MIGfMA0GCSqG
+SIb3DQEBAQUAA4GNADCBiQKBgQC+L6aB9x928noY4+0QBsXnxkQE4quJl7c3PUPd
+Vu7k9A02hRG481XIfWhrDY5i7OEB7KGW7qFJotLLeMec/UkKUwCgv3VvJrs2nE9x
+O3SSWIdNzADukYh+Cxt+FUU6tUkDeqg7dqwivOXhuOTRyOI3HqbWTbumaLdc8juf
+z2LhaQIDAQABo0swSTBHBgNVHQEEQDA+gBAS5AktBh0dTwCNYSHcFmRjoRgwFjEU
+MBIGA1UEAxMLUm9vdCBBZ2VuY3mCEAY3bACqAGSKEc+41KpcNfQwDQYJKoZIhvcN
+AQEEBQADQQAfIbnMPVYkNNfX1tG1F+qfLhHwJdfDUZuPyRPucWF5qkh6sSdWVBY5
+sT/txBnVJGziyO8DPYdu2fPMER8ajJfl</X509Certificate>
+            </X509Data>
+        </KeyInfo>
+    </Signature>
+    <samlp:Status>
+        <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+    </samlp:Status>
+    <saml:Assertion xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" ID="_2" Version="2.0" IssueInstant="1900-01-01T01:01:00Z">
+        <saml:Issuer>issuer</saml:Issuer>
+        <saml:Subject>
+            <saml:NameID SPNameQualifier="audience" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient">some_name_id</saml:NameID>
+            <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+                <saml:SubjectConfirmationData NotOnOrAfter="8980-01-01T01:01:00Z" Recipient="https://acs-endpoint" InResponseTo="in_response_to"/>
+            </saml:SubjectConfirmation>
+        </saml:Subject>
+        <saml:Conditions NotBefore="1900-01-01T01:00:00Z" NotOnOrAfter="8980-01-01T01:01:00Z">
+            <saml:AudienceRestriction>
+                <saml:Audience>audience</saml:Audience>
+            </saml:AudienceRestriction>
+        </saml:Conditions>
+        <saml:AuthnStatement AuthnInstant="1900-01-01T01:01:00Z" SessionNotOnOrAfter="8980-01-01T01:01:00Z" SessionIndex="session_index">
+            <saml:AuthnContext>
+                <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</saml:AuthnContextClassRef>
+            </saml:AuthnContext>
+        </saml:AuthnStatement>
+    </saml:Assertion>
+</samlp:Response>
+`;
+    // NOTE: validateSignature's publicKey and certThumbprint are both provided
+    // NOTE2: response is signed with
+    // https://raw.githubusercontent.com/node-saml/xml-crypto/v4.1.0/test/static/client.pem
+    // which cert is
+    // https://raw.githubusercontent.com/node-saml/xml-crypto/v4.1.0/test/static/client_public.pem
+    // i.e. validateSignature SHOULD NOT return id value because it is signed with unknown
+    // key
+    try {
+      validateSignature(
+        SAML_RESPONSE_WITH_UNKOWN_CERT_AT_KEY_INFO,
+        publicKey,
+        'd730fc9342107b05032393d21cd5ef550150e06b'
+      );
     } catch (error) {
       expect(error).to.be.ok;
     }

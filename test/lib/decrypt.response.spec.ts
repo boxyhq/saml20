@@ -26,7 +26,6 @@ describe('decrypt.response.spec', function () {
   it('One Login Should validate saml 2.0 token using thumbprint', async function () {
     const response = await validate(oneLoginSamlResponseEncrypted, {
       privateKey: oneLoginPrivateKey,
-      publicKey: oneLoginCertificate,
       thumbprint: oneLoginThumbprint,
       bypassExpiration: true,
       inResponseTo: oneLoginInResponseTo,
@@ -54,7 +53,6 @@ describe('decrypt.response.spec', function () {
   it('Okta Should validate saml 2.0 token using thumbprint', async function () {
     const response = await validate(oktaSamlResponseEncrypted, {
       privateKey: oktaPrivateKey,
-      publicKey: oktaCertificate,
       thumbprint: oktaThumbprint,
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
