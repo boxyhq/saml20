@@ -33,7 +33,9 @@ jobs:
       - run: npm i
       - run: npm run lint
       - run: npm run build
-      - run: npm run test
+      - run: |
+          export NODE_OPTIONS=--max_old_space_size=4096
+          npm run test
       - name: Publish NPM
         if: github.ref == 'refs/heads/release' || contains(github.ref, 'refs/tags/beta-v')
         run: |
