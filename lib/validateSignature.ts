@@ -79,19 +79,23 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
 };
 
 const validateSignature = (xml, cert, certThumbprint) => {
+  if (cert && certThumbprint) {
+    throw new Error('You should provide either cert or certThumbprint, not both');
+  }
+
   const { valid, calculatedThumbprint, id } = hasValidSignature(xml, cert, certThumbprint);
 
   if (valid) {
-    if (cert) {
-      return id;
-    }
-
     if (certThumbprint) {
       const thumbprints = certThumbprint.split(',');
 
       if (thumbprints.includes(calculatedThumbprint)) {
         return id;
       }
+    }
+
+    if (cert) {
+      return id;
     }
   }
 };

@@ -93,6 +93,12 @@ const validateInternal = async (rawAssertion, options, cb) => {
     cb(new Error('publicKey or thumbprint are options required.'));
     return;
   }
+
+  if (options.publicKey && options.thumbprint) {
+    cb(new Error('You should provide either cert or certThumbprint, not both'));
+    return;
+  }
+
   let decAssertion = false;
   try {
     const { assertion, decrypted } = decryptXml(rawAssertion, options);

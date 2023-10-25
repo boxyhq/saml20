@@ -15,7 +15,6 @@ const inResponseTo = 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685';
 describe('saml20.responseSignedMessage', function () {
   it('Should validate saml 2.0 token using thumbprint', async function () {
     const response = await validate(validResponse, {
-      publicKey: certificate,
       thumbprint: thumbprint,
       bypassExpiration: true,
       inResponseTo: inResponseTo,
