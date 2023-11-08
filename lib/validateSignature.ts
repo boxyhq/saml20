@@ -4,6 +4,11 @@ import { thumbprint } from './utils';
 import { parseFromString } from './utils';
 
 const certToPEM = (cert) => {
+  if (cert.indexOf(',') !== -1) {
+    const _certs = cert.split(',');
+    return _certs.map((_cert) => certToPEM(_cert)).join(',');
+  }
+
   if (cert.indexOf('BEGIN CERTIFICATE') === -1 && cert.indexOf('END CERTIFICATE') === -1) {
     cert = cert.match(/.{1,64}/g).join('\n');
     cert = '-----BEGIN CERTIFICATE-----\n' + cert;
