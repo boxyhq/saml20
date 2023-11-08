@@ -134,7 +134,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         }
 
         if (X509Certificates.length > 0) {
-          ret.publicKey = X509Certificates.join(',');
+          ret.publicKey = X509Certificates.map((_) => _.trim()).join(',');
         }
 
         if (tPrints.length > 0) {
