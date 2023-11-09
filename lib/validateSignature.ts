@@ -3,7 +3,7 @@ import { select } from 'xpath';
 import { thumbprint } from './utils';
 import { parseFromString } from './utils';
 
-const certToPEM = (cert) => {
+const _certToPEM = (cert) => {
   if (cert.indexOf('BEGIN CERTIFICATE') === -1 && cert.indexOf('END CERTIFICATE') === -1) {
     cert = cert.match(/.{1,64}/g).join('\n');
     cert = '-----BEGIN CERTIFICATE-----\n' + cert;
@@ -12,6 +12,15 @@ const certToPEM = (cert) => {
   } else {
     return cert;
   }
+};
+
+const certToPEM = (cert) => {
+  if (cert.indexOf(',') !== -1) {
+    const _certs = cert.split(',');
+    return _certs.map((_cert) => _certToPEM(_cert)).join(',');
+  }
+
+  return _certToPEM(cert);
 };
 
 const hasValidSignature = (xml, cert, certThumbprint) => {
@@ -42,13 +51,13 @@ const hasValidSignature = (xml, cert, certThumbprint) => {
 
   signed.getCertFromKeyInfo = function getKey(keyInfo) {
     if (certThumbprint) {
-      const embeddedSignature = keyInfo!.childNodes[0].ownerDocument!.getElementsByTagNameNS(
+      const embeddedCert = keyInfo!.childNodes[0].ownerDocument!.getElementsByTagNameNS(
         'http://www.w3.org/2000/09/xmldsig#',
         'X509Certificate'
       );
 
-      if (embeddedSignature.length > 0) {
-        const base64cer = embeddedSignature[0].firstChild!.toString();
+      if (embeddedCert.length > 0) {
+        const base64cer = embeddedCert[0].firstChild!.toString();
 
         calculatedThumbprint = thumbprint(base64cer);
 

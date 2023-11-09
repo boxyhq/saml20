@@ -133,6 +133,10 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
           validTos.push(vt);
         }
 
+        if (X509Certificates.length > 0) {
+          ret.publicKey = X509Certificates.map((_) => _.trim()).join(',');
+        }
+
         if (tPrints.length > 0) {
           ret.thumbprint = tPrints.join(',');
         }

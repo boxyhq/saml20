@@ -276,4 +276,4 @@ function parseAttributes(assertion, tokenHandler, cb) {
   cb(null, profile);
 }
 
-export { parse, validate, parseIssuer };
+export { parse, validate, parseIssuer, WrapError };
