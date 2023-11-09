@@ -3,12 +3,7 @@ import { select } from 'xpath';
 import { thumbprint } from './utils';
 import { parseFromString } from './utils';
 
-const certToPEM = (cert) => {
-  if (cert.indexOf(',') !== -1) {
-    const _certs = cert.split(',');
-    return _certs.map((_cert) => certToPEM(_cert)).join(',');
-  }
-
+const _certToPEM = (cert) => {
   if (cert.indexOf('BEGIN CERTIFICATE') === -1 && cert.indexOf('END CERTIFICATE') === -1) {
     cert = cert.match(/.{1,64}/g).join('\n');
     cert = '-----BEGIN CERTIFICATE-----\n' + cert;
@@ -17,6 +12,15 @@ const certToPEM = (cert) => {
   } else {
     return cert;
   }
+};
+
+const certToPEM = (cert) => {
+  if (cert.indexOf(',') !== -1) {
+    const _certs = cert.split(',');
+    return _certs.map((_cert) => _certToPEM(_cert)).join(',');
+  }
+
+  return _certToPEM(cert);
 };
 
 const hasValidSignature = (xml, cert, certThumbprint) => {
