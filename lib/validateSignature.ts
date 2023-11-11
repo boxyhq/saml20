@@ -17,7 +17,7 @@ const _certToPEM = (cert) => {
 const certToPEM = (cert) => {
   if (cert.indexOf(',') !== -1) {
     const _certs = cert.split(',');
-    return _certs.map((_cert) => _certToPEM(_cert)).join(',');
+    return _certs.map((_cert) => _certToPEM(_cert)).join('');
   }
 
   return _certToPEM(cert);
