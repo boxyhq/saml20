@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Version="2.0" ID="_358c209884fefd445fcf" Destination="http://localhost:5225/api/oauth/saml" InResponseTo="_fbea42e00dd6b644fe49" IssueInstant="2023-11-12T11:28:33.547Z">
+ <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">https://saml.example.com/entityid-localhost</saml:Issuer>
+ <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+  <SignedInfo>
+   <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></CanonicalizationMethod>
+   <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"></SignatureMethod>
+   <Reference URI="#_358c209884fefd445fcf">
+    <Transforms>
+     <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"></Transform>
+     <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+    </Transforms>
+    <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
+    <DigestValue>7qRjBoC8UsfMhk+JPKeeoCA7H729qQf8pMb1sMoR32M=</DigestValue>
+   </Reference>
+  </SignedInfo>
+  <SignatureValue>kO5oDQTe1U/UgSpQ+KSJCUIa70IxtS0tezkR5gIxrOGwYUSA5rztcBC2vY0JRfCHKemTFJ6Q7c40cArhEjFgoAHwtdigPiFOtKiajt9YEpAlbfSHBTwzc0EWwdS4IZLdK5OqwxhRoMXZh4E6BlvaiW+47u7kyySzcXn46ufx4liAbGt1ANlXmjS4g+wQzIJHh3XDYspGCwp26HCDDz9r+OcnH0G8r9lSl7kSJNCnNVhYs3JNKIxFXPK/GUgfPzpT0455veXss98pjS4AaD2HO63iGkCn1ZkiKO1wJaY+bnnaMcw70WK78SkLvqvdrtBH9IcXbTReMNEoZaLlCj0aQQ==</SignatureValue>
+ </Signature>
+ <samlp:Status>
+  <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"></samlp:StatusCode>
+ </samlp:Status>
+ <saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Version="2.0" ID="_74c85e15813f1b35c334" IssueInstant="2023-11-12T11:28:33.547Z">
+  <saml:Issuer>https://saml.example.com/entityid-localhost</saml:Issuer>
+  <saml:Subject>
+   <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">jackson@example.com</saml:NameID>
+   <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+    <saml:SubjectConfirmationData InResponseTo="_fbea42e00dd6b644fe49" NotOnOrAfter="2023-11-12T11:33:33.547Z" Recipient="http://localhost:5225/api/oauth/saml"></saml:SubjectConfirmationData>
+   </saml:SubjectConfirmation>
+  </saml:Subject>
+  <saml:Conditions NotBefore="2023-11-12T11:23:33.547Z" NotOnOrAfter="2023-11-12T11:33:33.547Z">
+   <saml:AudienceRestriction>
+    <saml:Audience>https://saml.boxyhq.com</saml:Audience>
+   </saml:AudienceRestriction>
+  </saml:Conditions>
+  <saml:AuthnStatement AuthnInstant="2023-11-12T11:28:33.547Z" SessionIndex="_YIlFoNFzLMDYxdwf-T_BuimfkGa5qhKg">
+   <saml:AuthnContext>
+    <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified</saml:AuthnContextClassRef>
+   </saml:AuthnContext>
+  </saml:AuthnStatement>
+  <saml:AttributeStatement xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <saml:Attribute Name="id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+    <saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">1dda9fb491dc01bd24d2423ba2f22ae561f56ddf2376b29a11c80281d21201f9</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+    <saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">jackson@example.com</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="firstName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+    <saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">jackson</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="lastName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+    <saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">jackson</saml:AttributeValue>
+   </saml:Attribute>
+  </saml:AttributeStatement>
+ </saml:Assertion>
+</samlp:Response>
