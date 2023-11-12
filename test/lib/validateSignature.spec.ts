@@ -124,7 +124,8 @@ describe('validateSignature.ts', function () {
   });
 
   it('validate Response signature multicert metadata', function () {
-    expect(validateSignature(validResponseWithMultiCertsMetadata, multiPublicKey, null));
+    const value = validateSignature(validResponseWithMultiCertsMetadata, multiPublicKey, null);
+    expect(value).to.be.ok;
   });
 
   it('validateSignature public key not ok ', function () {
