@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import xmlbuilder from 'xmlbuilder';
 
 import crypto from 'crypto';
+import fs from 'fs';
 import { sign } from '../../lib/sign';
 
 const ssoUrl =
@@ -19,6 +20,88 @@ const authnXPath =
   '/*[local-name(.)="AuthnRequest" and namespace-uri(.)="urn:oasis:names:tc:SAML:2.0:protocol"]';
 const identifierFormat = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress';
 const providerName = 'BoxyHQ';
+
+const validResponseSigned_noX509 = fs
+  .readFileSync('./test/assets/saml20.validResponseSigned-noX509.xml')
+  .toString();
+
+const singlePublicKey = `MIIDczCCAlugAwIBAgIUE4RU7Pwiw58ZifnjQOXVg6ytNWowDQYJKoZIhvcNAQEL
+  BQAwSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3RhdGUxDzANBgNVBAoM
+  BkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTAgFw0yMzExMTIxMDQ1MzdaGA8z
+  MDIzMDMxNTEwNDUzN1owSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3Rh
+  dGUxDzANBgNVBAoMBkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTCCASIwDQYJ
+  KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMkwF6oPPd3Fn3AXC8K8h+q0uRgRoJim
+  HASKmwzXZZjqb2DN0isLNvbLlcB3mTmfQMhKH4yLPE5PHoDJ83olgILkB6Y3txgG
+  QJ48sIEeYiGCs+le4UnD44oL04fQCpkIImcFiHM/tr9kSnQsjF7tLn6GVZJKUU56
+  84mrOACHr3LDZkypLxjiYMoM9aojS3yw97AIJSyhmkpowuqdtmK/T5o4pnTNgXTB
+  XYPoGx/6aqoFVxAjh7ZuUzeHAMGHZlxT0e6K7nKSPoFKDbfDQoAwbq6B1BRNklSX
+  4dz6MkmQAGqMnKBWNbiF2MAnt5dvIXInlafQ3Ypbw/bJ4uHw6L+RjGcCAwEAAaNT
+  MFEwHQYDVR0OBBYEFHyOsXZSwmNqljrM6LmWFWr0nUsvMB8GA1UdIwQYMBaAFHyO
+  sXZSwmNqljrM6LmWFWr0nUsvMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL
+  BQADggEBALFfujo7fMqszjEg7Gla3FthO82/D+7mFKSGt04ZJfxlwuujTpI8u04g
+  LWNFV6uHLNNlxesdd1r9JtlXAHN4pDk06TEidz1oOO1rBWVDBajrO1wME99EqOAj
+  Q64SOFhkpw9Yd5L47SnxC3rQPsgeol+BJwosXcPG4OXjK5JisQGdakEJh8GLnE5u
+  7QK5eFf84Qro6HthD+YsA0pPFDzh4TtSpm/yYDYRvKAfqh4a2uqwJDHJ8oxz5d37
+  4eXJ/Zy78JiYM4PUnPMKABsqcUZv5vsuV5HPO4ODtcGFRY1EoSXcMxz0jkUipe+Z
+  wmF8r5aO5sSGd+KOi2O/ja9VV4UzGD8=`;
+
+const singlePublicKeyNotUsedToSign = `MIIDczCCAlugAwIBAgIUOJZExQRTahl1DA9raMp0G6vCkHwwDQYJKoZIhvcNAQEL
+BQAwSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3RhdGUxDzANBgNVBAoM
+BkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTAgFw0yMzExMTIxMTEwMDNaGA8z
+MDIzMDMxNTExMTAwM1owSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3Rh
+dGUxDzANBgNVBAoMBkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMWZyyDK9/I3Pic2TCnckbdVG/PIknyk
+YszbA+87q/MWlBA/vX2DogUw6UapZ07r6kxYRyMg/7VlJNP5rZXowv0LEpfpdAth
+8O7TomyEbwhl4u/8CcCbRvihkQtr1DFlHBYVSC7znkpeS1iYwfsDKhZc5NHmplG5
++dERS71rtWqxb9hySPcX2CUJOvLjeC6uhTux5ers33963qnQzEsOuBRvcUT6TU7Y
+4WjzMycAjtsfT9r5y5Lhv9DpsIpVSRQ1MCLHCAeD1BerUZaebTonbsEA1EHk4vux
+FmjvlrNp4hh2zrtGt7yZO2cAzcNmloq+JmZ/7Yeb5CAhCaXIXFBBsh0CAwEAAaNT
+MFEwHQYDVR0OBBYEFLb5bLFbrOVXMAT5YnsQLSkPL3AyMB8GA1UdIwQYMBaAFLb5
+bLFbrOVXMAT5YnsQLSkPL3AyMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL
+BQADggEBAKJFOBEouNp2AJicbA3Lmb4vVJfwP9h8LGqHV3TZHhlEblmBQNEoLyLO
+z7XhIy1/5LyGb7b/o0LAoC1RxH/6GiHcIKt4/DS7dOfrpcNkHXAUHVFZ1LfFtBHc
+zIZTXKWNiFLqz3nTaKS3dqmnZMsoWDuRpE4kwR5tT+zB492nnfH7XGICQDojQ1DN
+NDvfSxFNmjcEuabxM9VGdsX6xOiClZBJwJBixj74EYPeeVOPbOEQfQZchX8xB3u5
+2knHSNiamr0NJ4GA44hIoCADW2G6W2+A4gFNnA6UYFlaijMWqb/XSNlbkYZD6OkG
+9Xa5bTycscrxF6+S3n5z2yGft52wBe4=`;
+
+const multiPublicKey = `MIIDczCCAlugAwIBAgIUE4RU7Pwiw58ZifnjQOXVg6ytNWowDQYJKoZIhvcNAQEL
+  BQAwSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3RhdGUxDzANBgNVBAoM
+  BkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTAgFw0yMzExMTIxMDQ1MzdaGA8z
+  MDIzMDMxNTEwNDUzN1owSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3Rh
+  dGUxDzANBgNVBAoMBkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTCCASIwDQYJ
+  KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMkwF6oPPd3Fn3AXC8K8h+q0uRgRoJim
+  HASKmwzXZZjqb2DN0isLNvbLlcB3mTmfQMhKH4yLPE5PHoDJ83olgILkB6Y3txgG
+  QJ48sIEeYiGCs+le4UnD44oL04fQCpkIImcFiHM/tr9kSnQsjF7tLn6GVZJKUU56
+  84mrOACHr3LDZkypLxjiYMoM9aojS3yw97AIJSyhmkpowuqdtmK/T5o4pnTNgXTB
+  XYPoGx/6aqoFVxAjh7ZuUzeHAMGHZlxT0e6K7nKSPoFKDbfDQoAwbq6B1BRNklSX
+  4dz6MkmQAGqMnKBWNbiF2MAnt5dvIXInlafQ3Ypbw/bJ4uHw6L+RjGcCAwEAAaNT
+  MFEwHQYDVR0OBBYEFHyOsXZSwmNqljrM6LmWFWr0nUsvMB8GA1UdIwQYMBaAFHyO
+  sXZSwmNqljrM6LmWFWr0nUsvMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL
+  BQADggEBALFfujo7fMqszjEg7Gla3FthO82/D+7mFKSGt04ZJfxlwuujTpI8u04g
+  LWNFV6uHLNNlxesdd1r9JtlXAHN4pDk06TEidz1oOO1rBWVDBajrO1wME99EqOAj
+  Q64SOFhkpw9Yd5L47SnxC3rQPsgeol+BJwosXcPG4OXjK5JisQGdakEJh8GLnE5u
+  7QK5eFf84Qro6HthD+YsA0pPFDzh4TtSpm/yYDYRvKAfqh4a2uqwJDHJ8oxz5d37
+  4eXJ/Zy78JiYM4PUnPMKABsqcUZv5vsuV5HPO4ODtcGFRY1EoSXcMxz0jkUipe+Z
+  wmF8r5aO5sSGd+KOi2O/ja9VV4UzGD8=,MIIDczCCAlugAwIBAgIUOJZExQRTahl1DA9raMp0G6vCkHwwDQYJKoZIhvcNAQEL
+  BQAwSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3RhdGUxDzANBgNVBAoM
+  BkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTAgFw0yMzExMTIxMTEwMDNaGA8z
+  MDIzMDMxNTExMTAwM1owSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3Rh
+  dGUxDzANBgNVBAoMBkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTCCASIwDQYJ
+  KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMWZyyDK9/I3Pic2TCnckbdVG/PIknyk
+  YszbA+87q/MWlBA/vX2DogUw6UapZ07r6kxYRyMg/7VlJNP5rZXowv0LEpfpdAth
+  8O7TomyEbwhl4u/8CcCbRvihkQtr1DFlHBYVSC7znkpeS1iYwfsDKhZc5NHmplG5
+  +dERS71rtWqxb9hySPcX2CUJOvLjeC6uhTux5ers33963qnQzEsOuBRvcUT6TU7Y
+  4WjzMycAjtsfT9r5y5Lhv9DpsIpVSRQ1MCLHCAeD1BerUZaebTonbsEA1EHk4vux
+  FmjvlrNp4hh2zrtGt7yZO2cAzcNmloq+JmZ/7Yeb5CAhCaXIXFBBsh0CAwEAAaNT
+  MFEwHQYDVR0OBBYEFLb5bLFbrOVXMAT5YnsQLSkPL3AyMB8GA1UdIwQYMBaAFLb5
+  bLFbrOVXMAT5YnsQLSkPL3AyMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL
+  BQADggEBAKJFOBEouNp2AJicbA3Lmb4vVJfwP9h8LGqHV3TZHhlEblmBQNEoLyLO
+  z7XhIy1/5LyGb7b/o0LAoC1RxH/6GiHcIKt4/DS7dOfrpcNkHXAUHVFZ1LfFtBHc
+  zIZTXKWNiFLqz3nTaKS3dqmnZMsoWDuRpE4kwR5tT+zB492nnfH7XGICQDojQ1DN
+  NDvfSxFNmjcEuabxM9VGdsX6xOiClZBJwJBixj74EYPeeVOPbOEQfQZchX8xB3u5
+  2knHSNiamr0NJ4GA44hIoCADW2G6W2+A4gFNnA6UYFlaijMWqb/XSNlbkYZD6OkG
+  9Xa5bTycscrxF6+S3n5z2yGft52wBe4=`;
 
 function generateXML() {
   const id = idPrefix + crypto.randomBytes(10).toString('hex');
@@ -78,6 +161,21 @@ describe('validateSignature.ts', function () {
 
   it('validateSignature ok ', function () {
     expect(validateSignature(generateXML(), publicKey, null)).to.be.ok;
+  });
+
+  it('validate response signature - no embedded cert, use single cert to validate', function () {
+    const value = validateSignature(validResponseSigned_noX509, singlePublicKey, null);
+    expect(value).to.be.ok;
+  });
+
+  it('validate response signature - no embedded cert, use different cert, should fail validate', function () {
+    const value = validateSignature(validResponseSigned_noX509, singlePublicKeyNotUsedToSign, null);
+    expect(value).not.to.be.ok;
+  });
+
+  it('validate response signature - no embedded cert, use multikey cert to validate', function () {
+    const value = validateSignature(validResponseSigned_noX509, multiPublicKey, null);
+    expect(value).to.be.ok;
   });
 
   it('validateSignature public key not ok ', function () {
