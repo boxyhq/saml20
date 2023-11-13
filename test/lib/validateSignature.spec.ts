@@ -21,8 +21,8 @@ const authnXPath =
 const identifierFormat = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress';
 const providerName = 'BoxyHQ';
 
-const validResponseWithMultiCertsMetadata = fs
-  .readFileSync('./test/assets/saml20.validResponse.multicertsMetadata.xml')
+const validResponseSigned_noX509 = fs
+  .readFileSync('./test/assets/saml20.validResponseSigned-noX509.xml')
   .toString();
 
 const multiPublicKey = `MIIDczCCAlugAwIBAgIUE4RU7Pwiw58ZifnjQOXVg6ytNWowDQYJKoZIhvcNAQEL
@@ -123,8 +123,8 @@ describe('validateSignature.ts', function () {
     expect(validateSignature(generateXML(), publicKey, null)).to.be.ok;
   });
 
-  it('validate Response signature multicert metadata', function () {
-    const value = validateSignature(validResponseWithMultiCertsMetadata, multiPublicKey, null);
+  it('validate response signature - no embedded cert, use multikey cert to validate', function () {
+    const value = validateSignature(validResponseSigned_noX509, multiPublicKey, null);
     expect(value).to.be.ok;
   });
 
