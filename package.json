@@ -39,7 +39,7 @@
   "dependencies": {
     "@xmldom/xmldom": "0.8.10",
     "lodash": "4.17.21",
-    "rambda": "8.5.0",
+    "rambda": "8.6.0",
     "xml-crypto": "4.1.0",
     "xml-encryption": "3.0.2",
     "xml2js": "0.6.2",
