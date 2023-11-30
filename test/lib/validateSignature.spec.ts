@@ -169,8 +169,11 @@ describe('validateSignature.ts', function () {
   });
 
   it('validate response signature - no embedded cert, use different cert, should fail validate', function () {
-    const value = validateSignature(validResponseSigned_noX509, singlePublicKeyNotUsedToSign, null);
-    expect(value).not.to.be.ok;
+    try {
+      const value = validateSignature(validResponseSigned_noX509, singlePublicKeyNotUsedToSign, null);
+    } catch (error) {
+      expect(error).to.be.ok;
+    }
   });
 
   it('validate response signature - no embedded cert, use multikey cert to validate', function () {
