@@ -170,7 +170,7 @@ describe('validateSignature.ts', function () {
 
   it('validate response signature - no embedded cert, use different cert, should fail validate', function () {
     try {
-      const value = validateSignature(validResponseSigned_noX509, singlePublicKeyNotUsedToSign, null);
+      validateSignature(validResponseSigned_noX509, singlePublicKeyNotUsedToSign, null);
     } catch (error) {
       expect(error).to.be.ok;
     }
