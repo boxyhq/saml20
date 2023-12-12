@@ -39,9 +39,15 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
           }
         }
 
+        let firstX509Certificate;
         for (const ssoDesRec of ssoDes) {
           const keyDes = ssoDesRec['KeyDescriptor'];
           for (const keyDesRec of keyDes) {
+            if (firstX509Certificate === undefined) {
+              const ki = keyDesRec['KeyInfo']?.[0];
+              const cd = ki?.['X509Data']?.[0];
+              firstX509Certificate = cd?.['X509Certificate']?.[0];
+            }
             if (keyDesRec['$'] && keyDesRec['$'].use === 'signing') {
               const ki = keyDesRec['KeyInfo'][0];
               const cd = ki['X509Data'][0];
@@ -84,6 +90,14 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
               );
               return;
             }
+          }
+        }
+
+        if (X509Certificates.length === 0) {
+          if (firstX509Certificate !== undefined) {
+            X509Certificates[0] = firstX509Certificate;
+          } else {
+            reject(new Error(`Could not find X509Certificate in the IdP metadata`));
           }
         }
 
