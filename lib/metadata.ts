@@ -97,7 +97,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
           if (firstX509Certificate !== undefined) {
             X509Certificates[0] = firstX509Certificate;
           } else {
-            reject(new Error(`Could not find X509Certificate in the IdP metadata`));
+            reject(new Error(`Could not find X509Certificate in the IdP metadata.`));
           }
         }
 
