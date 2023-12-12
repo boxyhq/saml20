@@ -15,6 +15,7 @@ const sign = (xml: string, signingKey: string, publicKey: string, xPath: string)
     privateKey: signingKey,
     signatureAlgorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
     getKeyInfoContent: PubKeyInfo(publicKey),
+    canonicalizationAlgorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#',
   });
   sig.addReference({
     xpath: xPath,

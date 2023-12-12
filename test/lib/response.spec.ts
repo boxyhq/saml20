@@ -119,7 +119,7 @@ describe('response.ts', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion signature.');
+      expect(result).to.be.equal('Invalid assertion.');
     }
   });
 
