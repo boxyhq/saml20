@@ -9,6 +9,7 @@ const samlMetadata3 = fs.readFileSync('./test/assets/mock-saml-metadata3.xml').t
 const samlMetadata4 = fs.readFileSync('./test/assets/mock-saml-metadata4.xml').toString();
 const samlMetadata5 = fs.readFileSync('./test/assets/mock-saml-metadata5.xml').toString();
 const samlMetadata6 = fs.readFileSync('./test/assets/mock-saml-metadata6.xml').toString();
+const samlMetadata7 = fs.readFileSync('./test/assets/mock-saml-metadata7.xml').toString();
 
 describe('metadata.ts', function () {
   it('saml MetaData ok without BEGIN & END notations', async function () {
@@ -109,7 +110,7 @@ describe('metadata.ts', function () {
     }
   });
 
-  it(`metadata with missing KeyDescriptor attribute 'use=signing' should use the first cert`, async function () {
+  it(`metadata with missing KeyDescriptor attribute 'use=signing' should use the cert available`, async function () {
     const value = await parseMetadata(samlMetadata5, {});
     expect(value.thumbprint).to.equal(`d797f3829882233d3f01e49643f6a1195f242c94`);
     expect(value.publicKey).to.equal(`MIIC4jCCAcoCCQC33wnybT5QZDANBgkqhkiG9w0BAQsFADAyMQswCQYDVQQGEwJV
@@ -128,6 +129,42 @@ describe('metadata.ts', function () {
                         UjbSj5ce/jekpAw7qyVVL4xOyh8AtUW1ek3wIw1MJvEgEPt0d16oshWJpoS1OT8L
                         r/22SvYEo3EmSGdTVGgk3x3s+A0qWAqTcyjr7Q4s/GKYRFfomGwz0TZ4Iw1ZN99M
                         m0eo2USlSRTVl7QHRTuiuSThHpLKQQ==`);
+  });
+
+  it.only(`metadata with missing KeyDescriptor attribute 'use=signing' should use all the certs available (multi cert metadata)`, async function () {
+    const value = await parseMetadata(samlMetadata7, {});
+
+    expect(value.thumbprint).to.equal(
+      `8996bcc1afff3ff8e41f8025ff034b516050a434,f9e424fe5fb3422db37859fe29b7f92f11af60a7`
+    );
+    expect(value.publicKey).to.equal(`MIICmDCCAYACCQC6LM978TM/gjANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJJ
+                        bjAgFw0yMjA0MTExMDI3MjBaGA8zMDIxMDgxMjEwMjcyMFowDTELMAkGA1UEBhMC
+                        SW4wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgPMN71V4y5VzLw6Ev
+                        aQA+oMLzmIpoV/p4Y3AM00FUYbVhVtngvRPCmsKOvIxkTM9kZ6VjVfPmzQet+dDS
+                        +rOmJDH5Y+42du6dJnA0SM/wNWL7nAqfWN6e7q7/Jxa/dYMOhkgV6/7+0jBxHGnn
+                        x/2CEVeDF5+nPsdDh2HlPy0MCXLjXGvRpHB/IHQsUHJFKuOQzTiz1OMQHLnV+FQX
+                        T2kDsGmbM/wZo6xGeH5qcRqZJGgLvtLj8XNe6yVmb1naog7Fr7gjThMichkNDVg2
+                        0/lkxYqIL8zgS2NYXwQ6UOKplUv189kHSbXgQCco0h1oNR2LRTaHoYsRnzLMH2Pv
+                        jVoTAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAMXKnzYEyLFwePXXWE76lq5S+2O2
+                        JIMtygzB3YxOJwvIFWmwDPxqpr4aOpw6T2pQLa3rM1YjW2roNw7B3HHXWoc9F4Av
+                        GAe8T1u0Cu+Tyo8ZFf9VrPg5kZ7x2G+nojFfs8zeuEKdNrUZz4bkgkC7sTWHFsOA
+                        oZjUqLyT2tfLnXfYGiXd0qGg9X1bs1x+anAhViltjZ97Eeq8wPtRqhm1hiQyawKT
+                        5qs4oKw0AaKsW4pBQux4h+ZmfvqD+1chBd5Ve/bq9FsEnWNkGyawzmsMSTB9UwDA
+                        +bqiHmfaTXWlQnualNaY3g5v7EDVB4COz6rXXQY/y5Y90BFoho5MqIjGW0I=,-----BEGIN CERTIFICATE-----
+                        MIICmDCCAYACCQC6LM978TM/gjANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJJ
+                        bjAgFw0yMjA0MTExMDI3MjBaGA8zMDIxMDgxMjEwMjcyMFowDTELMAkGA1UEBhMC
+                        SW4wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgPMN71V4y5VzLw6Ev
+                        aQA+oMLzmIpoV/p4Y3AM00FUYbVhVtngvRPCmsKOvIxkTM9kZ6VjVfPmzQet+dDS
+                        +rOmJDH5Y+42du6dJnA0SM/wNWL7nAqfWN6e7q7/Jxa/dYMOhkgV6/7+0jBxHGnn
+                        x/2CEVeDF5+nPsdDh2HlPy0MCXLjXGvRpHB/IHQsUHJFKuOQzTiz1OMQHLnV+FQX
+                        T2kDsGmbM/wZo6xGeH5qcRqZJGgLvtLj8XNe6yVmb1naog7Fr7gjThMichkNDVg2
+                        0/lkxYqIL8zgS2NYXwQ6UOKplUv189kHSbXgQCco0h1oNR2LRTaHoYsRnzLMH2Pv
+                        jVoTAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAMXKnzYEyLFwePXXWE76lq5S+2O2
+                        JIMtygzB3YxOJwvIFWmwDPxqpr4aOpw6T2pQLa3rM1YjW2roNw7B3HHXWoc9F4Av
+                        GAe8T1u0Cu+Tyo8ZFf9VrPg5kZ7x2G+nojFfs8zeuEKdNrUZz4bkgkC7sTWHFsOA
+                        oZjUqLyT2tfLnXfYGiXd0qGg9X1bs1x+anAhViltjZ97Eeq8wPtRqhm1hiQyawKT
+                        5qs4oKw0AaKsW4pBQux4h+ZmfvqD+1chBd5Ve/bq9FsEnWNkGyawzmsMSTB9UwDA
+                        +bqiHmfaTXWlQnualNaY3g5v7EDVB4COz6rXXQY/y5Y90BFoho5MqIjGW0I=`);
   });
 
   it(`metadata with missing KeyDescriptor should throw an error`, async () => {

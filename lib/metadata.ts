@@ -24,7 +24,8 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         }
 
         const entityID = rambda.path('EntityDescriptor.$.entityID', res);
-        const X509Certificates: string[] = [];
+        let X509Certificates: string[] = [];
+        const X509CertificatesWithoutSigningAttr: string[] = [];
         let ssoPostUrl: null | undefined = null;
         let ssoRedirectUrl: null | undefined = null;
         let loginType = 'idp';
@@ -39,19 +40,16 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
           }
         }
 
-        let firstX509Certificate;
         for (const ssoDesRec of ssoDes) {
           const keyDes = ssoDesRec['KeyDescriptor'];
           for (const keyDesRec of keyDes) {
-            if (firstX509Certificate === undefined) {
-              const ki = keyDesRec['KeyInfo']?.[0];
-              const cd = ki?.['X509Data']?.[0];
-              cd?.['X509Certificate']?.[0] && (firstX509Certificate = cd['X509Certificate'][0]);
-            }
+            const ki = keyDesRec['KeyInfo']?.[0];
+            const cd = ki?.['X509Data']?.[0];
+            const x509cert = cd?.['X509Certificate']?.[0];
             if (keyDesRec['$'] && keyDesRec['$'].use === 'signing') {
-              const ki = keyDesRec['KeyInfo']?.[0];
-              const cd = ki?.['X509Data']?.[0];
-              cd?.['X509Certificate']?.[0] && X509Certificates.push(cd['X509Certificate'][0]);
+              x509cert && X509Certificates.push(x509cert);
+            } else {
+              x509cert && X509CertificatesWithoutSigningAttr.push(x509cert);
             }
           }
 
@@ -94,8 +92,8 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         }
 
         if (X509Certificates.length === 0) {
-          if (firstX509Certificate !== undefined) {
-            X509Certificates[0] = firstX509Certificate;
+          if (X509CertificatesWithoutSigningAttr.length !== 0) {
+            X509Certificates = X509CertificatesWithoutSigningAttr;
           } else {
             reject(new Error(`Could not find X509Certificate in the IdP metadata.`));
           }
