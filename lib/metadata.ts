@@ -46,12 +46,12 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
             if (firstX509Certificate === undefined) {
               const ki = keyDesRec['KeyInfo']?.[0];
               const cd = ki?.['X509Data']?.[0];
-              firstX509Certificate = cd?.['X509Certificate']?.[0];
+              cd?.['X509Certificate']?.[0] && (firstX509Certificate = cd['X509Certificate'][0]);
             }
             if (keyDesRec['$'] && keyDesRec['$'].use === 'signing') {
-              const ki = keyDesRec['KeyInfo'][0];
-              const cd = ki['X509Data'][0];
-              X509Certificates.push(cd['X509Certificate'][0]);
+              const ki = keyDesRec['KeyInfo']?.[0];
+              const cd = ki?.['X509Data']?.[0];
+              cd?.['X509Certificate']?.[0] && X509Certificates.push(cd['X509Certificate'][0]);
             }
           }
 
