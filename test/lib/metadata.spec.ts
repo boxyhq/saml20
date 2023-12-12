@@ -109,7 +109,7 @@ describe('metadata.ts', function () {
     }
   });
 
-  it(`metadata with missing KeyDescriptor attribute 'use=signing'`, async function () {
+  it(`metadata with missing KeyDescriptor attribute 'use=signing' should use the first cert`, async function () {
     const value = await parseMetadata(samlMetadata5, {});
     expect(value.thumbprint).to.equal(`d797f3829882233d3f01e49643f6a1195f242c94`);
     expect(value.publicKey).to.equal(`MIIC4jCCAcoCCQC33wnybT5QZDANBgkqhkiG9w0BAQsFADAyMQswCQYDVQQGEwJV
