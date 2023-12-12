@@ -131,7 +131,7 @@ describe('metadata.ts', function () {
                         m0eo2USlSRTVl7QHRTuiuSThHpLKQQ==`);
   });
 
-  it.only(`metadata with missing KeyDescriptor attribute 'use=signing' should use all the certs available (multi cert metadata)`, async function () {
+  it(`metadata with missing KeyDescriptor attribute 'use=signing' should use all the certs available (multi cert metadata)`, async function () {
     const value = await parseMetadata(samlMetadata7, {});
 
     expect(value.thumbprint).to.equal(
