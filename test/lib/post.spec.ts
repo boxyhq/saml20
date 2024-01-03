@@ -1,5 +1,5 @@
+import assert from 'assert';
 import * as saml from '../../lib/post';
-import { expect } from 'chai';
 
 describe('post.ts', function () {
   it('Should validate creation of post form', function (done) {
@@ -16,10 +16,13 @@ describe('post.ts', function () {
       },
     ]);
 
-    expect(form.includes(`<form method="post" action="${encodeURI(postUrl)}">`)).to.be.ok;
-    expect(form.includes(`<input type="hidden" name="RelayState" value="${relayState}"/>`)).to.be.ok;
-    expect(form.includes(`<input type="hidden" name="SAMLRequest" value="${samlRequest}"/>`)).to.be.ok;
-    expect(form.includes(`<input type="submit" value="Continue" />`)).to.be.ok;
+    assert.strictEqual(form.includes(`<form method="post" action="${encodeURI(postUrl)}">`), true);
+    assert.strictEqual(form.includes(`<input type="hidden" name="RelayState" value="${relayState}"/>`), true);
+    assert.strictEqual(
+      form.includes(`<input type="hidden" name="SAMLRequest" value="${samlRequest}"/>`),
+      true
+    );
+    assert.strictEqual(form.includes(`<input type="submit" value="Continue" />`), true);
     done();
   });
 });

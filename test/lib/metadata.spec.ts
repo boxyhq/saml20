@@ -1,5 +1,5 @@
+import assert from 'assert';
 import { parseMetadata } from '../../lib/metadata';
-import { expect } from 'chai';
 import fs from 'fs';
 
 const samlMetadata = fs.readFileSync('./test/assets/mock-saml-metadata.xml').toString();
@@ -14,51 +14,53 @@ const samlMetadata7 = fs.readFileSync('./test/assets/mock-saml-metadata7.xml').t
 describe('metadata.ts', function () {
   it('saml MetaData ok without BEGIN & END notations', async function () {
     const value = await parseMetadata(samlMetadata, {});
-    expect(value.entityID).to.equal('https://saml.example.com/entityid');
-    expect(value.thumbprint).to.equal('8996bcc1afff3ff8e41f8025ff034b516050a434');
-    expect(value.loginType).to.equal('idp');
-    expect(value.sso.postUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.sso.redirectUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.validTo).to.equal('Aug 12 10:27:20 3021 GMT');
+    assert.strictEqual('https://saml.example.com/entityid', value.entityID);
+    assert.strictEqual('8996bcc1afff3ff8e41f8025ff034b516050a434', value.thumbprint);
+    assert.strictEqual('idp', value.loginType);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.postUrl);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.redirectUrl);
+    assert.strictEqual('Aug 12 10:27:20 3021 GMT', value.validTo);
   });
 
   it('saml MetaData ok with cert having BEGIN & END notations', async function () {
     const value = await parseMetadata(samlMetadata1, {});
-    expect(value.entityID).to.equal('https://saml.example.com/entityid');
-    expect(value.thumbprint).to.equal('f9e424fe5fb3422db37859fe29b7f92f11af60a7');
-    expect(value.loginType).to.equal('idp');
-    expect(value.sso.postUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.sso.redirectUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.validTo).to.equal('Aug 12 10:27:20 3021 GMT');
+    assert.strictEqual('https://saml.example.com/entityid', value.entityID);
+    assert.strictEqual('f9e424fe5fb3422db37859fe29b7f92f11af60a7', value.thumbprint);
+    assert.strictEqual('idp', value.loginType);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.postUrl);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.redirectUrl);
+    assert.strictEqual('Aug 12 10:27:20 3021 GMT', value.validTo);
   });
 
   it('saml MetaData ok with cert having just END notations', async function () {
     const value = await parseMetadata(samlMetadata2, {});
-    expect(value.entityID).to.equal('https://saml.example.com/entityid');
-    expect(value.thumbprint).to.equal('8996bcc1afff3ff8e41f8025ff034b516050a434');
-    expect(value.loginType).to.equal('idp');
-    expect(value.sso.postUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.sso.redirectUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.validTo).to.equal('Aug 12 10:27:20 3021 GMT');
+    assert.strictEqual('https://saml.example.com/entityid', value.entityID);
+    assert.strictEqual('8996bcc1afff3ff8e41f8025ff034b516050a434', value.thumbprint);
+    assert.strictEqual('idp', value.loginType);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.postUrl);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.redirectUrl);
+    assert.strictEqual('Aug 12 10:27:20 3021 GMT', value.validTo);
   });
 
   it('saml MetaData ok with cert having just BEGIN notations', async function () {
     const value = await parseMetadata(samlMetadata3, {});
-    expect(value.entityID).to.equal('https://saml.example.com/entityid');
-    expect(value.thumbprint).to.equal('f9e424fe5fb3422db37859fe29b7f92f11af60a7');
-    expect(value.loginType).to.equal('idp');
-    expect(value.sso.postUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.sso.redirectUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.validTo).to.equal('Aug 12 10:27:20 3021 GMT');
+    assert.strictEqual('https://saml.example.com/entityid', value.entityID);
+    assert.strictEqual('f9e424fe5fb3422db37859fe29b7f92f11af60a7', value.thumbprint);
+    assert.strictEqual('idp', value.loginType);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.postUrl);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.redirectUrl);
+    assert.strictEqual('Aug 12 10:27:20 3021 GMT', value.validTo);
   });
 
   it('saml MetaData ok with multiple signing certs', async function () {
     const value = await parseMetadata(samlMetadata4, {});
-    expect(value.entityID).to.equal('https://saml.example.com/entityid');
-    expect(value.thumbprint).to.equal(
-      '8996bcc1afff3ff8e41f8025ff034b516050a434,f9e424fe5fb3422db37859fe29b7f92f11af60a7'
+    assert.strictEqual('https://saml.example.com/entityid', value.entityID);
+    assert.strictEqual(
+      '8996bcc1afff3ff8e41f8025ff034b516050a434,f9e424fe5fb3422db37859fe29b7f92f11af60a7',
+      value.thumbprint
     );
-    expect(value.publicKey).to.equal(`MIICmDCCAYACCQC6LM978TM/gjANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJJ
+    assert.strictEqual(
+      `MIICmDCCAYACCQC6LM978TM/gjANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJJ
 \t\t\t\t\t\tbjAgFw0yMjA0MTExMDI3MjBaGA8zMDIxMDgxMjEwMjcyMFowDTELMAkGA1UEBhMC
 \t\t\t\t\t\tSW4wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgPMN71V4y5VzLw6Ev
 \t\t\t\t\t\taQA+oMLzmIpoV/p4Y3AM00FUYbVhVtngvRPCmsKOvIxkTM9kZ6VjVfPmzQet+dDS
@@ -85,19 +87,22 @@ describe('metadata.ts', function () {
 \t\t\t\t\t\tGAe8T1u0Cu+Tyo8ZFf9VrPg5kZ7x2G+nojFfs8zeuEKdNrUZz4bkgkC7sTWHFsOA
 \t\t\t\t\t\toZjUqLyT2tfLnXfYGiXd0qGg9X1bs1x+anAhViltjZ97Eeq8wPtRqhm1hiQyawKT
 \t\t\t\t\t\t5qs4oKw0AaKsW4pBQux4h+ZmfvqD+1chBd5Ve/bq9FsEnWNkGyawzmsMSTB9UwDA
-\t\t\t\t\t\t+bqiHmfaTXWlQnualNaY3g5v7EDVB4COz6rXXQY/y5Y90BFoho5MqIjGW0I=`);
-    expect(value.loginType).to.equal('idp');
-    expect(value.sso.postUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.sso.redirectUrl).to.equal('http://localhost:4000/api/saml/sso');
-    expect(value.validTo).to.equal('Aug 12 10:27:20 3021 GMT,Aug 12 10:27:20 3021 GMT');
+\t\t\t\t\t\t+bqiHmfaTXWlQnualNaY3g5v7EDVB4COz6rXXQY/y5Y90BFoho5MqIjGW0I=`,
+      value.publicKey
+    );
+    assert.strictEqual('idp', value.loginType);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.postUrl);
+    assert.strictEqual('http://localhost:4000/api/saml/sso', value.sso.redirectUrl);
+    assert.strictEqual('Aug 12 10:27:20 3021 GMT,Aug 12 10:27:20 3021 GMT', value.validTo);
   });
 
   it('saml Metadata validateNameIDFormat ok', async function () {
-    expect(
+    assert(
       await parseMetadata(samlMetadata, {
         validateNameIDFormat: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-      })
-    ).to.be.ok;
+      }),
+      'Expected parseMetadata response to be ok'
+    );
   });
 
   it('saml MetaData not ok', async function () {
@@ -106,14 +111,15 @@ describe('metadata.ts', function () {
         validateNameIDFormat: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
       });
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error, 'Expected parseMetadata to throw error');
     }
   });
 
   it(`metadata with missing KeyDescriptor attribute 'use=signing' should use the cert available`, async function () {
     const value = await parseMetadata(samlMetadata5, {});
-    expect(value.thumbprint).to.equal(`d797f3829882233d3f01e49643f6a1195f242c94`);
-    expect(value.publicKey).to.equal(`MIIC4jCCAcoCCQC33wnybT5QZDANBgkqhkiG9w0BAQsFADAyMQswCQYDVQQGEwJV
+    assert.strictEqual('d797f3829882233d3f01e49643f6a1195f242c94', value.thumbprint);
+    assert.strictEqual(
+      `MIIC4jCCAcoCCQC33wnybT5QZDANBgkqhkiG9w0BAQsFADAyMQswCQYDVQQGEwJV
                         SzEPMA0GA1UECgwGQm94eUhRMRIwEAYDVQQDDAlNb2NrIFNBTUwwIBcNMjIwMjI4
                         MjE0NjM4WhgPMzAyMTA3MDEyMTQ2MzhaMDIxCzAJBgNVBAYTAlVLMQ8wDQYDVQQK
                         DAZCb3h5SFExEjAQBgNVBAMMCU1vY2sgU0FNTDCCASIwDQYJKoZIhvcNAQEBBQAD
@@ -128,16 +134,20 @@ describe('metadata.ts', function () {
                         khuU3AM3L63g7VexCuO7kwkjh/+LqdcIXsVGO6XDfu2QOs1Xpe9zIzLpwm/RNYeX
                         UjbSj5ce/jekpAw7qyVVL4xOyh8AtUW1ek3wIw1MJvEgEPt0d16oshWJpoS1OT8L
                         r/22SvYEo3EmSGdTVGgk3x3s+A0qWAqTcyjr7Q4s/GKYRFfomGwz0TZ4Iw1ZN99M
-                        m0eo2USlSRTVl7QHRTuiuSThHpLKQQ==`);
+                        m0eo2USlSRTVl7QHRTuiuSThHpLKQQ==`,
+      value.publicKey
+    );
   });
 
   it(`metadata with missing KeyDescriptor attribute 'use=signing' should use all the certs available (multi cert metadata)`, async function () {
     const value = await parseMetadata(samlMetadata7, {});
 
-    expect(value.thumbprint).to.equal(
-      `8996bcc1afff3ff8e41f8025ff034b516050a434,f9e424fe5fb3422db37859fe29b7f92f11af60a7`
+    assert.strictEqual(
+      '8996bcc1afff3ff8e41f8025ff034b516050a434,f9e424fe5fb3422db37859fe29b7f92f11af60a7',
+      value.thumbprint
     );
-    expect(value.publicKey).to.equal(`MIICmDCCAYACCQC6LM978TM/gjANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJJ
+    assert.strictEqual(
+      `MIICmDCCAYACCQC6LM978TM/gjANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJJ
                         bjAgFw0yMjA0MTExMDI3MjBaGA8zMDIxMDgxMjEwMjcyMFowDTELMAkGA1UEBhMC
                         SW4wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgPMN71V4y5VzLw6Ev
                         aQA+oMLzmIpoV/p4Y3AM00FUYbVhVtngvRPCmsKOvIxkTM9kZ6VjVfPmzQet+dDS
@@ -164,7 +174,9 @@ describe('metadata.ts', function () {
                         GAe8T1u0Cu+Tyo8ZFf9VrPg5kZ7x2G+nojFfs8zeuEKdNrUZz4bkgkC7sTWHFsOA
                         oZjUqLyT2tfLnXfYGiXd0qGg9X1bs1x+anAhViltjZ97Eeq8wPtRqhm1hiQyawKT
                         5qs4oKw0AaKsW4pBQux4h+ZmfvqD+1chBd5Ve/bq9FsEnWNkGyawzmsMSTB9UwDA
-                        +bqiHmfaTXWlQnualNaY3g5v7EDVB4COz6rXXQY/y5Y90BFoho5MqIjGW0I=`);
+                        +bqiHmfaTXWlQnualNaY3g5v7EDVB4COz6rXXQY/y5Y90BFoho5MqIjGW0I=`,
+      value.publicKey
+    );
   });
 
   it(`metadata with missing KeyDescriptor should throw an error`, async () => {
@@ -172,7 +184,7 @@ describe('metadata.ts', function () {
       await parseMetadata(samlMetadata6, {});
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Could not find X509Certificate in the IdP metadata.');
+      assert.strictEqual('Could not find X509Certificate in the IdP metadata.', result);
     }
   });
 });

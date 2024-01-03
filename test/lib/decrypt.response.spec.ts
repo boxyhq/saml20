@@ -1,5 +1,5 @@
+import assert from 'assert';
 import { validate } from '../../lib/response';
-import { expect } from 'chai';
 import fs from 'fs';
 
 const oneLoginSamlResponseEncrypted = fs
@@ -31,8 +31,9 @@ describe('decrypt.response.spec', function () {
       inResponseTo: oneLoginInResponseTo,
     });
 
-    expect(oneLoginIssuerName).to.equal(response.issuer);
-    expect(oneLoginProfileClaims).to.equal(
+    assert.strictEqual(oneLoginIssuerName, response.issuer);
+    assert.strictEqual(
+      oneLoginProfileClaims,
       response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
   });
@@ -44,8 +45,9 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oneLoginInResponseTo,
     });
-    expect(oneLoginIssuerName).to.equal(response.issuer);
-    expect(oneLoginProfileClaims).to.equal(
+    assert.strictEqual(oneLoginIssuerName, response.issuer);
+    assert.strictEqual(
+      oneLoginProfileClaims,
       response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
   });
@@ -57,8 +59,9 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
     });
-    expect(oktaIssuerName).to.equal(response.issuer);
-    expect(oktaProfileClaims).to.equal(
+    assert.strictEqual(oktaIssuerName, response.issuer);
+    assert.strictEqual(
+      oktaProfileClaims,
       response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
   });
@@ -70,8 +73,9 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
     });
-    expect(oktaIssuerName).to.equal(response.issuer);
-    expect(oktaProfileClaims).to.equal(
+    assert.strictEqual(oktaIssuerName, response.issuer);
+    assert.strictEqual(
+      oktaProfileClaims,
       response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     );
   });
