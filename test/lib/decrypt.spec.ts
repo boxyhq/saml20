@@ -34,7 +34,7 @@ describe('decrypt.ts', function () {
     try {
       decryptXml('', options);
     } catch (error) {
-      assert.strictEqual('Undefined Assertion.', (error as Error).message);
+      assert.strictEqual((error as Error).message, 'Undefined Assertion.');
     }
   });
   it('empty privateKey ', function () {
@@ -43,7 +43,7 @@ describe('decrypt.ts', function () {
         encPrivateKey: '',
       });
     } catch (error) {
-      assert.strictEqual('Exception of Assertion Decryption.', (error as Error).message);
+      assert.strictEqual((error as Error).message, 'Exception of Assertion Decryption.');
     }
   });
 });

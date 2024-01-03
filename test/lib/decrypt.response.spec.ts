@@ -31,10 +31,10 @@ describe('decrypt.response.spec', function () {
       inResponseTo: oneLoginInResponseTo,
     });
 
-    assert.strictEqual(oneLoginIssuerName, response.issuer);
+    assert.strictEqual(response.issuer, oneLoginIssuerName);
     assert.strictEqual(
-      oneLoginProfileClaims,
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      oneLoginProfileClaims
     );
   });
 
@@ -45,10 +45,10 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oneLoginInResponseTo,
     });
-    assert.strictEqual(oneLoginIssuerName, response.issuer);
+    assert.strictEqual(response.issuer, oneLoginIssuerName);
     assert.strictEqual(
-      oneLoginProfileClaims,
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      oneLoginProfileClaims
     );
   });
 
@@ -59,10 +59,10 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
     });
-    assert.strictEqual(oktaIssuerName, response.issuer);
+    assert.strictEqual(response.issuer, oktaIssuerName);
     assert.strictEqual(
-      oktaProfileClaims,
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      oktaProfileClaims
     );
   });
 
@@ -73,10 +73,10 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
     });
-    assert.strictEqual(oktaIssuerName, response.issuer);
+    assert.strictEqual(response.issuer, oktaIssuerName);
     assert.strictEqual(
-      oktaProfileClaims,
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      oktaProfileClaims
     );
   });
 });

@@ -1,5 +1,5 @@
+import assert from 'assert';
 import { validate } from '../../lib/response';
-import { expect } from 'chai';
 import fs from 'fs';
 
 // Tests Configuration
@@ -20,9 +20,10 @@ describe('saml20.responseSignedMessage', function () {
       inResponseTo: inResponseTo,
     });
 
-    expect(issuerName).to.equal(response.issuer);
-    expect('_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7').to.equal(
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+    assert.strictEqual(response.issuer, issuerName);
+    assert.strictEqual(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      '_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7'
     );
   });
 
@@ -33,9 +34,10 @@ describe('saml20.responseSignedMessage', function () {
       inResponseTo: inResponseTo,
     });
 
-    expect(issuerName).to.equal(response.issuer);
-    expect('_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7').to.equal(
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+    assert.strictEqual(response.issuer, issuerName);
+    assert.strictEqual(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      '_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7'
     );
   });
 
@@ -46,7 +48,7 @@ describe('saml20.responseSignedMessage', function () {
       bypassExpiration: true,
       inResponseTo: inResponseTo,
     });
-    expect(issuerName).to.equal(response.issuer);
+    assert.strictEqual(response.issuer, issuerName);
   });
 
   it('Should fail with invalid audience', async function () {
@@ -59,7 +61,7 @@ describe('saml20.responseSignedMessage', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid audience.');
+      assert.strictEqual(result, 'Invalid audience.');
     }
   });
 
@@ -72,7 +74,7 @@ describe('saml20.responseSignedMessage', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion.');
+      assert.strictEqual(result, 'Invalid assertion.');
     }
   });
 
@@ -86,7 +88,7 @@ describe('saml20.responseSignedMessage', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid InResponseTo.');
+      assert.strictEqual(result, 'Invalid InResponseTo.');
     }
   });
 });

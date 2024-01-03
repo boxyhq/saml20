@@ -1,5 +1,5 @@
+import assert from 'assert';
 import { validate } from '../../lib/response';
-import { expect } from 'chai';
 import fs from 'fs';
 
 // Tests Configuration
@@ -52,7 +52,7 @@ describe('saml20.attacks.wrapping', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+      assert.strictEqual(result, 'Invalid assertion. Possible assertion wrapping.');
     }
   });
 
@@ -65,7 +65,7 @@ describe('saml20.attacks.wrapping', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+      assert.strictEqual(result, 'Invalid assertion. Possible assertion wrapping.');
     }
   });
 
@@ -78,7 +78,7 @@ describe('saml20.attacks.wrapping', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+      assert.strictEqual(result, 'Invalid assertion. Possible assertion wrapping.');
     }
   });
 
@@ -91,7 +91,7 @@ describe('saml20.attacks.wrapping', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+      assert.strictEqual(result, 'Invalid assertion. Possible assertion wrapping.');
     }
   });
 
@@ -104,7 +104,7 @@ describe('saml20.attacks.wrapping', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion. Possible assertion wrapping.');
+      assert.strictEqual(result, 'Invalid assertion. Possible assertion wrapping.');
     }
   });
 
@@ -117,7 +117,7 @@ describe('saml20.attacks.wrapping', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion.');
+      assert.strictEqual(result, 'Invalid assertion.');
     }
   });
 
@@ -130,7 +130,7 @@ describe('saml20.attacks.wrapping', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      expect(result).to.be.equal('Invalid assertion.');
+      assert.strictEqual(result, 'Invalid assertion.');
     }
   });
 });
