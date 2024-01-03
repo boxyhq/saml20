@@ -1,5 +1,5 @@
+import assert from 'assert';
 import { request } from '../../lib/request';
-import { expect } from 'chai';
 
 const ssoUrl =
   'https://dev-20901260.okta.com/app/dev-20901260_jacksondemo5225_1/exk3wth7ss1TKnAN15d7/sso/saml';
@@ -13,7 +13,7 @@ const publicKey =
 
 describe('request.ts', function () {
   it('request ok', function () {
-    expect(
+    assert(
       request({
         ssoUrl,
         entityID: entityID,
@@ -21,6 +21,6 @@ describe('request.ts', function () {
         signingKey: signingKey,
         publicKey: publicKey,
       })
-    ).to.be.ok;
+    );
   });
 });

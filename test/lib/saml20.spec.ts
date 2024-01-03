@@ -1,5 +1,5 @@
+import assert from 'assert';
 import { default as saml20 } from '../../lib/saml20';
-import { expect } from 'chai';
 import fs from 'fs';
 
 const assertion = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage.xml').toString();
@@ -27,106 +27,106 @@ const assertion1 = {
 describe('saml20.ts', function () {
   it('parse assertion ok', function () {
     const value = saml20.parse(assertion);
-    expect(value.audience).to.equal(undefined);
-    expect(value.claims).to.empty;
-    expect(value.issuer).to.equal(undefined);
-    expect(value.sessionIndex).to.equal(undefined);
-    expect(saml20.parse(assertion)).to.be.ok;
+    assert.strictEqual(value.audience, undefined);
+    assert.deepEqual(value.claims, {});
+    assert.strictEqual(value.issuer, undefined);
+    assert.strictEqual(value.sessionIndex, undefined);
+    assert(saml20.parse(assertion));
   });
 
   it('parse assertion not ok', function () {
     try {
       const value = saml20.parse('assertion');
-      expect(value.audience).to.equal(undefined);
-      expect(value.claims).to.empty;
-      expect(value.issuer).to.equal(undefined);
-      expect(value.sessionIndex).to.equal(undefined);
+      assert.strictEqual(value.audience, undefined);
+      assert.deepEqual(value.claims, {});
+      assert.strictEqual(value.issuer, undefined);
+      assert.strictEqual(value.sessionIndex, undefined);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validateAudience false', function () {
     const value = saml20.validateAudience(assertion, validateOpts);
-    expect(value).to.equal(false);
-    expect(saml20.validateAudience(assertion, validateOpts)).to.be.false;
+    assert.strictEqual(value, false);
+    assert.strictEqual(saml20.validateAudience(assertion, validateOpts), false);
   });
 
   it('validateAudience assertion  not ok', function () {
     try {
       const value = saml20.validateAudience('assertion', validateOpts);
-      expect(value).to.equal(false);
+      assert.strictEqual(value, false);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validateAudience empty Array not ok', function () {
     try {
       const value = saml20.validateAudience(assertion, []);
-      expect(value).to.equal(false);
+      assert.strictEqual(value, false);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validateAudience empty Array ok', function () {
     try {
       const value = saml20.validateAudience(assertion, validateOptsArray);
-      expect(value).to.equal(false);
+      assert.strictEqual(value, false);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validateAudience with Suffix ok', async function () {
     try {
       const value = saml20.validateAudience(assertion1, 'https://saml.boxyhq.com');
-      expect(value).to.equal(true);
+      assert.strictEqual(value, true);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validateAudience with Suffix Array ok', async function () {
     try {
       const value = saml20.validateAudience(assertion1, [...validateOptsArray, 'https://saml.boxyhq.com']);
-      expect(value).to.equal(true);
+      assert.strictEqual(value, true);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validateAudience with Suffix Array not ok', async function () {
     try {
       const value = saml20.validateAudience(assertion1, validateOptsArray);
-      expect(value).to.equal(false);
+      assert.strictEqual(value, false);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validateAudience not ok', function () {
     try {
       const value = saml20.validateAudience('assertion', 'validateOpts');
-      expect(value).to.equal(false);
+      assert.strictEqual(value, false);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validateExpiration ok', function () {
     const value = saml20.validateExpiration(assertion);
-    expect(value).to.equal(true);
-    expect(saml20.validateExpiration(assertion)).to.be.ok;
+    assert.strictEqual(value, true);
+    assert(saml20.validateExpiration(assertion));
   });
 
   it('validateExpiration not ok', function () {
     try {
       const value = saml20.validateExpiration('assertion');
-      expect(value).to.equal(true);
+      assert.strictEqual(value, true);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 });

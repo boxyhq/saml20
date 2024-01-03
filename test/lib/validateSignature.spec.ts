@@ -1,10 +1,10 @@
 import { certToPEM, hasValidSignature, validateSignature } from '../../lib/validateSignature';
-import { expect } from 'chai';
 import xmlbuilder from 'xmlbuilder';
 
 import crypto from 'crypto';
 import fs from 'fs';
 import { sign } from '../../lib/sign';
+import assert from 'assert';
 
 const ssoUrl =
   'https://dev-20901260.okta.com/app/dev-20901260_jacksondemo5225_1/exk3wth7ss1TKnAN15d7/sso/saml';
@@ -151,42 +151,42 @@ function generateXML() {
 describe('validateSignature.ts', function () {
   it('certToPEM ok', function () {
     const value = certToPEM(publicKey);
-    expect(publicKey).to.eqls(value);
+    assert.strictEqual(value, publicKey);
   });
 
   it('hasValidSignature ok ', function () {
     const value = hasValidSignature(generateXML(), publicKey, null);
-    expect(value.valid).to.be.equal(true);
+    assert.strictEqual(value.valid, true);
   });
 
   it('validateSignature ok ', function () {
-    expect(validateSignature(generateXML(), publicKey, null)).to.be.ok;
+    assert(validateSignature(generateXML(), publicKey, null));
   });
 
   it('validate response signature - no embedded cert, use single cert to validate', function () {
     const value = validateSignature(validResponseSigned_noX509, singlePublicKey, null);
-    expect(value).to.be.ok;
+    assert(value);
   });
 
   it('validate response signature - no embedded cert, use different cert, should fail validate', function () {
     try {
       validateSignature(validResponseSigned_noX509, singlePublicKeyNotUsedToSign, null);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
   it('validate response signature - no embedded cert, use multikey cert to validate', function () {
     const value = validateSignature(validResponseSigned_noX509, multiPublicKey, null);
-    expect(value).to.be.ok;
+    assert(value);
   });
 
   it('validateSignature public key not ok ', function () {
     try {
       const value = validateSignature(generateXML(), undefined, 'null');
-      expect(value).to.be.equal(undefined);
+      assert.strictEqual(value, undefined);
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 
@@ -264,7 +264,7 @@ sT/txBnVJGziyO8DPYdu2fPMER8ajJfl</X509Certificate>
         'd730fc9342107b05032393d21cd5ef550150e06b'
       );
     } catch (error) {
-      expect(error).to.be.ok;
+      assert(error);
     }
   });
 });

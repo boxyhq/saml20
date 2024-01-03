@@ -1,5 +1,5 @@
+import assert from 'assert';
 import { validate } from '../../lib/response';
-import { expect } from 'chai';
 import fs from 'fs';
 
 const oneLoginSamlResponseEncrypted = fs
@@ -31,9 +31,10 @@ describe('decrypt.response.spec', function () {
       inResponseTo: oneLoginInResponseTo,
     });
 
-    expect(oneLoginIssuerName).to.equal(response.issuer);
-    expect(oneLoginProfileClaims).to.equal(
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+    assert.strictEqual(response.issuer, oneLoginIssuerName);
+    assert.strictEqual(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      oneLoginProfileClaims
     );
   });
 
@@ -44,9 +45,10 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oneLoginInResponseTo,
     });
-    expect(oneLoginIssuerName).to.equal(response.issuer);
-    expect(oneLoginProfileClaims).to.equal(
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+    assert.strictEqual(response.issuer, oneLoginIssuerName);
+    assert.strictEqual(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      oneLoginProfileClaims
     );
   });
 
@@ -57,9 +59,10 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
     });
-    expect(oktaIssuerName).to.equal(response.issuer);
-    expect(oktaProfileClaims).to.equal(
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+    assert.strictEqual(response.issuer, oktaIssuerName);
+    assert.strictEqual(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      oktaProfileClaims
     );
   });
 
@@ -70,9 +73,10 @@ describe('decrypt.response.spec', function () {
       bypassExpiration: true,
       inResponseTo: oktaInResponseTo,
     });
-    expect(oktaIssuerName).to.equal(response.issuer);
-    expect(oktaProfileClaims).to.equal(
-      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+    assert.strictEqual(response.issuer, oktaIssuerName);
+    assert.strictEqual(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      oktaProfileClaims
     );
   });
 });

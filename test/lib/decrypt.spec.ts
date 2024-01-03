@@ -1,5 +1,5 @@
+import assert from 'assert';
 import { decryptXml } from '../../lib/decrypt';
-import { expect } from 'chai';
 import fs from 'fs';
 
 /**
@@ -23,7 +23,7 @@ describe('decrypt.ts', function () {
   it('valid xml', function (done) {
     try {
       const { assertion } = decryptXml(samlResponseEncrypted, options);
-      expect(assertion).to.be.not.null;
+      assert(assertion);
       done();
     } catch (error) {
       done(error);
@@ -34,7 +34,7 @@ describe('decrypt.ts', function () {
     try {
       decryptXml('', options);
     } catch (error) {
-      expect((error as Error).message).to.equal('Undefined Assertion.');
+      assert.strictEqual((error as Error).message, 'Undefined Assertion.');
     }
   });
   it('empty privateKey ', function () {
@@ -43,7 +43,7 @@ describe('decrypt.ts', function () {
         encPrivateKey: '',
       });
     } catch (error) {
-      expect((error as Error).message).to.equal('Exception of Assertion Decryption.');
+      assert.strictEqual((error as Error).message, 'Exception of Assertion Decryption.');
     }
   });
 });
