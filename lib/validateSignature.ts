@@ -24,6 +24,18 @@ const certToPEM = (cert) => {
 };
 
 const hasValidSignature = (xml, cert, certThumbprint) => {
+  let res = _hasValidSignature(xml, cert, certThumbprint);
+
+  // sanitize and validate if validation failed first time
+  if (!res.valid) {
+    xml = xml.replace(/&#x(d|D);/gi, '');
+    res = _hasValidSignature(xml, cert, certThumbprint);
+  }
+
+  return res;
+};
+
+const _hasValidSignature = (xml, cert, certThumbprint) => {
   const doc = parseFromString(xml);
   let signature =
     select(
