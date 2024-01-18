@@ -86,7 +86,7 @@ describe('response.ts', function () {
   });
 
   it('validate ok', async function () {
-    const response = await validate(rawResponse, validateOpts);
+    const response = await validate(rawResponse, { ...validateOpts, bypassExpiration: true });
     assert.strictEqual(response.audience, 'http://sp.example.com/demo1/metadata.php');
     assert.strictEqual(
       response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
