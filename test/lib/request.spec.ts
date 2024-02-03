@@ -1,5 +1,10 @@
 import assert from 'assert';
-import { request } from '../../lib/request';
+import fs from 'fs';
+import { parseSAMLRequest, request } from '../../lib/request';
+
+const request1 = fs.readFileSync('./test/assets/request1.xml').toString();
+const request2 = fs.readFileSync('./test/assets/request2.xml').toString();
+const request3 = fs.readFileSync('./test/assets/request3.xml').toString();
 
 const ssoUrl =
   'https://dev-20901260.okta.com/app/dev-20901260_jacksondemo5225_1/exk3wth7ss1TKnAN15d7/sso/saml';
@@ -22,5 +27,33 @@ describe('request.ts', function () {
         publicKey: publicKey,
       })
     );
+  });
+
+  it('parseSAMLRequest sample 1 ok', async function () {
+    const res1 = await parseSAMLRequest(request1, false);
+    assert.strictEqual(res1.id, 'id-6888523066678369812_-1');
+    assert.strictEqual(res1.acsUrl, 'https://test1.snowflakecomputing.com/fed/login');
+    assert.strictEqual(res1.audience, 'https://test1.snowflakecomputing.com');
+    assert.strictEqual(res1.publicKey, null);
+    assert(res1.decodedRequest);
+  });
+
+  it('parseSAMLRequest sample 2 ok', async function () {
+    const res2 = await parseSAMLRequest(request2, false);
+    assert.strictEqual(res2.id, '_aa4df01f-3911-4de7-ae9a-a793a7f6c12c');
+    assert.strictEqual(res2.acsUrl, undefined);
+    assert.strictEqual(res2.audience, 'https://fivetran.com');
+    assert.strictEqual(res2.publicKey, null);
+    assert(res2.decodedRequest);
+  });
+
+  it('parseSAMLRequest sample 3 ok', async function () {
+    const res3 = await parseSAMLRequest(request3, false);
+    assert.strictEqual(res3.id, 'ONELOGIN_c6bc2360-ea7d-45ca-b206-4220a4f5b978');
+    assert.strictEqual(res3.acsUrl, 'https://iam.twilio.com/v1/Accounts/abcdef/saml2');
+    assert.strictEqual(res3.audience, 'https://iam.twilio.com/v1/Accounts/abcdef/saml2/metadata');
+    assert.strictEqual(res3.publicKey, null);
+    assert.strictEqual(res3.providerName, 'Twilio');
+    assert(res3.decodedRequest);
   });
 });
