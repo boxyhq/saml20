@@ -99,11 +99,8 @@ const decodeBase64 = async (string: string, isDeflated: boolean) => {
 };
 
 // Parse SAMLRequest attributes
-const parseSAMLRequest = async (request: string, isPost = true) => {
-  // if the request is a POST, it will be not be deflated
-  const decodedRequest = await decodeBase64(request, !isPost);
-
-  const result = await parseXML(decodedRequest);
+const parseSAMLRequest = async (rawRequest: string, isPost = true) => {
+  const result = await parseXML(rawRequest);
 
   const attributes = result['AuthnRequest']['$'];
   const issuer = result['AuthnRequest']['Issuer'];
@@ -111,6 +108,10 @@ const parseSAMLRequest = async (request: string, isPost = true) => {
   const publicKey = result['AuthnRequest']['Signature']
     ? result['AuthnRequest']['Signature'][0]['KeyInfo'][0]['X509Data'][0]['X509Certificate'][0]
     : null;
+
+  if (!issuer) {
+    throw new Error("Missing 'Issuer' in SAML Request.");
+  }
 
   if (!publicKey && isPost) {
     throw new Error('Missing signature');
@@ -122,8 +123,7 @@ const parseSAMLRequest = async (request: string, isPost = true) => {
     providerName: attributes.ProviderName,
     audience: issuer[0]['_'] ?? issuer[0], // also known as entityID
     publicKey,
-    decodedRequest,
   };
 };
 
-export { request, parseSAMLRequest };
+export { request, parseSAMLRequest, decodeBase64 };
