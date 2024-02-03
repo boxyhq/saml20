@@ -1,7 +1,12 @@
+import { promisify } from 'util';
+import xml2js from 'xml2js';
+import { inflateRaw } from 'zlib';
 import xmlbuilder from 'xmlbuilder';
 import { SAMLReq } from './typings';
 import crypto from 'crypto';
 import { sign } from './sign';
+
+const inflateRawAsync = promisify(inflateRaw);
 
 const idPrefix = '_';
 const authnXPath =
@@ -66,4 +71,59 @@ const request = ({
   };
 };
 
-export { request };
+// Parse XML
+const parseXML = (xml: string): Promise<Record<string, any>> => {
+  return new Promise((resolve, reject) => {
+    xml2js.parseString(
+      xml,
+      {
+        tagNameProcessors: [xml2js.processors.stripPrefix],
+        strict: true,
+      },
+      (err: Error | null, result: any) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(result);
+      }
+    );
+  });
+};
+
+// Decode the base64 string
+const decodeBase64 = async (string: string, isDeflated: boolean) => {
+  return isDeflated
+    ? (await inflateRawAsync(Buffer.from(string, 'base64'))).toString()
+    : Buffer.from(string, 'base64').toString();
+};
+
+// Parse SAMLRequest attributes
+const parseSAMLRequest = async (request: string, isPost = true) => {
+  // if the request is a POST, it will be not be deflated
+  const decodedRequest = await decodeBase64(request, !isPost);
+
+  const result = await parseXML(decodedRequest);
+
+  const attributes = result['AuthnRequest']['$'];
+  const issuer = result['AuthnRequest']['Issuer'];
+
+  const publicKey = result['AuthnRequest']['Signature']
+    ? result['AuthnRequest']['Signature'][0]['KeyInfo'][0]['X509Data'][0]['X509Certificate'][0]
+    : null;
+
+  if (!publicKey && isPost) {
+    throw new Error('Missing signature');
+  }
+
+  return {
+    id: attributes.ID,
+    acsUrl: attributes.AssertionConsumerServiceURL,
+    providerName: attributes.ProviderName,
+    audience: issuer[0]['_'] ?? issuer[0], // also known as entityID
+    publicKey,
+    decodedRequest,
+  };
+};
+
+export { request, parseSAMLRequest };
