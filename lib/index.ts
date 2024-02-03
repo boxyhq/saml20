@@ -2,7 +2,7 @@
 
 import { hasValidSignature, validateSignature, certToPEM } from './validateSignature';
 
-import { request } from './request';
+import { request, parseSAMLRequest, decodeBase64 } from './request';
 import { stripCertHeaderAndFooter, PubKeyInfo } from './cert';
 import { parse, validate, parseIssuer, WrapError } from './response';
 import { parseMetadata } from './metadata';
@@ -13,6 +13,8 @@ import { decryptXml } from './decrypt';
 export default {
   parseMetadata,
   request,
+  parseSAMLRequest,
+  decodeBase64,
   parse,
   validate,
   PubKeyInfo,
