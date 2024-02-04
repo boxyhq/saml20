@@ -9,6 +9,7 @@ import { parseMetadata } from './metadata';
 import { createPostForm } from './post';
 import { sign } from './sign';
 import { decryptXml } from './decrypt';
+import { parseLogoutResponse } from './logout';
 
 export default {
   parseMetadata,
@@ -27,4 +28,5 @@ export default {
   decryptXml,
   parseIssuer,
   WrapError,
+  parseLogoutResponse,
 };
