@@ -18,11 +18,11 @@
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
   },
   "include": ["./lib/**/*"],
   "exclude": ["node_modules", "test/**/*"],
   "ts-node": {
-    "files": true
-  }
+    "files": true,
+  },
 }

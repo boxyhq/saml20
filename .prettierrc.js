@@ -7,5 +7,12 @@ module.exports = {
   semi: true,
   printWidth: 110,
   arrowParens: 'always',
-  importOrderSeparation: true,
+  overrides: [
+    {
+      files: ['tsconfig.json', 'jsconfig.json'],
+      options: {
+        parser: 'jsonc',
+      },
+    },
+  ],
 };
