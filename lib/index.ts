@@ -4,7 +4,7 @@ import { hasValidSignature, validateSignature, certToPEM } from './validateSigna
 
 import { request, parseSAMLRequest, decodeBase64 } from './request';
 import { stripCertHeaderAndFooter, PubKeyInfo } from './cert';
-import { parse, validate, parseIssuer, WrapError } from './response';
+import { createSAMLResponse, parse, validate, parseIssuer, WrapError } from './response';
 import { parseMetadata } from './metadata';
 import { createPostForm } from './post';
 import { sign } from './sign';
@@ -13,6 +13,7 @@ import { parseLogoutResponse } from './logout';
 
 export default {
   parseMetadata,
+  createSAMLResponse,
   request,
   parseSAMLRequest,
   decodeBase64,
