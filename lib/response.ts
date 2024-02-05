@@ -1,11 +1,14 @@
 import { SAMLProfile } from './typings';
 import xml2js from 'xml2js';
+import xmlbuilder from 'xmlbuilder';
+import crypto from 'crypto';
 import { getVersion } from './getVersion';
 import { validateSignature } from './validateSignature';
 import { decryptXml } from './decrypt';
 import { select } from 'xpath';
 import saml20 from './saml20';
 import { parseFromString } from './utils';
+import { sign } from './sign';
 
 const tokenHandlers = {
   '2.0': saml20,
@@ -276,4 +279,124 @@ function parseAttributes(assertion, tokenHandler, cb) {
   cb(null, profile);
 }
 
-export { parse, validate, parseIssuer, WrapError };
+const randomId = () => {
+  return '_' + crypto.randomBytes(10).toString('hex');
+};
+
+// Create SAML Response and sign it
+const createSAMLResponse = async ({
+  audience,
+  issuer,
+  acsUrl,
+  claims,
+  requestId,
+  privateKey,
+  publicKey,
+}: {
+  audience: string;
+  issuer: string;
+  acsUrl: string;
+  claims: Record<string, any>;
+  requestId: string;
+  privateKey: string;
+  publicKey: string;
+}): Promise<string> => {
+  const authDate = new Date();
+  const authTimestamp = authDate.toISOString();
+
+  authDate.setMinutes(authDate.getMinutes() - 5);
+  const notBefore = authDate.toISOString();
+
+  authDate.setMinutes(authDate.getMinutes() + 10);
+  const notAfter = authDate.toISOString();
+
+  const nodes = {
+    'samlp:Response': {
+      '@xmlns:samlp': 'urn:oasis:names:tc:SAML:2.0:protocol',
+      '@Version': '2.0',
+      '@ID': randomId(),
+      '@Destination': acsUrl,
+      '@InResponseTo': requestId,
+      '@IssueInstant': authTimestamp,
+      'saml:Issuer': {
+        '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
+        '@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:entity',
+        '#text': issuer,
+      },
+      'samlp:Status': {
+        'samlp:StatusCode': {
+          '@Value': 'urn:oasis:names:tc:SAML:2.0:status:Success',
+        },
+      },
+      'saml:Assertion': {
+        '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
+        '@Version': '2.0',
+        '@ID': randomId(),
+        '@IssueInstant': authTimestamp,
+        'saml:Issuer': {
+          '#text': issuer,
+        },
+        'saml:Subject': {
+          '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
+          'saml:NameID': {
+            '@Format': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+            '#text': claims.email,
+          },
+          'saml:SubjectConfirmation': {
+            '@Method': 'urn:oasis:names:tc:SAML:2.0:cm:bearer',
+            'saml:SubjectConfirmationData': {
+              '@Recipient': acsUrl,
+              '@NotOnOrAfter': notAfter,
+              '@InResponseTo': requestId,
+            },
+          },
+        },
+        'saml:Conditions': {
+          '@NotBefore': notBefore,
+          '@NotOnOrAfter': notAfter,
+          'saml:AudienceRestriction': {
+            'saml:Audience': {
+              '#text': audience,
+            },
+          },
+        },
+        'saml:AuthnStatement': {
+          '@AuthnInstant': authTimestamp,
+          '@SessionIndex': '_YIlFoNFzLMDYxdwf-T_BuimfkGa5qhKg',
+          'saml:AuthnContext': {
+            'saml:AuthnContextClassRef': {
+              '#text': 'urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified',
+            },
+          },
+        },
+        'saml:AttributeStatement': {
+          '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
+          '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+          'saml:Attribute': Object.keys(claims.raw).map((attributeName) => {
+            return {
+              '@Name': attributeName,
+              '@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+              'saml:AttributeValue': {
+                '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
+                '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                '@xsi:type': 'xs:string',
+                '#text': claims.raw[attributeName],
+              },
+            };
+          }),
+        },
+      },
+    },
+  };
+
+  const xml = xmlbuilder.create(nodes, { encoding: 'UTF-8' }).end();
+
+  return sign(
+    xml,
+    privateKey,
+    publicKey,
+    '/*[local-name(.)="Response" and namespace-uri(.)="urn:oasis:names:tc:SAML:2.0:protocol"]'
+  );
+};
+
+export { createSAMLResponse, parse, validate, parseIssuer, WrapError };
