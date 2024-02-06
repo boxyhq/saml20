@@ -391,12 +391,16 @@ const createSAMLResponse = async ({
 
   const xml = xmlbuilder.create(nodes, { encoding: 'UTF-8' }).end();
 
-  return sign(
-    xml,
+  const signedAssertionXml = sign(xml, privateKey, publicKey, '/*[local-name(.)="Assertion"]');
+
+  const signedXml = sign(
+    signedAssertionXml,
     privateKey,
     publicKey,
     '/*[local-name(.)="Response" and namespace-uri(.)="urn:oasis:names:tc:SAML:2.0:protocol"]'
   );
+
+  return signedXml;
 };
 
 export { createSAMLResponse, parse, validate, parseIssuer, WrapError };
