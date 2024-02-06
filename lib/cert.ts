@@ -2,7 +2,7 @@ const stripCertHeaderAndFooter = (cert: string): string => {
   cert = cert.replace(/-+BEGIN CERTIFICATE-+\r?\n?/, '');
   cert = cert.replace(/-+END CERTIFICATE-+\r?\n?/, '');
   cert = cert.replace(/\r\n/g, '\n');
-  return cert;
+  return cert.trimEnd();
 };
 
 function PubKeyInfo(pubKey: string) {
