@@ -391,7 +391,7 @@ const createSAMLResponse = async ({
 
   const xml = xmlbuilder.create(nodes, { encoding: 'UTF-8' }).end();
 
-  const signedAssertionXml = sign(xml, privateKey, publicKey, '/*[local-name(.)="Assertion"]');
+  const signedAssertionXml = sign(xml, privateKey, publicKey, '//*[local-name(.)="Assertion"]');
 
   const signedXml = sign(
     signedAssertionXml,
