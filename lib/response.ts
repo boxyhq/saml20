@@ -312,28 +312,33 @@ const createSAMLResponse = async ({
 
   const nodes = {
     'samlp:Response': {
-      '@xmlns:samlp': 'urn:oasis:names:tc:SAML:2.0:protocol',
-      '@Version': '2.0',
-      '@ID': randomId(),
       '@Destination': acsUrl,
+      '@ID': randomId(),
       '@InResponseTo': requestId,
       '@IssueInstant': authTimestamp,
+      '@Version': '2.0',
+      '@xmlns:samlp': 'urn:oasis:names:tc:SAML:2.0:protocol',
+      '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
       'saml:Issuer': {
-        '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
         '@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:entity',
+        '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
         '#text': issuer,
       },
       'samlp:Status': {
+        '@xmlns:samlp': 'urn:oasis:names:tc:SAML:2.0:protocol',
         'samlp:StatusCode': {
           '@Value': 'urn:oasis:names:tc:SAML:2.0:status:Success',
         },
       },
       'saml:Assertion': {
-        '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
-        '@Version': '2.0',
         '@ID': randomId(),
         '@IssueInstant': authTimestamp,
+        '@Version': '2.0',
+        '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
+        '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
         'saml:Issuer': {
+          '@Format': 'urn:oasis:names:tc:SAML:2.0:nameid-format:entity',
+          '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
           '#text': issuer,
         },
         'saml:Subject': {
@@ -345,15 +350,16 @@ const createSAMLResponse = async ({
           'saml:SubjectConfirmation': {
             '@Method': 'urn:oasis:names:tc:SAML:2.0:cm:bearer',
             'saml:SubjectConfirmationData': {
-              '@Recipient': acsUrl,
-              '@NotOnOrAfter': notAfter,
               '@InResponseTo': requestId,
+              '@NotOnOrAfter': notAfter,
+              '@Recipient': acsUrl,
             },
           },
         },
         'saml:Conditions': {
           '@NotBefore': notBefore,
           '@NotOnOrAfter': notAfter,
+          '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
           'saml:AudienceRestriction': {
             'saml:Audience': {
               '#text': audience,
@@ -362,20 +368,20 @@ const createSAMLResponse = async ({
         },
         'saml:AuthnStatement': {
           '@AuthnInstant': authTimestamp,
-          '@SessionIndex': '_YIlFoNFzLMDYxdwf-T_BuimfkGa5qhKg',
+          '@SessionIndex': requestId,
+          '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
           'saml:AuthnContext': {
             'saml:AuthnContextClassRef': {
-              '#text': 'urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified',
+              '#text': 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
             },
           },
         },
         'saml:AttributeStatement': {
-          '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
-          '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+          '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
           'saml:Attribute': Object.keys(claims.raw).map((attributeName) => {
             return {
               '@Name': attributeName,
-              '@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+              '@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified',
               'saml:AttributeValue': {
                 '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
                 '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
