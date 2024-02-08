@@ -379,6 +379,23 @@ const createSAMLResponse = async ({
         'saml:AttributeStatement': {
           '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
           'saml:Attribute': Object.keys(claims.raw).map((attributeName) => {
+            const attributeValue = claims.raw[attributeName];
+
+            if (Array.isArray(attributeValue)) {
+              return {
+                '@Name': attributeName,
+                '@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified',
+                'saml:AttributeValue': attributeValue.map((value) => {
+                  return {
+                    '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
+                    '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                    '@xsi:type': 'xs:string',
+                    '#text': value,
+                  };
+                }),
+              };
+            }
+
             return {
               '@Name': attributeName,
               '@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified',
@@ -386,7 +403,7 @@ const createSAMLResponse = async ({
                 '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
                 '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
                 '@xsi:type': 'xs:string',
-                '#text': claims.raw[attributeName],
+                '#text': attributeValue,
               },
             };
           }),
