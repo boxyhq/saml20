@@ -1,4 +1,4 @@
-import * as rambda from 'rambda';
+import { path, pathOr } from 'rambda';
 import { thumbprint } from './utils';
 import crypto from 'crypto';
 
@@ -23,7 +23,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
           return;
         }
 
-        const entityID = rambda.path('EntityDescriptor.$.entityID', res);
+        const entityID = path('EntityDescriptor.$.entityID', res);
         let X509Certificates: string[] = [];
         const X509CertificatesWithoutSigningAttr: string[] = [];
         let ssoPostUrl: null | undefined = null;
@@ -32,9 +32,9 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         let sloRedirectUrl: null | undefined = null;
         let sloPostUrl: null | undefined = null;
 
-        let ssoDes: any = rambda.pathOr(null, 'EntityDescriptor.IDPSSODescriptor', res);
+        let ssoDes: any = pathOr(null, 'EntityDescriptor.IDPSSODescriptor', res);
         if (!ssoDes) {
-          ssoDes = rambda.pathOr([], 'EntityDescriptor.SPSSODescriptor', res);
+          ssoDes = pathOr([], 'EntityDescriptor.SPSSODescriptor', res);
           if (ssoDes.length > 0) {
             loginType = 'sp';
           }
@@ -55,19 +55,19 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
 
           const ssoSvc = ssoDesRec['SingleSignOnService'] || ssoDesRec['AssertionConsumerService'] || [];
           for (const ssoSvcRec of ssoSvc) {
-            if (rambda.pathOr('', '$.Binding', ssoSvcRec).endsWith('HTTP-POST')) {
-              ssoPostUrl = rambda.path('$.Location', ssoSvcRec);
-            } else if (rambda.pathOr('', '$.Binding', ssoSvcRec).endsWith('HTTP-Redirect')) {
-              ssoRedirectUrl = rambda.path('$.Location', ssoSvcRec);
+            if (pathOr('', '$.Binding', ssoSvcRec).endsWith('HTTP-POST')) {
+              ssoPostUrl = path('$.Location', ssoSvcRec);
+            } else if (pathOr('', '$.Binding', ssoSvcRec).endsWith('HTTP-Redirect')) {
+              ssoRedirectUrl = path('$.Location', ssoSvcRec);
             }
           }
 
           const sloSvc = ssoDesRec['SingleLogoutService'] || [];
           for (const sloSvcRec of sloSvc) {
-            if (rambda.pathOr('', '$.Binding', sloSvcRec).endsWith('HTTP-Redirect')) {
-              sloRedirectUrl = rambda.path('$.Location', sloSvcRec);
-            } else if (rambda.pathOr('', '$.Binding', sloSvcRec).endsWith('HTTP-POST')) {
-              sloPostUrl = rambda.path('$.Location', sloSvcRec);
+            if (pathOr('', '$.Binding', sloSvcRec).endsWith('HTTP-Redirect')) {
+              sloRedirectUrl = path('$.Location', sloSvcRec);
+            } else if (pathOr('', '$.Binding', sloSvcRec).endsWith('HTTP-POST')) {
+              sloPostUrl = path('$.Location', sloSvcRec);
             }
           }
 

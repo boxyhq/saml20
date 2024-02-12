@@ -1,4 +1,4 @@
-import * as rambda from 'rambda';
+import { path } from 'rambda';
 
 const permanentNameIdentifier = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent';
 const nameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
@@ -47,7 +47,7 @@ function trimWords(phrase) {
 }
 
 function getExtendedProp(obj, prop?: string, extraProp?: string) {
-  let result = prop ? rambda.path(prop, obj) : obj;
+  let result = prop ? path(prop, obj) : obj;
   const format = result && result['@'] && result['@'].Format ? result['@'].Format : null;
 
   if (result && result._) {
@@ -78,7 +78,7 @@ function getProp(obj, prop?: string, extraProp?: string) {
 
 const parse = (assertion) => {
   let claims = {};
-  let attributes = rambda.path('AttributeStatement.Attribute', assertion);
+  let attributes = path('AttributeStatement.Attribute', assertion);
 
   if (attributes) {
     attributes = attributes instanceof Array ? attributes : [attributes];
