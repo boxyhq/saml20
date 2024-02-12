@@ -1,19 +1,11 @@
+import * as rambda from 'rambda';
+
 const permanentNameIdentifier = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent';
 const nameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
 const emailAddressClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress';
 const givenNameClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname';
 const surnameClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname';
 const nameidFormatEmailAddress = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress';
-
-function _get(obj, path) {
-  const fullPath = path.replace(/\[/g, '.').replace(/]/g, '').split('.').filter(Boolean);
-
-  return fullPath.every(everyFunc) ? obj : undefined;
-
-  function everyFunc(step) {
-    return !(step && (obj = obj[step]) === undefined);
-  }
-}
 
 function getClaims(attributes) {
   const claims = {};
@@ -55,7 +47,7 @@ function trimWords(phrase) {
 }
 
 function getExtendedProp(obj, prop?: string, extraProp?: string) {
-  let result = prop ? _get(obj, prop) : obj;
+  let result = prop ? rambda.path(prop, obj) : obj;
   const format = result && result['@'] && result['@'].Format ? result['@'].Format : null;
 
   if (result && result._) {
@@ -86,7 +78,7 @@ function getProp(obj, prop?: string, extraProp?: string) {
 
 const parse = (assertion) => {
   let claims = {};
-  let attributes = _get(assertion, 'AttributeStatement.Attribute');
+  let attributes = rambda.path('AttributeStatement.Attribute', assertion);
 
   if (attributes) {
     attributes = attributes instanceof Array ? attributes : [attributes];
