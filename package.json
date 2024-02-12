@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "@xmldom/xmldom": "0.8.10",
-    "lodash": "4.17.21",
     "rambda": "9.1.0",
     "xml-crypto": "6.0.0",
     "xml-encryption": "3.0.2",
