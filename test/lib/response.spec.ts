@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { parse, parseIssuer, validate } from '../../lib/response';
+import { parse, parseIssuer, validate, createSAMLResponse } from '../../lib/response';
 import fs from 'fs';
 
 const rawResponse = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage.xml').toString();
@@ -22,6 +22,9 @@ const validToken = fs.readFileSync('./test/assets/saml20.validToken.xml').toStri
 const invalidToken = fs.readFileSync('./test/assets/saml20.invalidToken.xml').toString();
 const invalidWrappedToken = fs.readFileSync('./test/assets/saml20.invalidWrappedToken.xml').toString();
 const validAssertion = fs.readFileSync('./test/assets/saml20.validAssertion.xml').toString();
+
+const oktaPublicKey = fs.readFileSync('./test/assets/certificates/oktaPublicKey.crt').toString();
+const oktaPrivateKey = fs.readFileSync('./test/assets/certificates/oktaPrivateKey.pem').toString();
 
 describe('response.ts', function () {
   it('RAW response ok', async function () {
@@ -241,5 +244,62 @@ describe('response.ts', function () {
       response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
       'permanent-id'
     );
+  });
+
+  it('Should create a SAML response', async function () {
+    const json = {
+      audience: 'http://sp.example.com/demo1/metadata.php',
+      issuer: 'http://idp.example.com/metadata.php',
+      acsUrl: 'http://sp.example.com/demo1/index.php?acs',
+      claims: {
+        raw: {
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier':
+            '_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7',
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress': 'jackson@example.com',
+          groups: ['admin,owner', 'user'],
+        },
+      },
+      requestId: 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685',
+      privateKey: oktaPrivateKey,
+      publicKey: oktaPublicKey,
+    };
+
+    const response = await createSAMLResponse(json);
+
+    const parsed = await parse(response);
+
+    assert.strictEqual(parsed.issuer, json.issuer);
+    assert.strictEqual(parsed.audience, json.audience);
+    assert.strictEqual(parsed.sessionIndex, json.requestId);
+    assert.deepStrictEqual(parsed.claims, json.claims.raw);
+  });
+
+  it('Should create a SAML response, flattenArray=true', async function () {
+    const json = {
+      audience: 'http://sp.example.com/demo1/metadata.php',
+      issuer: 'http://idp.example.com/metadata.php',
+      acsUrl: 'http://sp.example.com/demo1/index.php?acs',
+      claims: {
+        raw: {
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier':
+            '_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7',
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress': 'jackson@example.com',
+          groups: ['admin,owner', 'user'],
+        },
+      },
+      requestId: 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685',
+      privateKey: oktaPrivateKey,
+      publicKey: oktaPublicKey,
+      flattenArray: true,
+    };
+
+    const response = await createSAMLResponse(json);
+
+    const parsed = await parse(response);
+
+    assert.strictEqual(parsed.issuer, json.issuer);
+    assert.strictEqual(parsed.audience, json.audience);
+    assert.strictEqual(parsed.sessionIndex, json.requestId);
+    assert.deepStrictEqual(parsed.claims, { ...json.claims.raw, groups: 'admin%2Cowner,user' });
   });
 });
