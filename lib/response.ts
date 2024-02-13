@@ -283,6 +283,13 @@ const randomId = () => {
   return '_' + crypto.randomBytes(10).toString('hex');
 };
 
+const flattenedArray = (arr: string[]) => {
+  const escArr = arr.map((val) => {
+    return val.replace(/,/g, '%2C');
+  });
+  return [escArr.join(',')];
+};
+
 // Create SAML Response and sign it
 const createSAMLResponse = async ({
   audience,
@@ -292,6 +299,7 @@ const createSAMLResponse = async ({
   requestId,
   privateKey,
   publicKey,
+  flattenArray = false,
 }: {
   audience: string;
   issuer: string;
@@ -300,6 +308,7 @@ const createSAMLResponse = async ({
   requestId: string;
   privateKey: string;
   publicKey: string;
+  flattenArray?: boolean;
 }): Promise<string> => {
   const authDate = new Date();
   const authTimestamp = authDate.toISOString();
@@ -378,16 +387,25 @@ const createSAMLResponse = async ({
         },
         'saml:AttributeStatement': {
           '@xmlns:saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
-          'saml:Attribute': Object.keys(claims.raw).map((attributeName) => {
+          'saml:Attribute': Object.keys(claims.raw || []).map((attributeName) => {
+            const attributeValue = claims.raw[attributeName];
+            const attributeValueArray = Array.isArray(attributeValue)
+              ? flattenArray
+                ? flattenedArray(attributeValue)
+                : attributeValue
+              : [attributeValue];
+
             return {
               '@Name': attributeName,
               '@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified',
-              'saml:AttributeValue': {
-                '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
-                '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-                '@xsi:type': 'xs:string',
-                '#text': claims.raw[attributeName],
-              },
+              'saml:AttributeValue': attributeValueArray.map((value) => {
+                return {
+                  '@xmlns:xs': 'http://www.w3.org/2001/XMLSchema',
+                  '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                  '@xsi:type': 'xs:string',
+                  '#text': value,
+                };
+              }),
             };
           }),
         },
