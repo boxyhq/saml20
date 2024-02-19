@@ -1,6 +1,6 @@
 const createPostForm = (postUrl: string, params: { name: string; value: string }[]) => {
   const parr = (params || []).map(({ name, value }) => {
-    return `<input type="hidden" name="${name}" value="${value}"/>`;
+    return `<input type="hidden" name="${name}" value="${value.replace(/"/g, '&quot;')}"/>`;
   });
 
   const formElements = [
