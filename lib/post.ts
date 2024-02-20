@@ -1,6 +1,15 @@
+const escapeHtml = (unsafeHtml: string) => {
+  return unsafeHtml
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 const createPostForm = (postUrl: string, params: { name: string; value: string }[]) => {
   const parr = (params || []).map(({ name, value }) => {
-    return `<input type="hidden" name="${name}" value="${value.replace(/"/g, '&quot;')}"/>`;
+    return `<input type="hidden" name="${name}" value="${escapeHtml(value)}"/>`;
   });
 
   const formElements = [
