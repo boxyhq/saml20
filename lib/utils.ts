@@ -52,7 +52,7 @@ const thumbprint = (cert: string) => {
 };
 
 const getAttribute = <TDefault = unknown>(value: any, path: string, defaultValue?: TDefault): TDefault => {
-  const segments = path.split(/[\.\[\]]/g);
+  const segments = path.split(/[\.\[\]]/g); // eslint-disable-line no-useless-escape
   let current: any = value;
   for (const key of segments) {
     if (current === null) return defaultValue as TDefault;
