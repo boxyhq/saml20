@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { getAttribute } from './utils';
 import { thumbprint } from './utils';
 import crypto from 'crypto';
 
@@ -23,7 +23,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
           return;
         }
 
-        const entityID = get(res, 'EntityDescriptor.$.entityID');
+        const entityID = getAttribute(res, 'EntityDescriptor.$.entityID');
         let X509Certificates: string[] = [];
         const X509CertificatesWithoutSigningAttr: string[] = [];
         let ssoPostUrl: null | undefined = null;
@@ -32,9 +32,9 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
         let sloRedirectUrl: null | undefined = null;
         let sloPostUrl: null | undefined = null;
 
-        let ssoDes: any = get(res, 'EntityDescriptor.IDPSSODescriptor', null);
+        let ssoDes: any = getAttribute(res, 'EntityDescriptor.IDPSSODescriptor', null);
         if (!ssoDes) {
-          ssoDes = get(res, 'EntityDescriptor.SPSSODescriptor', []);
+          ssoDes = getAttribute(res, 'EntityDescriptor.SPSSODescriptor', []);
           if (ssoDes.length > 0) {
             loginType = 'sp';
           }
@@ -55,19 +55,19 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
 
           const ssoSvc = ssoDesRec['SingleSignOnService'] || ssoDesRec['AssertionConsumerService'] || [];
           for (const ssoSvcRec of ssoSvc) {
-            if (get(ssoSvcRec, '$.Binding', '').endsWith('HTTP-POST')) {
-              ssoPostUrl = get(ssoSvcRec, '$.Location');
-            } else if (get(ssoSvcRec, '$.Binding', '').endsWith('HTTP-Redirect')) {
-              ssoRedirectUrl = get(ssoSvcRec, '$.Location');
+            if (getAttribute(ssoSvcRec, '$.Binding', '').endsWith('HTTP-POST')) {
+              ssoPostUrl = getAttribute(ssoSvcRec, '$.Location');
+            } else if (getAttribute(ssoSvcRec, '$.Binding', '').endsWith('HTTP-Redirect')) {
+              ssoRedirectUrl = getAttribute(ssoSvcRec, '$.Location');
             }
           }
 
           const sloSvc = ssoDesRec['SingleLogoutService'] || [];
           for (const sloSvcRec of sloSvc) {
-            if (get(sloSvcRec, '$.Binding', '').endsWith('HTTP-Redirect')) {
-              sloRedirectUrl = get(sloSvcRec, '$.Location');
-            } else if (get(sloSvcRec, '$.Binding', '').endsWith('HTTP-POST')) {
-              sloPostUrl = get(sloSvcRec, '$.Location');
+            if (getAttribute(sloSvcRec, '$.Binding', '').endsWith('HTTP-Redirect')) {
+              sloRedirectUrl = getAttribute(sloSvcRec, '$.Location');
+            } else if (getAttribute(sloSvcRec, '$.Binding', '').endsWith('HTTP-POST')) {
+              sloPostUrl = getAttribute(sloSvcRec, '$.Location');
             }
           }
 
