@@ -1,10 +1,12 @@
 const escapeHtml = (unsafeHtml: string) => {
   return unsafeHtml
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    ? unsafeHtml
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+    : unsafeHtml;
 };
 
 const createPostForm = (postUrl: string, params: { name: string; value: string }[]) => {
