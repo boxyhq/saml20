@@ -191,7 +191,7 @@ const createIdPMetadataXML = ({
   ssoUrl: string;
   entityId: string;
   x509cert: string;
-  wantAuthnRequestsSigned: false;
+  wantAuthnRequestsSigned: boolean;
 }): string => {
   x509cert = stripCertHeaderAndFooter(x509cert);
 
