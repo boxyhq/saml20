@@ -1,8 +1,10 @@
 import { getAttribute } from './utils';
 import { thumbprint } from './utils';
-import crypto from 'crypto';
+import { stripCertHeaderAndFooter } from './cert';
 
+import crypto from 'crypto';
 import xml2js from 'xml2js';
+import xmlbuilder from 'xmlbuilder';
 
 const BEGIN = '-----BEGIN CERTIFICATE-----';
 const END = '-----END CERTIFICATE-----';
@@ -180,4 +182,125 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
   });
 };
 
-export { parseMetadata };
+const createIdPMetadataXML = ({
+  ssoUrl,
+  entityId,
+  x509cert,
+  wantAuthnRequestsSigned,
+}: {
+  ssoUrl: string;
+  entityId: string;
+  x509cert: string;
+  wantAuthnRequestsSigned: boolean;
+}): string => {
+  x509cert = stripCertHeaderAndFooter(x509cert);
+
+  const today = new Date();
+  const nodes = {
+    'md:EntityDescriptor': {
+      '@xmlns:md': 'urn:oasis:names:tc:SAML:2.0:metadata',
+      '@entityID': entityId,
+      '@validUntil': new Date(today.setFullYear(today.getFullYear() + 10)).toISOString(),
+      'md:IDPSSODescriptor': {
+        '@WantAuthnRequestsSigned': wantAuthnRequestsSigned,
+        '@protocolSupportEnumeration': 'urn:oasis:names:tc:SAML:2.0:protocol',
+        'md:KeyDescriptor': {
+          '@use': 'signing',
+          'ds:KeyInfo': {
+            '@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
+            'ds:X509Data': {
+              'ds:X509Certificate': {
+                '#text': x509cert,
+              },
+            },
+          },
+        },
+        'md:NameIDFormat': {
+          '#text': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+        },
+        'md:SingleSignOnService': [
+          {
+            '@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+            '@Location': ssoUrl,
+          },
+          {
+            '@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+            '@Location': ssoUrl,
+          },
+        ],
+      },
+    },
+  };
+
+  return xmlbuilder.create(nodes, { encoding: 'UTF-8', standalone: false }).end({ pretty: true });
+};
+
+const createSPMetadataXML = ({
+  entityId,
+  publicKeyString,
+  acsUrl,
+  encryption,
+}: {
+  entityId: string;
+  publicKeyString: string;
+  acsUrl: string;
+  encryption: boolean;
+}): string => {
+  const today = new Date();
+
+  const keyDescriptor: any[] = [
+    {
+      '@use': 'signing',
+      'ds:KeyInfo': {
+        '@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
+        'ds:X509Data': {
+          'ds:X509Certificate': {
+            '#text': publicKeyString,
+          },
+        },
+      },
+    },
+  ];
+
+  if (encryption) {
+    keyDescriptor.push({
+      '@use': 'encryption',
+      'ds:KeyInfo': {
+        '@xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#',
+        'ds:X509Data': {
+          'ds:X509Certificate': {
+            '#text': publicKeyString,
+          },
+        },
+      },
+      'md:EncryptionMethod': {
+        '@Algorithm': 'http://www.w3.org/2001/04/xmlenc#aes256-cbc',
+      },
+    });
+  }
+
+  const nodes = {
+    'md:EntityDescriptor': {
+      '@xmlns:md': 'urn:oasis:names:tc:SAML:2.0:metadata',
+      '@entityID': entityId,
+      '@validUntil': new Date(today.setFullYear(today.getFullYear() + 10)).toISOString(),
+      'md:SPSSODescriptor': {
+        //'@WantAuthnRequestsSigned': true,
+        '@protocolSupportEnumeration': 'urn:oasis:names:tc:SAML:2.0:protocol',
+        'md:KeyDescriptor': keyDescriptor,
+        'md:NameIDFormat': {
+          '#text': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+        },
+        'md:AssertionConsumerService': {
+          '@index': 1,
+          '@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+          '@Location': acsUrl,
+        },
+      },
+    },
+  };
+
+  return xmlbuilder.create(nodes, { encoding: 'UTF-8', standalone: false }).end({ pretty: true });
+};
+
+export { parseMetadata, createIdPMetadataXML, createSPMetadataXML };
