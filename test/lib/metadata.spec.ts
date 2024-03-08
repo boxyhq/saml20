@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { parseMetadata } from '../../lib/metadata';
+import { parseMetadata, createIdPMetadataXML, createSPMetadataXML } from '../../lib/metadata';
 import fs from 'fs';
 
 const samlMetadata = fs.readFileSync('./test/assets/mock-saml-metadata.xml').toString();
@@ -186,5 +186,27 @@ describe('metadata.ts', function () {
       const result = (error as Error).message;
       assert.strictEqual(result, 'Could not find X509Certificate in the IdP metadata.');
     }
+  });
+
+  it(`createIdPMetadataXML ok`, async () => {
+    const res = createIdPMetadataXML({
+      ssoUrl: 'http://localhost:4000/api/saml/sso',
+      entityId: 'https://saml.example.com/entityid',
+      x509cert: 'x509cert',
+      wantAuthnRequestsSigned: false,
+    });
+
+    assert.strictEqual(!!res, true);
+  });
+
+  it(`createSPMetadataXML ok`, async () => {
+    const res = createSPMetadataXML({
+      acsUrl: 'http://localhost:4000/api/saml/sso',
+      entityId: 'https://saml.example.com/entityid',
+      publicKeyString: 'x509cert',
+      encryption: false,
+    });
+
+    assert.strictEqual(!!res, true);
   });
 });
