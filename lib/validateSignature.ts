@@ -84,6 +84,9 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
         break;
       }
     }
+    if (!valid) {
+      throw new Error('invalid signature: Failed to verify signature against all the certificates provided.');
+    }
   } else {
     signed.getCertFromKeyInfo = function getKey(keyInfo) {
       if (certThumbprint) {

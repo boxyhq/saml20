@@ -263,8 +263,14 @@ describe('validateSignature.ts', function () {
   });
 
   it('validate response signature - no embedded cert, use multikey cert (wrong ones) should not pass', function () {
-    const value = validateSignature(validResponseSigned_noX509, wrongMultiPublicKey, null);
-    assert.equal(value, undefined);
+    try {
+      validateSignature(validResponseSigned_noX509, wrongMultiPublicKey, null);
+    } catch (error: any) {
+      assert.equal(
+        error.message,
+        'invalid signature: Failed to verify signature against all the certificates provided.'
+      );
+    }
   });
 
   it('validateSignature public key not ok ', function () {
