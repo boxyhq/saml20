@@ -3,6 +3,10 @@ import { select } from 'xpath';
 import { thumbprint } from './utils';
 import { parseFromString } from './utils';
 
+const isMultiCert = (cert) => {
+  return cert.indexOf(',') !== -1;
+};
+
 const _certToPEM = (cert) => {
   if (cert.indexOf('BEGIN CERTIFICATE') === -1 && cert.indexOf('END CERTIFICATE') === -1) {
     cert = cert.match(/.{1,64}/g).join('\n');
@@ -15,7 +19,7 @@ const _certToPEM = (cert) => {
 };
 
 const certToPEM = (cert) => {
-  if (cert.indexOf(',') !== -1) {
+  if (isMultiCert(cert)) {
     const _certs = cert.split(',');
     return _certs.map((_cert) => _certToPEM(_cert)).join('');
   }
@@ -59,35 +63,50 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
     idAttribute: 'AssertionID',
   });
 
-  // Check if more than one cert is passed in
-  // Set getCertFromKeyInfo for each cert and run checkSignature
-
-  let calculatedThumbprint;
-
-  signed.getCertFromKeyInfo = function getKey(keyInfo) {
-    if (certThumbprint) {
-      const embeddedCert = keyInfo!.childNodes[0].ownerDocument!.getElementsByTagNameNS(
-        'http://www.w3.org/2000/09/xmldsig#',
-        'X509Certificate'
-      );
-
-      if (embeddedCert.length > 0) {
-        const base64cer = embeddedCert[0].firstChild!.toString();
-
-        calculatedThumbprint = thumbprint(base64cer);
-
-        return certToPEM(base64cer);
-      }
-    }
-
-    return certToPEM(cert);
-  };
-
   signed.loadSignature(signature.toString());
 
-  const valid = signed.checkSignature(xml);
+  let valid;
+  let id, calculatedThumbprint;
+  // Check if cert contains multiple
+  // Load each cert and run checkSignature
+  if (cert && isMultiCert(cert)) {
+    const _certs = cert.split(',');
+    for (const _cert of _certs) {
+      signed.getCertFromKeyInfo = () => {
+        return _certToPEM(_cert);
+      };
+      try {
+        valid = signed.checkSignature(xml);
+      } catch (err) {
+        //noop
+      }
+      if (valid) {
+        break;
+      }
+    }
+  } else {
+    signed.getCertFromKeyInfo = function getKey(keyInfo) {
+      if (certThumbprint) {
+        const embeddedCert = keyInfo!.childNodes[0].ownerDocument!.getElementsByTagNameNS(
+          'http://www.w3.org/2000/09/xmldsig#',
+          'X509Certificate'
+        );
 
-  let id;
+        if (embeddedCert.length > 0) {
+          const base64cer = embeddedCert[0].firstChild!.toString();
+
+          calculatedThumbprint = thumbprint(base64cer);
+
+          return certToPEM(base64cer);
+        }
+      }
+
+      return certToPEM(cert);
+    };
+
+    valid = signed.checkSignature(xml);
+  }
+
   if (valid) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
