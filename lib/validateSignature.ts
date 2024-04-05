@@ -7,7 +7,7 @@ const isMultiCert = (cert) => {
   return cert.indexOf(',') !== -1;
 };
 
-const _certToPEM = (cert) => {
+const certToPEM = (cert) => {
   if (cert.indexOf('BEGIN CERTIFICATE') === -1 && cert.indexOf('END CERTIFICATE') === -1) {
     cert = cert.match(/.{1,64}/g).join('\n');
     cert = '-----BEGIN CERTIFICATE-----\n' + cert;
@@ -16,15 +16,6 @@ const _certToPEM = (cert) => {
   } else {
     return cert;
   }
-};
-
-const certToPEM = (cert) => {
-  if (isMultiCert(cert)) {
-    const _certs = cert.split(',');
-    return _certs.map((_cert) => _certToPEM(_cert)).join('');
-  }
-
-  return _certToPEM(cert);
 };
 
 const hasValidSignature = (xml, cert, certThumbprint) => {
@@ -73,7 +64,7 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
     const _certs = cert.split(',');
     for (const _cert of _certs) {
       signed.getCertFromKeyInfo = () => {
-        return _certToPEM(_cert);
+        return certToPEM(_cert);
       };
       try {
         valid = signed.checkSignature(xml);
