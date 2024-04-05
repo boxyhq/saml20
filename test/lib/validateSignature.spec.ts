@@ -141,6 +141,44 @@ Q64SOFhkpw9Yd5L47SnxC3rQPsgeol+BJwosXcPG4OXjK5JisQGdakEJh8GLnE5u
 4eXJ/Zy78JiYM4PUnPMKABsqcUZv5vsuV5HPO4ODtcGFRY1EoSXcMxz0jkUipe+Z
 wmF8r5aO5sSGd+KOi2O/ja9VV4UzGD8=`;
 
+const wrongMultiPublicKey = `MIIDczCCAlugAwIBAgIUOJZExQRTahl1DA9raMp0G6vCkHwwDQYJKoZIhvcNAQEL
+BQAwSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3RhdGUxDzANBgNVBAoM
+BkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTAgFw0yMzExMTIxMTEwMDNaGA8z
+MDIzMDMxNTExMTAwM1owSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3Rh
+dGUxDzANBgNVBAoMBkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMWZyyDK9/I3Pic2TCnckbdVG/PIknyk
+YszbA+87q/MWlBA/vX2DogUw6UapZ07r6kxYRyMg/7VlJNP5rZXowv0LEpfpdAth
+8O7TomyEbwhl4u/8CcCbRvihkQtr1DFlHBYVSC7znkpeS1iYwfsDKhZc5NHmplG5
++dERS71rtWqxb9hySPcX2CUJOvLjeC6uhTux5ers33963qnQzEsOuBRvcUT6TU7Y
+4WjzMycAjtsfT9r5y5Lhv9DpsIpVSRQ1MCLHCAeD1BerUZaebTonbsEA1EHk4vux
+FmjvlrNp4hh2zrtGt7yZO2cAzcNmloq+JmZ/7Yeb5CAhCaXIXFBBsh0CAwEAAaNT
+MFEwHQYDVR0OBBYEFLb5bLFbrOVXMAT5YnsQLSkPL3AyMB8GA1UdIwQYMBaAFLb5
+bLFbrOVXMAT5YnsQLSkPL3AyMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL
+BQADggEBAKJFOBEouNp2AJicbA3Lmb4vVJfwP9h8LGqHV3TZHhlEblmBQNEoLyLO
+z7XhIy1/5LyGb7b/o0LAoC1RxH/6GiHcIKt4/DS7dOfrpcNkHXAUHVFZ1LfFtBHc
+zIZTXKWNiFLqz3nTaKS3dqmnZMsoWDuRpE4kwR5tT+zB492nnfH7XGICQDojQ1DN
+NDvfSxFNmjcEuabxM9VGdsX6xOiClZBJwJBixj74EYPeeVOPbOEQfQZchX8xB3u5
+2knHSNiamr0NJ4GA44hIoCADW2G6W2+A4gFNnA6UYFlaijMWqb/XSNlbkYZD6OkG
+9Xa5bTycscrxF6+S3n5z2yGft52wBe4=,MIIDczCCAlugAwIBAgIUOJZExQRTahl1DA9raMp0G6vCkHwwDQYJKoZIhvcNAQEL
+BQAwSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3RhdGUxDzANBgNVBAoM
+BkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTAgFw0yMzExMTIxMTEwMDNaGA8z
+MDIzMDMxNTExMTAwM1owSDELMAkGA1UEBhMCSU4xEzARBgNVBAgMClNvbWUtU3Rh
+dGUxDzANBgNVBAoMBkJveHlIUTETMBEGA1UEAwwKYm94eWhxLmNvbTCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMWZyyDK9/I3Pic2TCnckbdVG/PIknyk
+YszbA+87q/MWlBA/vX2DogUw6UapZ07r6kxYRyMg/7VlJNP5rZXowv0LEpfpdAth
+8O7TomyEbwhl4u/8CcCbRvihkQtr1DFlHBYVSC7znkpeS1iYwfsDKhZc5NHmplG5
++dERS71rtWqxb9hySPcX2CUJOvLjeC6uhTux5ers33963qnQzEsOuBRvcUT6TU7Y
+4WjzMycAjtsfT9r5y5Lhv9DpsIpVSRQ1MCLHCAeD1BerUZaebTonbsEA1EHk4vux
+FmjvlrNp4hh2zrtGt7yZO2cAzcNmloq+JmZ/7Yeb5CAhCaXIXFBBsh0CAwEAAaNT
+MFEwHQYDVR0OBBYEFLb5bLFbrOVXMAT5YnsQLSkPL3AyMB8GA1UdIwQYMBaAFLb5
+bLFbrOVXMAT5YnsQLSkPL3AyMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL
+BQADggEBAKJFOBEouNp2AJicbA3Lmb4vVJfwP9h8LGqHV3TZHhlEblmBQNEoLyLO
+z7XhIy1/5LyGb7b/o0LAoC1RxH/6GiHcIKt4/DS7dOfrpcNkHXAUHVFZ1LfFtBHc
+zIZTXKWNiFLqz3nTaKS3dqmnZMsoWDuRpE4kwR5tT+zB492nnfH7XGICQDojQ1DN
+NDvfSxFNmjcEuabxM9VGdsX6xOiClZBJwJBixj74EYPeeVOPbOEQfQZchX8xB3u5
+2knHSNiamr0NJ4GA44hIoCADW2G6W2+A4gFNnA6UYFlaijMWqb/XSNlbkYZD6OkG
+9Xa5bTycscrxF6+S3n5z2yGft52wBe4=`;
+
 function generateXML() {
   const id = idPrefix + crypto.randomBytes(10).toString('hex');
   const date = new Date().toISOString();
@@ -222,6 +260,11 @@ describe('validateSignature.ts', function () {
   it('validate response signature - no embedded cert, use multikey cert (order changed) to validate', function () {
     const value = validateSignature(validResponseSigned_noX509, multiPublicKeyOrderChanged, null);
     assert(value);
+  });
+
+  it('validate response signature - no embedded cert, use multikey cert (wrong ones) should not pass', function () {
+    const value = validateSignature(validResponseSigned_noX509, wrongMultiPublicKey, null);
+    assert.equal(value, undefined);
   });
 
   it('validateSignature public key not ok ', function () {
