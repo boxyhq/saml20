@@ -59,6 +59,9 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
     idAttribute: 'AssertionID',
   });
 
+  // Check if more than one cert is passed in
+  // Set getCertFromKeyInfo for each cert and run checkSignature
+
   let calculatedThumbprint;
 
   signed.getCertFromKeyInfo = function getKey(keyInfo) {
