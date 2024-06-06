@@ -4,6 +4,7 @@ import fs from 'fs';
 
 // Tests Configuration
 const validResponse = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage.xml').toString();
+const validResponseUnsanitized = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage-unsanitized.xml').toString();
 
 const issuerName = 'http://idp.example.com/metadata.php';
 const thumbprint = 'e606eced42fa3abd0c5693456384f5931b174707';
@@ -81,6 +82,87 @@ describe('saml20.responseSignedMessage', function () {
   it('Should fail with invalid inResponseTo', async function () {
     try {
       await validate(validResponse, {
+        publicKey: certificate,
+        audience: audience,
+        bypassExpiration: true,
+        inResponseTo: 'not-the-right-response-to',
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      assert.strictEqual(result, 'Invalid InResponseTo.');
+    }
+  });
+});
+
+describe('saml20.validResponseSignedMessage-unsanitized', function () {
+  it('Should validate saml 2.0 token using thumbprint', async function () {
+    const response = await validate(validResponseUnsanitized, {
+      thumbprint: thumbprint,
+      bypassExpiration: true,
+      inResponseTo: inResponseTo,
+    });
+
+    assert.strictEqual(response.issuer, issuerName);
+    assert.strictEqual(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      '_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7'
+    );
+  });
+
+  it('Should validate saml 2.0 token using certificate', async function () {
+    const response = await validate(validResponseUnsanitized, {
+      publicKey: certificate,
+      bypassExpiration: true,
+      inResponseTo: inResponseTo,
+    });
+
+    assert.strictEqual(response.issuer, issuerName);
+    assert.strictEqual(
+      response.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+      '_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7'
+    );
+  });
+
+  it('Should validate saml 2.0 token and check audience', async function () {
+    const response = await validate(validResponseUnsanitized, {
+      publicKey: certificate,
+      audience: audience,
+      bypassExpiration: true,
+      inResponseTo: inResponseTo,
+    });
+    assert.strictEqual(response.issuer, issuerName);
+  });
+
+  it('Should fail with invalid audience', async function () {
+    try {
+      await validate(validResponseUnsanitized, {
+        publicKey: certificate,
+        audience: 'http://any-other-audience.com/',
+        bypassExpiration: true,
+        inResponseTo: inResponseTo,
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      assert.strictEqual(result, 'Invalid audience.');
+    }
+  });
+
+  it('Should fail with invalid assertion', async function () {
+    try {
+      await validate('invalid-assertion', {
+        publicKey: certificate,
+        bypassExpiration: true,
+        inResponseTo: inResponseTo,
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      assert.strictEqual(result, 'Invalid assertion.');
+    }
+  });
+
+  it('Should fail with invalid inResponseTo', async function () {
+    try {
+      await validate(validResponseUnsanitized, {
         publicKey: certificate,
         audience: audience,
         bypassExpiration: true,
