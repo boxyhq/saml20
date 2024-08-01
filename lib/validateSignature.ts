@@ -68,6 +68,7 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
       };
       try {
         valid = signed.checkSignature(xml);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         //noop
       }

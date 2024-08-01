@@ -9,7 +9,7 @@ import xmlbuilder from 'xmlbuilder';
 const BEGIN = '-----BEGIN CERTIFICATE-----';
 const END = '-----END CERTIFICATE-----';
 
-const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<string, any>> => {
+const parseMetadata = async (idpMeta: string, validateOpts): Promise => {
   return new Promise((resolve, reject) => {
     // Some Providers do not escape the & character in the metadata, for now these have been encountered in errorURL
     idpMeta = idpMeta.replace(/errorURL=".*?"/g, '');
@@ -49,9 +49,13 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
             const cd = ki?.['X509Data']?.[0];
             const x509cert = cd?.['X509Certificate']?.[0];
             if (keyDesRec['$'] && keyDesRec['$'].use === 'signing') {
-              x509cert && X509Certificates.push(x509cert);
+              if (x509cert) {
+                X509Certificates.push(x509cert);
+              }
             } else {
-              x509cert && X509CertificatesWithoutSigningAttr.push(x509cert);
+              if (x509cert) {
+                X509CertificatesWithoutSigningAttr.push(x509cert);
+              }
             }
           }
 
@@ -101,7 +105,7 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
           }
         }
 
-        const ret: Record<string, any> = {
+        const ret: Record = {
           sso: {},
           slo: {},
         };
