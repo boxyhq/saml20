@@ -49,9 +49,13 @@ const parseMetadata = async (idpMeta: string, validateOpts): Promise<Record<stri
             const cd = ki?.['X509Data']?.[0];
             const x509cert = cd?.['X509Certificate']?.[0];
             if (keyDesRec['$'] && keyDesRec['$'].use === 'signing') {
-              x509cert && X509Certificates.push(x509cert);
+              if (x509cert) {
+                X509Certificates.push(x509cert);
+              }
             } else {
-              x509cert && X509CertificatesWithoutSigningAttr.push(x509cert);
+              if (x509cert) {
+                X509CertificatesWithoutSigningAttr.push(x509cert);
+              }
             }
           }
 
