@@ -32,7 +32,7 @@
     "sort": "npx sort-package-json",
     "test": "nyc mocha --check-leaks  -r tsconfig-paths/register -r ts-node/register test/lib/**/*.spec.ts",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix --ext .js,.jsx .",
+    "lint:fix": "eslint --fix .",
     "prepublishOnly": "npm run build",
     "check-format": "prettier --check .",
     "format": "prettier --write .",
