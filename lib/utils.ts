@@ -1,4 +1,4 @@
-import { DOMParser } from '@xmldom/xmldom';
+import { DOMParser, MIME_TYPE } from '@xmldom/xmldom';
 import crypto from 'crypto';
 
 const countRootNodes = (xmlDoc: Document) => {
@@ -9,25 +9,24 @@ const countRootNodes = (xmlDoc: Document) => {
 };
 
 const parseFromString = (xmlString: string) => {
-  const errors = {};
+  const errors: string[] = [];
   let multiRootErrFound = false;
-  const errorHandler = (key, msg) => {
-    if (!errors[key]) errors[key] = [];
+  const onError = (level, msg, context) => {
     if (msg.indexOf('Only one element can be added and only after doctype')) {
       if (!multiRootErrFound) {
         multiRootErrFound = true;
-        errors[key].push(msg);
+        errors.push(msg);
       }
-    } else {
-      errors[key].push(msg);
+    } else if (level !== 'warn') {
+      errors.push(msg);
     }
   };
 
-  const xml = new DOMParser({ errorHandler }).parseFromString(xmlString);
+  const xml = new DOMParser({ onError }).parseFromString(xmlString, MIME_TYPE.XML_APPLICATION);
 
   if (multiRootErrFound) {
     throw new Error('multirooted xml not allowed.');
-  } else if (Object.keys(errors).length > 0) {
+  } else if (errors.length > 0) {
     throw new Error('Invalid XML.');
   }
 
