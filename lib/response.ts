@@ -7,7 +7,7 @@ import { validateSignature } from './validateSignature';
 import { decryptXml } from './decrypt';
 import { select } from 'xpath';
 import saml20 from './saml20';
-import { parseFromString } from './utils';
+import { parseFromString, isMultiRootedXMLError, multiRootedXMLError } from './utils';
 import { sign } from './sign';
 
 const tokenHandlers = {
@@ -78,7 +78,8 @@ const parseIssuer = (rawAssertion) => {
 
   const issuerValue = select(
     "/*[contains(local-name(), 'Response')]/*[local-name(.)='Issuer']",
-    xml
+    // @ts-expect-error missing Node properties are not needed
+    xml!
   ) as Node[];
   if (issuerValue && issuerValue.length > 0) {
     return issuerValue[0].textContent?.toString();
@@ -108,6 +109,10 @@ const validateInternal = async (rawAssertion, options, cb) => {
     rawAssertion = assertion;
     decAssertion = decrypted;
   } catch (err) {
+    if (isMultiRootedXMLError(err)) {
+      cb(multiRootedXMLError);
+      return;
+    }
     cb(err);
     return;
   }

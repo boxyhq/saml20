@@ -1,6 +1,8 @@
 import { DOMParser, MIME_TYPE } from '@xmldom/xmldom';
 import crypto from 'crypto';
 
+const multiRootedXMLError = new Error('multirooted xml not allowed.');
+
 const countRootNodes = (xmlDoc: Document) => {
   const rootNodes = Array.from(xmlDoc.childNodes as NodeListOf<Element>).filter(
     (n) => n.tagName != null && n.childNodes != null
@@ -11,36 +13,44 @@ const countRootNodes = (xmlDoc: Document) => {
 const parseFromString = (xmlString: string) => {
   const errors: string[] = [];
   let multiRootErrFound = false;
-  const onError = (level, msg, context) => {
-    if (msg.indexOf('Only one element can be added and only after doctype')) {
+  const onError = (level, msg) => {
+    if (isMultiRootedXMLError({ message: msg })) {
       if (!multiRootErrFound) {
         multiRootErrFound = true;
         errors.push(msg);
       }
     } else if (level !== 'warn') {
-      errors.push(msg);
+      if (msg.indexOf('entity not matching Reference production:') < 0) {
+        errors.push(msg);
+      }
     }
   };
+  try {
+    const xml = new DOMParser({ onError }).parseFromString(xmlString, MIME_TYPE.XML_APPLICATION);
+    if (multiRootErrFound) {
+      throw multiRootedXMLError;
+    } else if (errors.length > 0) {
+      throw new Error('Invalid XML.');
+    }
 
-  const xml = new DOMParser({ onError }).parseFromString(xmlString, MIME_TYPE.XML_APPLICATION);
+    // @ts-expect-error missing Node properties are not needed
+    const rootNodeCount = countRootNodes(xml);
+    if (rootNodeCount > 1) {
+      throw multiRootedXMLError;
+    }
 
-  if (multiRootErrFound) {
-    throw new Error('multirooted xml not allowed.');
-  } else if (errors.length > 0) {
-    throw new Error('Invalid XML.');
+    if (rootNodeCount === 0) {
+      throw new Error('Invalid assertion.');
+    }
+
+    return xml;
+  } catch (err) {
+    if (isMultiRootedXMLError(err)) {
+      throw multiRootedXMLError;
+    } else {
+      throw err;
+    }
   }
-
-  const rootNodeCount = countRootNodes(xml);
-
-  if (rootNodeCount > 1) {
-    throw new Error('multirooted xml not allowed.');
-  }
-
-  if (rootNodeCount === 0) {
-    throw new Error('Invalid assertion.');
-  }
-
-  return xml;
 };
 
 const thumbprint = (cert: string) => {
@@ -64,4 +74,11 @@ const getAttribute = <TDefault = unknown>(value: any, path: string, defaultValue
   return current;
 };
 
-export { parseFromString, thumbprint, getAttribute };
+const isMultiRootedXMLError = (err: any) => {
+  if ((err as any)?.message?.indexOf('Only one element can be added and only after doctype') >= 0) {
+    return true;
+  }
+  return false;
+};
+
+export { parseFromString, thumbprint, getAttribute, isMultiRootedXMLError, multiRootedXMLError };

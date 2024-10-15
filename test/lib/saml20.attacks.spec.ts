@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { parseIssuer, validate } from '../../lib/response';
+import { multiRootedXMLError } from '../../lib/utils';
 import fs from 'fs';
 
 const certificate =
@@ -23,7 +24,7 @@ describe('saml20.attacks', () => {
         });
       } catch (error) {
         const result = (error as Error).message;
-        assert.strictEqual(result, 'multirooted xml not allowed.');
+        assert.strictEqual(result, multiRootedXMLError.message);
       }
     });
 
@@ -32,7 +33,7 @@ describe('saml20.attacks', () => {
         parseIssuer(multipleRootElements);
       } catch (error) {
         const result = (error as Error).message;
-        assert.strictEqual(result, 'multirooted xml not allowed.');
+        assert.strictEqual(result, multiRootedXMLError.message);
       }
     });
   });

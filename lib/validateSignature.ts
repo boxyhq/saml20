@@ -35,19 +35,23 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
   let signature =
     select(
       "/*/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']",
-      doc
+      // @ts-expect-error missing Node properties are not needed
+      doc!
     )?.[0] ||
     select(
       "/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']",
-      doc
+      // @ts-expect-error missing Node properties are not needed
+      doc!
     )?.[0] ||
     select(
       "/*/*/*/*[local-name(.)='Signature' and namespace-uri(.)='http://www.w3.org/2000/09/xmldsig#']",
-      doc
+      // @ts-expect-error missing Node properties are not needed
+      doc!
     )?.[0];
 
   if (!signature) {
-    signature = select("//*[local-name(.)='Signature']", doc)?.[0];
+    // @ts-expect-error missing Node properties are not needed
+    signature = select("//*[local-name(.)='Signature']", doc!)?.[0];
   }
 
   const signed = new SignedXml({

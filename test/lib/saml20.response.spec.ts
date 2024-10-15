@@ -103,7 +103,7 @@ describe('lib.saml20.response', function () {
     }
   });
 
-  it('Should fail with invalid assertion', async function () {
+  it('Should fail with missing root element', async function () {
     try {
       await validate('invalid-assertion', {
         publicKey: certificate,
@@ -112,7 +112,7 @@ describe('lib.saml20.response', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      assert.strictEqual(result, 'Invalid assertion.');
+      assert.strictEqual(result, 'missing root element');
     }
   });
 
