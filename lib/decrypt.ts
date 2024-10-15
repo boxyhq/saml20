@@ -20,7 +20,8 @@ const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
 
     const assertionNode = parseFromString(res);
     xml.documentElement.removeChild(encryptedAssertions[0]);
-    xml.documentElement.appendChild(assertionNode);
+    // @ts-expect-error missing Node properties are not needed
+    xml.documentElement.appendChild(assertionNode!.childNodes[0]);
 
     return { assertion: xml.toString(), decrypted: true };
   });
@@ -34,11 +35,13 @@ const decryptXml = (entireXML: string, options) => {
 
   const encryptedAssertions = select(
     "/*[contains(local-name(), 'Response')]/*[local-name(.)='EncryptedAssertion']",
-    xml
+    // @ts-expect-error missing Node properties are not needed
+    xml!
   ) as Node[];
 
   if (encryptedAssertions.length >= 1) {
-    return assertion(xml, encryptedAssertions, options);
+    // @ts-expect-error missing Node properties are not needed
+    return assertion(xml!, encryptedAssertions, options);
   }
 
   return { assertion: entireXML, decrypted: false };

@@ -112,7 +112,7 @@ describe('response.ts', function () {
       await validate('rawResponse', validateOpts);
     } catch (error) {
       const result = (error as Error).message;
-      assert.strictEqual(result, 'Invalid assertion.');
+      assert.strictEqual(result, 'missing root element');
     }
   });
 
@@ -193,12 +193,12 @@ describe('response.ts', function () {
     }
   });
 
-  it('Should fail with invalid assertion', async function () {
+  it('Should fail with missing root element', async function () {
     try {
       await validate('invalid-assertion', { publicKey: certificate, bypassExpiration: true });
     } catch (error) {
       const result = (error as Error).message;
-      assert.strictEqual(result, 'Invalid assertion.');
+      assert.strictEqual(result, 'missing root element');
     }
   });
 
@@ -234,7 +234,7 @@ describe('response.ts', function () {
     try {
       await parseIssuer('rawResponse');
     } catch (error) {
-      assert.strictEqual((error as Error).message, 'Invalid assertion.');
+      assert.strictEqual((error as Error).message, 'missing root element');
     }
   });
 
