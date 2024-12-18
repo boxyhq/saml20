@@ -4,7 +4,9 @@ import fs from 'fs';
 
 // Tests Configuration
 const validResponse = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage.xml').toString();
-const validResponseUnsanitized = fs.readFileSync('./test/assets/saml20.validResponseSignedMessage-unsanitized.xml').toString();
+const validResponseUnsanitized = fs
+  .readFileSync('./test/assets/saml20.validResponseSignedMessage-unsanitized.xml')
+  .toString();
 
 const issuerName = 'http://idp.example.com/metadata.php';
 const thumbprint = 'e606eced42fa3abd0c5693456384f5931b174707';
@@ -94,7 +96,7 @@ describe('saml20.responseSignedMessage', function () {
   });
 });
 
-describe('saml20.validResponseSignedMessage-unsanitized', function () {
+describe('saml20.validResponseSignedMessageUnsanitized', function () {
   it('Should validate saml 2.0 token using thumbprint', async function () {
     const response = await validate(validResponseUnsanitized, {
       thumbprint: thumbprint,
@@ -147,7 +149,7 @@ describe('saml20.validResponseSignedMessage-unsanitized', function () {
     }
   });
 
-  it('Should fail with invalid assertion', async function () {
+  it('Should fail with missing root element', async function () {
     try {
       await validate('invalid-assertion', {
         publicKey: certificate,
@@ -156,7 +158,7 @@ describe('saml20.validResponseSignedMessage-unsanitized', function () {
       });
     } catch (error) {
       const result = (error as Error).message;
-      assert.strictEqual(result, 'Invalid assertion.');
+      assert.strictEqual(result, 'missing root element');
     }
   });
 

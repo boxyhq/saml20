@@ -58,7 +58,7 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
     idAttribute: 'AssertionID',
   });
 
-  signed.loadSignature(signature.toString());
+  signed.loadSignature(signature);
 
   let valid;
   let id, calculatedThumbprint;
