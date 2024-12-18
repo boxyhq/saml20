@@ -15,11 +15,12 @@ const parseLogoutResponse = async (
     xml2js.parseString(
       rawResponse,
       { tagNameProcessors: [xml2js.processors.stripPrefix] },
-      (err: Error | null, { LogoutResponse }) => {
+      (err: Error | null, parsedData: { LogoutResponse: any }) => {
         if (err) {
           reject(err);
           return;
         }
+        const { LogoutResponse } = parsedData;
 
         resolve({
           issuer: LogoutResponse.Issuer[0]._,
