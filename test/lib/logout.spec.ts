@@ -4,6 +4,7 @@ import { parseLogoutResponse, createLogoutRequest } from '../../lib/logout';
 
 const response = fs.readFileSync('./test/assets/logout-response.xml').toString();
 const responseFailed = fs.readFileSync('./test/assets/logout-response-failed.xml').toString();
+const responseInvalid = 'invalid_data';
 
 describe('logout.ts', function () {
   it('response ok', async function () {
@@ -33,5 +34,17 @@ describe('logout.ts', function () {
 
     assert.strictEqual(!!req.id, true);
     assert.strictEqual(!!req.xml, true);
+  });
+
+  it('should throw an expected error for response containing invalid xml', async function () {
+    await assert.rejects(
+      async () => {
+        await parseLogoutResponse(responseInvalid);
+      },
+      (error: any) => {
+        assert.strictEqual(error.message.includes('Non-whitespace before first tag'), true);
+        return true;
+      }
+    );
   });
 });
