@@ -57,3 +57,87 @@ describe('request.ts', function () {
     assert.strictEqual(res3.providerName, 'Twilio');
   });
 });
+describe('request.ts', function () {
+  it('should generate a valid SAML request with default parameters', function () {
+    const result = request({
+      ssoUrl,
+      entityID,
+      callbackUrl,
+      signingKey,
+      publicKey,
+    });
+
+    assert(result.id.startsWith('_'));
+    assert(result.request.includes('<samlp:AuthnRequest'));
+    assert(result.request.includes(`Destination="${ssoUrl}"`));
+    assert(result.request.includes(`AssertionConsumerServiceURL="${callbackUrl}"`));
+    assert(result.request.includes(`ProviderName="BoxyHQ"`));
+    assert(result.request.includes(`Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"`));
+  });
+
+  it('should generate a valid SAML request with isPassive set to true', function () {
+    const result = request({
+      ssoUrl,
+      entityID,
+      callbackUrl,
+      isPassive: true,
+      signingKey,
+      publicKey,
+    });
+
+    assert(result.request.includes('IsPassive="true"'));
+  });
+
+  it('should generate a valid SAML request with forceAuthn set to true', function () {
+    const result = request({
+      ssoUrl,
+      entityID,
+      callbackUrl,
+      forceAuthn: true,
+      signingKey,
+      publicKey,
+    });
+
+    assert(result.request.includes('ForceAuthn="true"'));
+  });
+
+  it('should generate a valid SAML request with custom identifierFormat', function () {
+    const customIdentifierFormat = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent';
+    const result = request({
+      ssoUrl,
+      entityID,
+      callbackUrl,
+      identifierFormat: customIdentifierFormat,
+      signingKey,
+      publicKey,
+    });
+
+    assert(result.request.includes(`Format="${customIdentifierFormat}"`));
+  });
+
+  it('should generate a valid SAML request with custom providerName', function () {
+    const customProviderName = 'CustomProvider';
+    const result = request({
+      ssoUrl,
+      entityID,
+      callbackUrl,
+      providerName: customProviderName,
+      signingKey,
+      publicKey,
+    });
+
+    assert(result.request.includes(`ProviderName="${customProviderName}"`));
+  });
+
+  it('should generate a signed SAML request', function () {
+    const result = request({
+      ssoUrl,
+      entityID,
+      callbackUrl,
+      signingKey,
+      publicKey,
+    });
+
+    assert(result.request.includes('<Signature'));
+  });
+});
