@@ -303,3 +303,22 @@ describe('response.ts', function () {
     assert.deepStrictEqual(parsed.claims, { ...json.claims.raw, groups: 'admin%2Cowner,user' });
   });
 });
+it('parseIssuer should return the correct issuer value', async function () {
+  const rawAssertion = fs.readFileSync('./test/assets/saml20.validResponse.xml').toString();
+  const issuer = parseIssuer(rawAssertion);
+  assert.strictEqual(issuer, 'http://idp.example.com/metadata.php');
+});
+
+it('parseIssuer should throw an error if rawAssertion is not provided', async function () {
+  try {
+    parseIssuer('');
+  } catch (error) {
+    assert.strictEqual((error as Error).message, 'rawAssertion is required.');
+  }
+});
+
+it('parseIssuer should return undefined if Issuer element is missing', async function () {
+  const rawAssertion = fs.readFileSync('./test/assets/saml20.noIssuerResponse.xml').toString();
+  const issuer = parseIssuer(rawAssertion);
+  assert.strictEqual(issuer, undefined);
+});
