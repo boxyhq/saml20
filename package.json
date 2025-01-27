@@ -52,7 +52,7 @@
     "@typescript-eslint/eslint-plugin": "8.19.1",
     "@typescript-eslint/parser": "8.19.1",
     "eslint": "9.19.0",
-    "eslint-config-prettier": "9.1.0",
+    "eslint-config-prettier": "10.0.1",
     "mocha": "11.0.1",
     "nyc": "17.1.0",
     "prettier": "3.4.2",
