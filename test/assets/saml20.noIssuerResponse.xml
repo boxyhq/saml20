@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="_some_id" Version="2.0" IssueInstant="2023-10-01T12:00:00Z">
+  <saml:Assertion>
+    <!-- No Issuer element here -->
+    <saml:Subject>
+      <saml:NameID>some_name_id</saml:NameID>
+    </saml:Subject>
+    <saml:Conditions NotBefore="2023-10-01T12:00:00Z" NotOnOrAfter="2023-10-01T13:00:00Z"/>
+    <saml:AuthnStatement AuthnInstant="2023-10-01T12:00:00Z">
+      <saml:AuthnContext>
+        <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>
+      </saml:AuthnContext>
+    </saml:AuthnStatement>
+  </saml:Assertion>
+</samlp:Response>
