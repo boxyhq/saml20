@@ -20,9 +20,7 @@ const certToPEM = (cert) => {
 
 const hasValidSignature = (xml, cert, certThumbprint) => {
   xml = sanitizeXML(xml);
-  let res = _hasValidSignature(xml, cert, certThumbprint);
-
-  return res;
+  return _hasValidSignature(xml, cert, certThumbprint);
 };
 
 const _hasValidSignature = (xml, cert, certThumbprint) => {
