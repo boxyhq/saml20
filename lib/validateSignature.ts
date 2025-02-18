@@ -19,13 +19,8 @@ const certToPEM = (cert) => {
 };
 
 const hasValidSignature = (xml, cert, certThumbprint) => {
+  xml = sanitizeXML(xml);
   let res = _hasValidSignature(xml, cert, certThumbprint);
-
-  // sanitize and validate if validation failed first time
-  if (!res.valid) {
-    xml = xml.replace(/&#x(d|D);/gi, '');
-    res = _hasValidSignature(xml, cert, certThumbprint);
-  }
 
   return res;
 };
@@ -142,4 +137,8 @@ const validateSignature = (xml, cert, certThumbprint) => {
   }
 };
 
-export { hasValidSignature, validateSignature, certToPEM };
+const sanitizeXML = (xml) => {
+  return xml.replace(/&#x(d|D);/gi, '');
+};
+
+export { hasValidSignature, validateSignature, certToPEM, sanitizeXML };

@@ -3,7 +3,7 @@ import xml2js from 'xml2js';
 import xmlbuilder from 'xmlbuilder';
 import crypto from 'crypto';
 import { getVersion } from './getVersion';
-import { validateSignature } from './validateSignature';
+import { validateSignature, sanitizeXML } from './validateSignature';
 import { decryptXml } from './decrypt';
 import { select } from 'xpath';
 import saml20 from './saml20';
@@ -17,12 +17,6 @@ const tokenHandlers = {
 class WrapError extends Error {
   inner?: any;
 }
-
-const parser = new xml2js.Parser({
-  attrkey: '@',
-  charkey: '_',
-  tagNameProcessors: [xml2js.processors.stripPrefix],
-});
 
 /**@deprecated Use parseIssuer instead */
 const parse = async (rawAssertion: string): Promise<SAMLProfile> => {
@@ -195,6 +189,13 @@ const validateInternal = async (rawAssertion, options, cb) => {
 
 const xmlToJs = async (rawAssertion, cb) => {
   try {
+    rawAssertion = sanitizeXML(rawAssertion);
+    const parser = new xml2js.Parser({
+      attrkey: '@',
+      charkey: '_',
+      tagNameProcessors: [xml2js.processors.stripPrefix],
+    });
+
     const jsObj = await parser.parseStringPromise(rawAssertion);
     return flattenObject(jsObj);
   } catch (err) {
