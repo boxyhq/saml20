@@ -1,4 +1,4 @@
-import { SignedXml } from 'xml-crypto';
+import { SignedXml } from '@boxyhq/xml-crypto';
 import { PubKeyInfo } from './cert';
 
 const issuerXPath = '/*[local-name(.)="Issuer" and namespace-uri(.)="urn:oasis:names:tc:SAML:2.0:assertion"]';
