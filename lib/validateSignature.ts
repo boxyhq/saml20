@@ -1,4 +1,4 @@
-import { SignedXml } from '@boxyhq/xml-crypto';
+import { SignedXml } from 'xml-crypto';
 import { select } from 'xpath';
 import { thumbprint } from './utils';
 import { parseFromString } from './utils';
