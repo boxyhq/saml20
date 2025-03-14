@@ -3,6 +3,7 @@ import { validate } from '../../lib/response';
 import fs from 'fs';
 
 // Tests Configuration
+const digestValueComment = fs.readFileSync('./test/assets/digestValueComment.xml').toString();
 const validResponse = fs.readFileSync('./test/assets/saml20.validResponse.xml').toString();
 const validResponseNoIRT = fs.readFileSync('./test/assets/saml20.validResponse-noirt.xml').toString();
 const validResponseUnsanitized = fs
@@ -127,6 +128,41 @@ describe('lib.saml20.response', function () {
     } catch (error) {
       const result = (error as Error).message;
       assert.strictEqual(result, 'Invalid InResponseTo.');
+    }
+  });
+
+  it('Should fail with invalid signature', async function () {
+    try {
+      await validate(digestValueComment, {
+        publicKey: `MIIDzzCCAregAwIBAgIUMZMb3dfDNPcYK9rYUCz6U/Y/vdwwDQYJKoZIhvcN
+AQELBQAwdzELMAkGA1UEBhMCVVMxDjAMBgNVBAgMBVN0YXRlMREwDwYDVQQH
+DAhMb2NhdGlvbjEVMBMGA1UECgwMT3JnYW5pemF0aW9uMREwDwYDVQQLDAhP
+cmcgVW5pdDEbMBkGA1UEAwwScG9jLnNlY3VyZXNhbWwuY29tMB4XDTI0MTEy
+ODA1NDYyN1oXDTM0MTEyNjA1NDYyN1owdzELMAkGA1UEBhMCVVMxDjAMBgNV
+BAgMBVN0YXRlMREwDwYDVQQHDAhMb2NhdGlvbjEVMBMGA1UECgwMT3JnYW5p
+emF0aW9uMREwDwYDVQQLDAhPcmcgVW5pdDEbMBkGA1UEAwwScG9jLnNlY3Vy
+ZXNhbWwuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArBx4
+nG94nZJvXMSWkkJMxWMTY5YS53MegLD/DOMgM5n5tXBRewAgFkEdL6tclvqK
+EP80yc5N/KSdGZrbwD5oKhw4+4+GTpRSSoleFLhSYr0DZvTMvFHMgB45SddU
+A3DkcI0ZSF+RExZQhMypYxNjEMkKL5EJDh7d+Xt9FCVQ1GKjVRI12jeXOvTQ
+TOefPaz314aFBJ0XfqP3tl08jJAWC2kOgi9vB43Xu7u//FgubRifhwcVkzFt
+WLdDJSm/Q3qHkV8QDb4TL54dGHdXUP8wo0msqt2WXGZ691VYrRXw8dYmthl7
+KeVwcBsUUbUr2jA+Ia2hxnbBTfPY2m9ZfKEBUQIDAQABo1MwUTAdBgNVHQ4E
+FgQUknvBAHKXFwZjDB0rSvTGi2e/7n0wHwYDVR0jBBgwFoAUknvBAHKXFwZj
+DB0rSvTGi2e/7n0wDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOC
+AQEAj9BFFl9jSvmR/3GipWuBAC84jEdEzLk6o8AgqZGdBABFAK3TURlQLTli
+Nj17zqOlr3xHBorX9iCk46IZZ5ARjjjwzQZ5mzGsMYp+LPlC+w9G1AsqwXCL
+619+JQ5ORHN7kMHgQYIzkKe8FRa0NjBAl0FIwCe0DWGrbuNrQB5p5h/77TTF
+N+/ESjVbK0m/ubsl4tBnDqR3aq7KiBNr0e1yTF17Gg5iHc1ofINzq5i30/4v
+GGw0ohtr4ihg6J3hdwUIVnRknfuN3tE80jSF4e1LRojlyFoQXcg4emXq0Jn8
+lj6sw9dhQDq19MYaXchAuJMkWmXwt9e/CaWm7JRyuUgBcg==`,
+        audience: 'https://poc.securesaml.com/sp/acs',
+        bypassExpiration: true,
+      });
+    } catch (error) {
+      const result = (error as Error).message;
+      console.log('result:', result);
+      assert.strictEqual(result, 'Invalid assertion signature.');
     }
   });
 });
