@@ -107,15 +107,20 @@ const parse = (assertion) => {
 const validateAudience = (assertion, realm) => {
   const audience = getProp(assertion, 'Conditions.AudienceRestriction.Audience');
   if (audience) {
-    if (Array.isArray(realm)) {
-      for (let i = 0; i < realm.length; i++) {
-        if (audience.startsWith(realm[i])) {
-          return true;
+    try {
+      if (Array.isArray(realm)) {
+        for (let i = 0; i < realm.length; i++) {
+          if (audience.startsWith(realm[i])) {
+            return true;
+          }
         }
+        return false;
       }
+      return audience.startsWith(realm);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
       return false;
     }
-    return audience.startsWith(realm);
   } else {
     return false;
   }
