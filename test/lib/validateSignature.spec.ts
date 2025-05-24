@@ -232,7 +232,7 @@ describe('validateSignature.ts', function () {
 
   it('hasValidSignature ok ', function () {
     const value = hasValidSignature(generateXML(), publicKey, null);
-    assert.strictEqual(value.valid, true);
+    assert(value);
   });
 
   it('validateSignature ok ', function () {

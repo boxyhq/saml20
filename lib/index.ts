@@ -1,6 +1,6 @@
 'use strict';
 
-import { hasValidSignature, validateSignature, certToPEM } from './validateSignature';
+import { validateSignature, certToPEM } from './validateSignature';
 
 import { request, parseSAMLRequest, decodeBase64 } from './request';
 import { stripCertHeaderAndFooter, PubKeyInfo } from './cert';
@@ -26,7 +26,6 @@ export default {
   stripCertHeaderAndFooter,
   createPostForm,
   sign,
-  hasValidSignature,
   validateSignature,
   decryptXml,
   parseIssuer,

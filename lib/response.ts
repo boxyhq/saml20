@@ -53,7 +53,7 @@ const parseInternal = async (rawAssertion, cb) => {
 
   checkStatusCode(assertionObj, cb);
 
-  parseResponseAndVersion(assertionObj, function onParse(err, assertion, version) {
+  parseResponseAndVersion(assertionObj, assertionObj, function onParse(err, assertion, version) {
     if (err) {
       cb(err);
       return;
@@ -111,15 +111,14 @@ const validateInternal = async (rawAssertion, options, cb) => {
     return;
   }
 
-  // Save the js object derived from xml and check status code
-  const assertionObj = await xmlToJs(rawAssertion, cb);
+  // rawAssertion is our SAML Response. However, we still call it rawAssertion because of legacy naming convention
+  const responseObj = await xmlToJs(rawAssertion, cb);
+  checkStatusCode(responseObj, cb);
 
-  checkStatusCode(assertionObj, cb);
-
-  let validId = null;
+  let signedXml: string | null;
 
   try {
-    validId = validateSignature(rawAssertion, options.publicKey, options.thumbprint);
+    signedXml = validateSignature(rawAssertion, options.publicKey, options.thumbprint);
   } catch (e) {
     const error = new WrapError('Invalid assertion.');
     error.inner = e;
@@ -127,10 +126,10 @@ const validateInternal = async (rawAssertion, options, cb) => {
     return;
   }
 
-  if (decAssertion && !validId) {
+  if (decAssertion && !signedXml) {
     // try the fallback verification where signature has been generated on the encrypted SAML by some IdPs (like OpenAthens)
     try {
-      validId = validateSignature(originalAssertion, options.publicKey, options.thumbprint);
+      signedXml = validateSignature(originalAssertion, options.publicKey, options.thumbprint);
     } catch (e) {
       const error = new WrapError('Invalid assertion.');
       error.inner = e;
@@ -138,12 +137,21 @@ const validateInternal = async (rawAssertion, options, cb) => {
     }
   }
 
-  if (!validId) {
+  if (!signedXml) {
     cb(new Error('Invalid assertion signature.'));
     return;
   }
 
-  parseResponseAndVersion(assertionObj, function onParse(err, assertion, version, response) {
+  // signedXml is either: Assertion or Response XML
+  // in the case of Response XML, we have to handle the Responses with the encrypted SAML Responses
+  // so let's use the previous helper function to decrypt response once again (if it is one)
+  // if no decryption occured, then decryptedSignedXml is just signedXml
+  const { assertion: decryptedSignedXml } = decryptXml(signedXml, options);
+
+  // Save the js object derived from xml and check status code
+  const assertionObj = await xmlToJs(decryptedSignedXml, cb); // this is our assertion object
+
+  parseResponseAndVersion(assertionObj, responseObj, function onParse(err, assertion, version) {
     if (err) {
       cb(err);
       return;
@@ -164,23 +172,6 @@ const validateInternal = async (rawAssertion, options, cb) => {
     if (options.inResponseTo && assertion.inResponseTo && assertion.inResponseTo !== options.inResponseTo) {
       cb(new Error('Invalid InResponseTo.'));
       return;
-    }
-
-    if (
-      assertion['@'] &&
-      assertion['@'].ID !== validId &&
-      assertion['@'].Id !== validId &&
-      assertion['@'].id !== validId &&
-      assertion['@'].AssertionID !== validId
-    ) {
-      if (
-        !response ||
-        !response['@'] ||
-        (response['@'].ID !== validId && response['@'].Id !== validId && response['@'].id !== validId)
-      ) {
-        cb(new Error('Invalid assertion. Possible assertion wrapping.'));
-        return;
-      }
     }
 
     parseAttributes(assertion, tokenHandler, cb);
@@ -205,13 +196,13 @@ const xmlToJs = async (rawAssertion, cb) => {
   }
 };
 
-const checkStatusCode = (assertionObj, cb) => {
+const checkStatusCode = (responseObj, cb) => {
   const statusValue =
-    assertionObj.Response &&
-    assertionObj.Response.Status &&
-    assertionObj.Response.Status.StatusCode &&
-    assertionObj.Response.Status.StatusCode['@'] &&
-    assertionObj.Response.Status.StatusCode['@'].Value;
+    responseObj.Response &&
+    responseObj.Response.Status &&
+    responseObj.Response.Status.StatusCode &&
+    responseObj.Response.Status.StatusCode['@'] &&
+    responseObj.Response.Status.StatusCode['@'].Value;
   const statusParts = statusValue ? statusValue.split(':') : statusValue;
   const status = statusParts
     ? statusParts.length > 0
@@ -224,7 +215,13 @@ const checkStatusCode = (assertionObj, cb) => {
   }
 };
 
-function parseResponseAndVersion(assertionObj, cb) {
+/*
+  Assertion Object: either a SAML Response or a SAML Assertion
+  Response Object: the SAML Response. We want to isolate the two because assertionObj may be signed
+  but the responseObj is unsigned
+ */
+
+function parseResponseAndVersion(assertionObj, responseObj, cb) {
   let assertion =
     assertionObj.Assertion ||
     (assertionObj.Response && assertionObj.Response.Assertion) ||
@@ -242,7 +239,7 @@ function parseResponseAndVersion(assertionObj, cb) {
   }
 
   const version = getVersion(assertion);
-  const response = assertionObj.Response;
+  const response = responseObj;
 
   if (!version) {
     cb(new Error('SAML Assertion version not supported.'));
@@ -250,7 +247,7 @@ function parseResponseAndVersion(assertionObj, cb) {
   }
 
   const tokenHandler = tokenHandlers[version];
-  assertion.inResponseTo = tokenHandler.getInResponseTo(assertionObj);
+  assertion.inResponseTo = tokenHandler.getInResponseTo(responseObj);
 
   cb(null, assertion, version, response);
 }

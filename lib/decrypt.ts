@@ -26,7 +26,7 @@ const assertion = (xml: Document, encryptedAssertions: Node[], options) => {
     return { assertion: xml.toString(), decrypted: true };
   });
 };
-const decryptXml = (entireXML: string, options) => {
+const decryptXml = (entireXML: string, options): { assertion: string; decrypted: boolean } => {
   if (!entireXML) {
     throw new Error('Undefined Assertion.');
   }
