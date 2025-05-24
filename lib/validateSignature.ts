@@ -1,7 +1,6 @@
 import { SignedXml } from 'xml-crypto';
 import { select } from 'xpath';
-import { thumbprint } from './utils';
-import { parseFromString } from './utils';
+import { parseFromString, thumbprint } from './utils';
 
 const isMultiCert = (cert) => {
   return cert.indexOf(',') !== -1;
@@ -18,12 +17,17 @@ const certToPEM = (cert) => {
   }
 };
 
-const hasValidSignature = (xml, cert, certThumbprint) => {
+// Breaking Change: hasValidSignature now returns:
+// if signature is valid: the raw signed xml string
+// if signature is invalid: throws error or returns null
+// clients are to use the resultant raw xml string to parse their SAML Assertion
+// should be internal
+const hasValidSignature = (xml, cert, certThumbprint): string | null => {
   xml = sanitizeXML(xml);
   return _hasValidSignature(xml, cert, certThumbprint);
 };
 
-const _hasValidSignature = (xml, cert, certThumbprint) => {
+const _hasValidSignature = (xml, cert, certThumbprint): string | null => {
   const doc = parseFromString(xml);
   let signature =
     select(
@@ -54,9 +58,10 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
   signed.loadSignature(signature);
 
   let valid;
-  let id, calculatedThumbprint;
   // Check if cert contains multiple
   // Load each cert and run checkSignature
+
+  // Case A: Use cert(s) i.e. do not use fingerprint
   if (cert && isMultiCert(cert)) {
     const _certs = cert.split(',');
     for (const _cert of _certs) {
@@ -78,6 +83,7 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
     }
   } else {
     signed.getCertFromKeyInfo = function getKey(keyInfo) {
+      // Case A: Let's use the thumbprint
       if (certThumbprint) {
         const embeddedCert = keyInfo!.childNodes[0].ownerDocument!.getElementsByTagNameNS(
           'http://www.w3.org/2000/09/xmldsig#',
@@ -86,53 +92,41 @@ const _hasValidSignature = (xml, cert, certThumbprint) => {
 
         if (embeddedCert.length > 0) {
           const base64cer = embeddedCert[0].firstChild!.toString();
+          // authenticate base64der with trusted fingerprint
+          const calculatedThumbprint = thumbprint(base64cer);
+          const thumbprints = certThumbprint.split(',');
 
-          calculatedThumbprint = thumbprint(base64cer);
-
-          return certToPEM(base64cer);
+          if (thumbprints.includes(calculatedThumbprint)) {
+            // now we can use it
+            return certToPEM(base64cer);
+          }
         }
+      } else {
+        // use pre-configured trusted certificates
+        return certToPEM(cert);
       }
-
-      return certToPEM(cert);
     };
 
     valid = signed.checkSignature(xml);
   }
 
-  if (valid) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const uri = signed.references[0].uri;
-    id = uri![0] === '#' ? uri!.substring(1) : uri;
+  if (valid && signed.getSignedReferences().length > 0) {
+    return signed.getSignedReferences()[0];
   }
-
-  return {
-    valid,
-    calculatedThumbprint,
-    id,
-  };
+  return null;
 };
+
+// Breaking Change: validateSignature now returns:
+// if signature is valid: the raw signed xml string
+// if signature is invalid: throws error or returns null
+// clients are to use the resultant raw xml string to parse their SAML Assertion
 
 const validateSignature = (xml, cert, certThumbprint) => {
   if (cert && certThumbprint) {
     throw new Error('You should provide either cert or certThumbprint, not both');
   }
 
-  const { valid, calculatedThumbprint, id } = hasValidSignature(xml, cert, certThumbprint);
-
-  if (valid) {
-    if (certThumbprint) {
-      const thumbprints = certThumbprint.split(',');
-
-      if (thumbprints.includes(calculatedThumbprint)) {
-        return id;
-      }
-    }
-
-    if (cert) {
-      return id;
-    }
-  }
+  return hasValidSignature(xml, cert, certThumbprint);
 };
 
 const sanitizeXML = (xml) => {
